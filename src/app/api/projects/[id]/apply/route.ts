@@ -34,12 +34,26 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       data: { projectId: id, applicantId: session.user.id, ...parsed.data },
     });
 
+    // Create DB Notification
+    await prisma.notification.create({
+      data: {
+        userId: project.owner.id,
+        title: "📬 Lamaran Baru",
+        message: `Ada pelamar baru untuk project "${project.title}"`,
+        type: "APPLICATION",
+        link: `/project/${id}`,
+      }
+    });
+
     // Notify owner via Pusher
     await pusherServer.trigger(CHANNELS.user(project.owner.id), EVENTS.NEW_APPLICATION, {
       projectId: id,
       projectTitle: project.title,
       applicantId: session.user.id,
     });
+    
+    // Also trigger NEW_NOTIFICATION for the bell icon
+    await pusherServer.trigger(CHANNELS.user(project.owner.id), EVENTS.NEW_NOTIFICATION, {});
 
     return NextResponse.json(application, { status: 201 });
   } catch (err) {
@@ -58,7 +72,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     if (!project || project.ownerId !== session.user.id) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
     const applications = await prisma.application.findMany({
-      where: { projectId: id },
+      where: { projectId: id, status: "PENDING" },
       orderBy: { createdAt: "desc" },
     });
 
@@ -67,7 +81,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       applications.map(async (app) => {
         const user = await prisma.user.findUnique({
           where: { id: app.applicantId },
-          select: { id: true, name: true, image: true, bio: true, trustScore: true, trustLevel: true, skills: { select: { skillName: true } } },
+          select: { id: true, name: true, image: true, bio: true, trustScore: true, trustLevel: true, linkedinUrl: true, githubUrl: true, portfolioUrl: true, skills: { select: { skillName: true } } },
         });
         return { ...app, applicant: user };
       })
@@ -105,23 +119,47 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         data: { projectId: id, userId: application.applicantId, role: "MEMBER" },
       });
 
+      // Create DB Notification
+      await prisma.notification.create({
+        data: {
+          userId: application.applicantId,
+          title: "🎉 Lamaran Diterima",
+          message: `Selamat! Kamu diterima di project "${project.title}"`,
+          type: "APPLICATION",
+          link: `/project/${id}/hub`,
+        }
+      });
+
       // Notify via Pusher
       await pusherServer.trigger(CHANNELS.user(application.applicantId), EVENTS.APPLICATION_DECISION, {
         decision: "APPROVED",
         projectId: id,
         projectTitle: project.title,
       });
+      await pusherServer.trigger(CHANNELS.user(application.applicantId), EVENTS.NEW_NOTIFICATION, {});
 
       // Send email
       const applicant = await prisma.user.findUnique({ where: { id: application.applicantId }, select: { name: true, email: true } });
       if (applicant) await sendApprovalEmail(applicant.email, applicant.name, project.title);
     } else {
+      // Create DB Notification
+      await prisma.notification.create({
+        data: {
+          userId: application.applicantId,
+          title: "😔 Lamaran Ditolak",
+          message: `Mohon maaf, lamaranmu untuk "${project.title}" belum diterima.`,
+          type: "APPLICATION",
+          link: `/explore`,
+        }
+      });
+
       // Notify rejection via Pusher
       await pusherServer.trigger(CHANNELS.user(application.applicantId), EVENTS.APPLICATION_DECISION, {
         decision: "REJECTED",
         projectId: id,
         projectTitle: project.title,
       });
+      await pusherServer.trigger(CHANNELS.user(application.applicantId), EVENTS.NEW_NOTIFICATION, {});
 
       // Send email
       const applicant = await prisma.user.findUnique({ where: { id: application.applicantId }, select: { name: true, email: true } });

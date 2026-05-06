@@ -35,7 +35,8 @@ export default function CreateProjectPage() {
     e.preventDefault();
     setError("");
 
-    if (!form.title || !form.description) return setError("Judul dan deskripsi wajib diisi.");
+    if (!form.title || form.title.length < 5) return setError("Judul minimal 5 karakter.");
+    if (!form.description || form.description.length < 20) return setError("Deskripsi minimal 20 karakter agar calon anggota paham tujuan projectmu.");
     if (selectedSkills.length === 0) return setError("Pilih minimal 1 skill yang dibutuhkan.");
 
     setIsLoading(true);
@@ -86,7 +87,7 @@ export default function CreateProjectPage() {
             {/* Title */}
             <div>
               <label style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", display: "block", marginBottom: "6px" }}>
-                Judul Project *
+                Judul Project (min. 5 karakter) *
               </label>
               <input
                 id="create-project-title"
@@ -186,7 +187,7 @@ export default function CreateProjectPage() {
             {/* Description */}
             <div>
               <label style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", display: "block", marginBottom: "6px" }}>
-                Deskripsi Project *
+                Deskripsi Project (min. 20 karakter) *
               </label>
               <textarea
                 id="create-project-description"
@@ -197,7 +198,9 @@ export default function CreateProjectPage() {
                 required
                 style={{ minHeight: "140px" }}
               />
-              <span style={{ fontSize: "12px", color: "#999" }}>{form.description.length}/2000</span>
+              <span style={{ fontSize: "12px", color: form.description.length < 20 ? "#FF4D4D" : "#999" }}>
+                {form.description.length}/2000 {form.description.length < 20 && "(min. 20)"}
+              </span>
             </div>
 
             {/* Required Skills */}

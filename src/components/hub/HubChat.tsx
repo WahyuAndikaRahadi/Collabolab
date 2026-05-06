@@ -1,0 +1,259 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { getPusherClient, CHANNELS, EVENTS } from "@/lib/pusher";
+import { MentionInput } from "./MentionInput";
+
+type Member = {
+  id: string;
+  userId: string;
+  isAnonymous: boolean;
+  anonymousTag: string | null;
+  revealedAt: string | null;
+  role: string;
+  user: { id: string; name: string; image: string | null };
+};
+
+type HubMessage = {
+  id: string;
+  content: string;
+  createdAt: string;
+  mentions: string[];
+  sender: { id: string; name: string; image: string | null; isAnonymous?: boolean };
+};
+
+type OnlineStatus = { [userId: string]: "online" | "away" | "offline" };
+
+type Props = {
+  projectId: string;
+  roomId: string;
+  roomName: string;
+  roomType: "ANNOUNCEMENT" | "GENERAL" | "KANBAN" | "CUSTOM";
+  roomDescription: string | null;
+  members: Member[];
+  onlineStatus: OnlineStatus;
+  currentUserId: string;
+  currentMember: Member;
+  activeTab?: "chat" | "kanban";
+};
+
+export function HubChat({ projectId, roomId, roomName, roomType, roomDescription, members, onlineStatus, currentUserId, currentMember, activeTab = "chat" }: Props) {
+  const [messages, setMessages] = useState<HubMessage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const isOwner = currentMember.role === "OWNER";
+  const isAnnouncement = roomType === "ANNOUNCEMENT";
+  const canSend = !isAnnouncement || isOwner;
+
+  // Load messages
+  useEffect(() => {
+    setLoading(true);
+    setMessages([]);
+    fetch(`/api/hub/${projectId}/rooms/${roomId}/messages`)
+      .then((r) => r.json())
+      .then((data) => { if (Array.isArray(data)) setMessages(data); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [projectId, roomId]);
+
+  // Pusher subscription
+  useEffect(() => {
+    let pusher: ReturnType<typeof getPusherClient>;
+    try {
+      pusher = getPusherClient();
+      const channel = pusher.subscribe(CHANNELS.hubRoom(roomId));
+      channel.bind(EVENTS.HUB_MESSAGE, (msg: HubMessage) => {
+        setMessages((prev) => {
+          if (prev.find((m) => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
+      });
+    } catch {}
+    return () => {
+      try { pusher?.unsubscribe(CHANNELS.hubRoom(roomId)); } catch {}
+    };
+  }, [roomId]);
+
+  // Auto scroll
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  async function handleSend(content: string, mentions: string[]) {
+    await fetch(`/api/hub/${projectId}/rooms/${roomId}/messages`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content, mentions }),
+    });
+  }
+
+  const formatTime = (iso: string) => new Date(iso).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+  const formatDate = (iso: string) => {
+    const d = new Date(iso);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (d.toDateString() === today.toDateString()) return "Hari Ini";
+    if (d.toDateString() === yesterday.toDateString()) return "Kemarin";
+    return d.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: d.getFullYear() !== today.getFullYear() ? "numeric" : undefined });
+  };
+
+  // Group messages by day
+  const grouped: { date: string; messages: HubMessage[] }[] = [];
+  for (const msg of messages) {
+    const d = formatDate(msg.createdAt);
+    const last = grouped[grouped.length - 1];
+    if (last && last.date === d) last.messages.push(msg);
+    else grouped.push({ date: d, messages: [msg] });
+  }
+
+  function renderContent(content: string, myMessage: boolean) {
+    // Highlight @mentions
+    const parts = content.split(/(@\w[\w\s]*)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith("@")) {
+        return (
+          <span key={i} style={{ background: myMessage ? "rgba(0,0,0,0.2)" : "#0047FF", color: "#fff", borderRadius: "4px", padding: "0 4px", fontWeight: 700 }}>
+            {part}
+          </span>
+        );
+      }
+      return <span key={i}>{part}</span>;
+    });
+  }
+
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#FFFFFF", overflow: "hidden" }}>
+      {/* Room header */}
+      <div style={{
+        padding: "12px 20px",
+        borderBottom: "3px solid #000000",
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        flexShrink: 0,
+        background: "#FFFFFF",
+      }}>
+        <div>
+          <div style={{
+            fontFamily: "Space Grotesk, sans-serif",
+            fontWeight: 900,
+            fontSize: "18px",
+            color: "#000000",
+          }}>
+            {roomType === "GENERAL" ? "💬" : roomType === "ANNOUNCEMENT" ? "📢" : "#"} {roomName}
+          </div>
+          {roomDescription && (
+            <div style={{ fontSize: "12px", color: "#555", marginTop: "2px" }}>{roomDescription}</div>
+          )}
+        </div>
+        {isAnnouncement && !isOwner && (
+          <div style={{
+            marginLeft: "auto",
+            background: "#F5F0E8",
+            border: "2px solid #000000",
+            borderRadius: "20px",
+            padding: "4px 12px",
+            fontSize: "12px",
+            color: "#000000",
+            fontWeight: 800,
+            fontFamily: "Space Grotesk, sans-serif",
+            boxShadow: "2px 2px 0px #000",
+          }}>
+            📢 Read-only
+          </div>
+        )}
+      </div>
+
+      {/* Messages area */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "16px", display: "flex", flexDirection: "column", gap: "4px" }}>
+        {loading ? (
+          <div style={{ textAlign: "center", color: "#3D3D3D", padding: "40px", fontSize: "14px", fontWeight: 600 }}>Memuat pesan...</div>
+        ) : messages.length === 0 ? (
+          <div style={{ textAlign: "center", color: "#3D3D3D", padding: "60px 20px" }}>
+            <div style={{ fontSize: "48px", marginBottom: "16px" }}>
+              {roomType === "ANNOUNCEMENT" ? "📢" : "💬"}
+            </div>
+            <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", color: "#000000", marginBottom: "6px" }}>
+              Belum ada pesan di #{roomName}
+            </div>
+            <div style={{ fontSize: "14px", color: "#3D3D3D" }}>
+              {isAnnouncement && !isOwner ? "Owner akan memposting pengumuman di sini." : "Jadilah yang pertama mengirim pesan!"}
+            </div>
+          </div>
+        ) : (
+          grouped.map(({ date, messages: dayMsgs }) => (
+            <div key={date}>
+              {/* Date separator */}
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "16px 0 12px" }}>
+                <div style={{ flex: 1, height: "2px", background: "#000000" }} />
+                <div style={{ color: "#000000", fontSize: "12px", fontWeight: 800, fontFamily: "Space Grotesk, sans-serif", letterSpacing: "0.5px", background: "#FFE500", border: "2px solid #000", padding: "2px 10px", borderRadius: "20px", boxShadow: "2px 2px 0px #000" }}>{date}</div>
+                <div style={{ flex: 1, height: "2px", background: "#000000" }} />
+              </div>
+
+              {dayMsgs.map((msg, i) => {
+                const isMe = msg.sender.id === currentUserId;
+                const prevMsg = i > 0 ? dayMsgs[i - 1] : null;
+                const sameAuthor = prevMsg && prevMsg.sender.id === msg.sender.id;
+
+                return (
+                  <div key={msg.id} id={`hub-msg-${msg.id}`} style={{ display: "flex", flexDirection: isMe ? "row-reverse" : "row", gap: "10px", marginBottom: sameAuthor ? "2px" : "12px", alignItems: "flex-end" }}>
+                    {/* Avatar */}
+                    {!sameAuthor && !isMe && (
+                      <div style={{
+                        width: "32px", height: "32px", borderRadius: "50%",
+                        background: "#F5F0E8", border: "2px solid #000000",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: "13px", fontWeight: 800, color: "#000000", flexShrink: 0,
+                      }}>
+                        {msg.sender.isAnonymous ? "👤" : msg.sender.name[0]}
+                      </div>
+                    )}
+                    {(sameAuthor || isMe) && !isMe && <div style={{ width: "32px", flexShrink: 0 }} />}
+
+                    <div style={{ maxWidth: "65%" }}>
+                      {!sameAuthor && !isMe && (
+                        <div style={{ fontSize: "12px", color: "#3D3D3D", marginBottom: "4px", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700 }}>
+                          {msg.sender.name}
+                        </div>
+                      )}
+                      <div style={{
+                        background: isMe ? "#FFE500" : "#F5F0E8",
+                        color: "#000000",
+                        border: "2px solid #000000",
+                        borderRadius: isMe ? "12px 12px 2px 12px" : "12px 12px 12px 2px",
+                        padding: "8px 14px",
+                        fontSize: "15px",
+                        lineHeight: 1.5,
+                        wordBreak: "break-word",
+                        boxShadow: isMe ? "-2px 2px 0px #000" : "2px 2px 0px #000",
+                      }}>
+                        {renderContent(msg.content, isMe)}
+                      </div>
+                      <div style={{ fontSize: "11px", color: "#555", marginTop: "4px", textAlign: isMe ? "right" : "left", fontWeight: 600 }}>
+                        {formatTime(msg.createdAt)}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ))
+        )}
+        <div ref={chatEndRef} />
+      </div>
+
+      {/* Input */}
+      <MentionInput
+        members={members}
+        onlineStatus={onlineStatus}
+        onSend={handleSend}
+        disabled={!canSend}
+        disabledReason="Hanya owner yang bisa mengirim di #announcement"
+        currentUserId={currentUserId}
+      />
+    </div>
+  );
+}

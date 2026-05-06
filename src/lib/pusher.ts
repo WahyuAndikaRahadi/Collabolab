@@ -33,9 +33,13 @@ export const CHANNELS = {
   project: (projectId: string) => `private-project-${projectId}`,
   presence: (projectId: string) => `presence-project-${projectId}`,
   user: (userId: string) => `private-user-${userId}`,
+  hub: (projectId: string) => `private-hub-${projectId}`,
+  hubRoom: (roomId: string) => `private-hubroom-${roomId}`,
+  hubPresence: (projectId: string) => `presence-hub-${projectId}`,
 } as const;
 
 export const EVENTS = {
+  // Legacy events (old room)
   NEW_MESSAGE: "new-message",
   TASK_UPDATED: "task-updated",
   TASK_CREATED: "task-created",
@@ -45,4 +49,11 @@ export const EVENTS = {
   APPLICATION_DECISION: "application-decision",
   NEW_POLL: "new-poll",
   POLL_UPDATED: "poll-updated",
+  // Collab Hub events
+  HUB_MESSAGE: "hub-message",
+  HUB_TASK_UPDATED: "hub-task-updated",
+  HUB_TASK_CREATED: "hub-task-created",
+  HUB_ROOM_CREATED: "hub-room-created",
+  MENTION: "mention",
+  NEW_NOTIFICATION: "new-notification",
 } as const;

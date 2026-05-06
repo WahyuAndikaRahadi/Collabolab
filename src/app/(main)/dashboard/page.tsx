@@ -161,12 +161,12 @@ export default async function DashboardPage() {
 
                     <div style={{ display: "flex", gap: "8px", marginTop: "auto" }}>
                       <Link
-                        href={`/project/${m.project.id}/room`}
+                        href={`/project/${m.project.id}/hub`}
                         className="btn-primary btn-sm"
                         style={{ flex: 1, textAlign: "center" }}
                         id={`dashboard-open-room-${m.project.id}`}
                       >
-                        🏠 Collab Room
+                        🤝 Collab Hub
                       </Link>
                     </div>
                   </div>
@@ -193,8 +193,8 @@ export default async function DashboardPage() {
                     <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px", margin: "0 0 12px" }}>
                       {m.project.title}
                     </h3>
-                    <Link href={`/project/${m.project.id}/room`} className="btn-primary btn-sm" id={`dashboard-joined-room-${m.project.id}`}>
-                      🏠 Masuk Room
+                    <Link href={`/project/${m.project.id}/hub`} className="btn-primary btn-sm" id={`dashboard-joined-room-${m.project.id}`}>
+                      🤝 Masuk Hub
                     </Link>
                   </div>
                 );

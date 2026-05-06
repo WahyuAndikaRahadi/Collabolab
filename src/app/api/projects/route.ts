@@ -5,8 +5,8 @@ import { z } from "zod";
 import { canCreateProject, getMaxActiveProjects } from "@/lib/trust-score";
 
 const createProjectSchema = z.object({
-  title: z.string().min(5).max(100),
-  description: z.string().min(20).max(2000),
+  title: z.string().min(5, "Judul minimal 5 karakter").max(100),
+  description: z.string().min(20, "Deskripsi minimal 20 karakter").max(2000),
   category: z.enum(["LOMBA", "STARTUP", "KREATIF", "BELAJAR", "SOSIAL"]),
   commitmentLevel: z.enum(["CASUAL", "SERIUS", "KOMPETISI"]),
   sdgTag: z.enum(["SDG8", "SDG9", "SDG12"]),
@@ -100,6 +100,13 @@ export async function POST(req: NextRequest) {
         },
         members: {
           create: { userId: session.user.id, role: "OWNER" },
+        },
+        hubRooms: {
+          create: [
+            { name: "announcement", type: "ANNOUNCEMENT", description: "Pengumuman resmi dari owner & admin project." },
+            { name: "general", type: "GENERAL", description: "Room utama untuk semua anggota." },
+            { name: "kanban", type: "KANBAN", description: "Workspace kanban board project." },
+          ],
         },
       },
       include: {

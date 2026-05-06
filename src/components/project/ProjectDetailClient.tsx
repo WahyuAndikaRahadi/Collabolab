@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Modal } from "@/components/ui/Modal";
 import type { CommitmentLevel } from "@prisma/client";
 import { COMMITMENT_META } from "@/types";
+import { ProjectApplicantsClient } from "./ProjectApplicantsClient";
 
 interface Props {
   projectId: string;
@@ -51,9 +52,10 @@ export function ProjectDetailClient({ projectId, isLoggedIn, isMember, isOwner, 
         <div style={{ background: "#00D37F", border: "2px solid #000", borderRadius: "6px", padding: "12px", marginBottom: "16px", textAlign: "center", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px" }}>
           ✅ {isOwner ? "Kamu Owner project ini" : "Kamu sudah bergabung"}
         </div>
-        <Link href={`/project/${projectId}/room`} className="btn-primary" id="project-enter-room-btn" style={{ display: "block", textAlign: "center", fontSize: "16px", padding: "14px" }}>
-          🏠 Masuk Collab Room
+        <Link href={`/project/${projectId}/hub`} className="btn-primary" id="project-enter-room-btn" style={{ display: "block", textAlign: "center", fontSize: "16px", padding: "14px" }}>
+          🤝 Masuk Collab Hub
         </Link>
+        {isOwner && <ProjectApplicantsClient projectId={projectId} />}
       </div>
     );
   }

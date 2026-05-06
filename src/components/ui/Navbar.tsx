@@ -6,6 +6,7 @@ import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { LinkButton } from "@/components/ui/Button";
 import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
+import { NotificationBell } from "@/components/ui/NotificationBell";
 
 export function Navbar() {
   const { data: session } = useSession();
@@ -116,6 +117,7 @@ export function Navbar() {
                 variant="compact"
                 showScore
               />
+              <NotificationBell userId={session.user.id} />
               <Link
                 href={`/profile/${session.user.id}`}
                 style={{

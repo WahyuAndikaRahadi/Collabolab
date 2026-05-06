@@ -69,6 +69,13 @@ enum MemberRole {
   MEMBER
 }
 
+enum HubRoomType {
+  ANNOUNCEMENT
+  GENERAL
+  KANBAN
+  CUSTOM
+}
+
 // ─── Models ──────────────────────────────────────────────────────────────────
 
 model User {
@@ -100,6 +107,8 @@ model User {
   bookmarks         Bookmark[]
   sessions          Session[]
   accounts          Account[]
+  hubMessages       HubMessage[]
+  notifications     Notification[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -171,6 +180,8 @@ model Project {
   polls           Poll[]
   bookmarks       Bookmark[]
   applications    Application[]
+  hubRooms        HubRoom[]
+  hubTasks        HubTask[]
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -319,3 +330,68 @@ model Bookmark {
 
   @@unique([userId, projectId])
 }
+
+// ─── Collab Hub ──────────────────────────────────────────────────────────────
+
+model HubRoom {
+  id           String      @id @default(cuid())
+  projectId    String
+  name         String
+  description  String?
+  type         HubRoomType @default(CUSTOM)
+  passwordHash String?
+
+  project      Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  messages     HubMessage[]
+  tasks        HubTask[]
+
+  createdAt    DateTime    @default(now())
+}
+
+model HubMessage {
+  id        String   @id @default(cuid())
+  roomId    String
+  senderId  String
+  content   String
+  mentions  String[] @default([])
+
+  room      HubRoom  @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  sender    User     @relation(fields: [senderId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model HubTask {
+  id          String     @id @default(cuid())
+  roomId      String?
+  projectId   String
+  title       String
+  description String?
+  status      TaskStatus @default(TODO)
+  priority    Priority   @default(MEDIUM)
+  assigneeId  String?
+  labelTag    String?
+  deadline    DateTime?
+  position    Int        @default(0)
+  isGlobal    Boolean    @default(false)
+
+  room        HubRoom?   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      String   // "MENTION", "TASK", "APPLICATION", "SYSTEM"
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+

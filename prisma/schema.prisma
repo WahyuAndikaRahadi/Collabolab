@@ -108,13 +108,13 @@ model User {
   sessions          Session[]
   accounts          Account[]
   hubMessages       HubMessage[]
+  externalLinks     ExternalLink[]
   notifications     Notification[]
   feedPosts         FeedPost[]
   feedLikes         FeedLike[]
   feedComments      FeedComment[]
   feedBookmarks     FeedBookmark[]
   feedReports       FeedReport[]
-  externalLinks     ExternalLink[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt

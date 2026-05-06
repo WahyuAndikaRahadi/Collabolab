@@ -1,7 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { FeedPage } from "@/components/feed/FeedPage";
-import { Navbar } from "@/components/ui/Navbar";
 import { redirect } from "next/navigation";
 
 export default async function Page() {
@@ -14,11 +13,8 @@ export default async function Page() {
   });
 
   return (
-    <>
-      <Navbar />
-      <main style={{ minHeight: "calc(100vh - 80px)", background: "#FFFFFF" }}>
-        <FeedPage user={user} />
-      </main>
-    </>
+    <main style={{ minHeight: "calc(100vh - 80px)", background: "#FFFFFF" }}>
+      <FeedPage user={user} />
+    </main>
   );
 }

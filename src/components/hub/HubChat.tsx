@@ -110,12 +110,12 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
   }
 
   function renderContent(content: string, myMessage: boolean) {
-    // Highlight @mentions
-    const parts = content.split(/(@\w[\w\s]*)/g);
+    // Highlight @mentions (e.g. @name or @all)
+    const parts = content.split(/(@\w+)/g);
     return parts.map((part, i) => {
       if (part.startsWith("@")) {
         return (
-          <span key={i} style={{ background: myMessage ? "rgba(0,0,0,0.2)" : "#0047FF", color: "#fff", borderRadius: "4px", padding: "0 4px", fontWeight: 700 }}>
+          <span key={i} style={{ color: "#0047FF", fontWeight: 900 }}>
             {part}
           </span>
         );

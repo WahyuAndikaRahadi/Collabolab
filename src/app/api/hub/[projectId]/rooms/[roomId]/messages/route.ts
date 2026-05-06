@@ -53,10 +53,40 @@ export async function POST(req: NextRequest, { params }: Params) {
   }
 
   const body = await req.json();
-  const { content, mentions = [] } = body as { content: string; mentions: string[] };
+  const { content, mentions: clientMentions = [] } = body as { content: string; mentions: string[] };
 
   if (!content?.trim()) return NextResponse.json({ error: "Pesan tidak boleh kosong." }, { status: 400 });
   if (content.length > 2000) return NextResponse.json({ error: "Pesan terlalu panjang (maks 2000 karakter)." }, { status: 400 });
+
+  // Robust mention detection: if user typed manually or client missed it
+  let mentions = [...clientMentions];
+  if (content.includes("@all") && !mentions.includes("all")) {
+    mentions.push("all");
+  }
+
+  // Find project members to resolve manual @names
+  const projectMembers = await prisma.projectMember.findMany({
+    where: { projectId },
+    include: { user: { select: { id: true, name: true } } }
+  });
+
+  const nameMatches = content.match(/@(\w+)/g);
+  if (nameMatches) {
+    for (const match of nameMatches) {
+      const name = match.slice(1);
+      if (name.toLowerCase() === "all") continue;
+      // Search for any member whose name contains the mention
+      const found = projectMembers.find(m => {
+        const normalizedMemberName = m.user.name.toLowerCase().replace(/\s/g, "");
+        const normalizedMention = name.toLowerCase();
+        return normalizedMemberName.includes(normalizedMention) || normalizedMention.includes(normalizedMemberName);
+      });
+      if (found && !mentions.includes(found.userId)) {
+        console.log(`[Mention] Manual resolve @${name} -> ${found.user.name} (${found.userId})`);
+        mentions.push(found.userId);
+      }
+    }
+  }
 
   // Get sender display info (anonymous handling)
   const isAnon = member.isAnonymous && !member.revealedAt;
@@ -104,31 +134,44 @@ export async function POST(req: NextRequest, { params }: Params) {
     targetUserIds = Array.from(new Set(targetUserIds)).filter(id => id !== session.user.id);
 
     if (targetUserIds.length > 0) {
-      // 1. Create DB Notifications
-      await prisma.notification.createMany({
-        data: targetUserIds.map(userId => ({
+      try {
+        console.log(`[Notification] targetUserIds:`, targetUserIds);
+
+        // 1. Create DB Notifications
+        const notifData = targetUserIds.map(userId => ({
           userId,
           title: `💬 Mention di #${room.name}`,
           message: `${payload.sender.name} menyebut Anda: "${content.trim().slice(0, 50)}..."`,
           type: "MENTION",
           link: `/project/${projectId}/hub?room=${roomId}`,
-        }))
-      });
+        }));
 
-      // 2. Trigger Pusher Event
-      const notificationPayload = {
-        messageId: message.id,
-        roomId,
-        roomName: room.name,
-        projectId,
-        content: content.trim().slice(0, 100),
-        sender: payload.sender,
-      };
-      
-      for (const userId of targetUserIds) {
-        try {
-          await pusherServer.trigger(CHANNELS.user(userId), EVENTS.NEW_NOTIFICATION, notificationPayload);
-        } catch {}
+        await prisma.notification.createMany({
+          data: notifData,
+          skipDuplicates: true,
+        });
+
+        console.log(`[Notification] Successfully created ${notifData.length} records in DB`);
+
+        // 2. Trigger Pusher Event
+        const notificationPayload = {
+          messageId: message.id,
+          roomId,
+          roomName: room.name,
+          projectId,
+          content: content.trim().slice(0, 100),
+          sender: payload.sender,
+        };
+        
+        for (const userId of targetUserIds) {
+          try {
+            await pusherServer.trigger(CHANNELS.user(userId), EVENTS.NEW_NOTIFICATION, notificationPayload);
+          } catch (e) {
+            console.error(`[Pusher] Failed to trigger notification for ${userId}`, e);
+          }
+        }
+      } catch (e) {
+        console.error("[Notification Error]", e);
       }
     }
   }

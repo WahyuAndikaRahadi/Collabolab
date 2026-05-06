@@ -226,6 +226,12 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          {session?.user && (
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px", borderTop: "1px solid #000", marginTop: "4px" }}>
+              <NotificationBell userId={session.user.id} />
+              <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px" }}>Notifikasi</span>
+            </div>
+          )}
         </div>
       )}
     </header>

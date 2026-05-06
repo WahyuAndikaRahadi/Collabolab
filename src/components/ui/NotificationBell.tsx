@@ -24,12 +24,16 @@ export function NotificationBell({ userId }: { userId: string }) {
   // Fetch initial notifications
   const fetchNotifications = async () => {
     try {
+      console.log(`[Pusher] Fetching notifications for user: ${userId}`);
       const res = await fetch("/api/notifications");
       if (res.ok) {
         const data = await res.json();
+        console.log(`[Pusher] Fetched ${data?.length} notifications`);
         if (Array.isArray(data)) setNotifications(data);
       }
-    } catch {}
+    } catch (err) {
+      console.error("[Pusher] Fetch error", err);
+    }
   };
 
   useEffect(() => {
@@ -41,12 +45,15 @@ export function NotificationBell({ userId }: { userId: string }) {
     let pusher: ReturnType<typeof getPusherClient>;
     try {
       pusher = getPusherClient();
+      console.log(`[Pusher] Subscribing to private-user-${userId}`);
       const channel = pusher.subscribe(CHANNELS.user(userId));
-      channel.bind(EVENTS.NEW_NOTIFICATION, () => {
-        // Fetch fresh notifications when we receive a ping
+      channel.bind(EVENTS.NEW_NOTIFICATION, (data: any) => {
+        console.log("[Pusher] Received NEW_NOTIFICATION", data);
         fetchNotifications();
       });
-    } catch {}
+    } catch (err) {
+      console.error("[Pusher] Subscription error", err);
+    }
     
     return () => {
       try { pusher?.unsubscribe(CHANNELS.user(userId)); } catch {}

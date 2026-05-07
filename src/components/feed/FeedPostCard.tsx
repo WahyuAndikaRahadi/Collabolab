@@ -39,6 +39,17 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
     return "#00D37F"; // Green
   };
 
+  const renderContentWithHashtags = (text: string) => {
+    if (!text) return null;
+    const parts = text.split(/(#\w+)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith("#")) {
+        return <span key={i} style={{ color: "#0047FF", fontWeight: 800 }}>{part}</span>;
+      }
+      return part;
+    });
+  };
+
   return (
     <div
       style={{
@@ -83,7 +94,9 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
       <div style={{ padding: "16px" }}>
         {isContribution ? (
           <>
-            <p style={{ fontSize: "15px", lineHeight: 1.6, marginBottom: "12px" }}>{post.content}</p>
+            <p style={{ fontSize: "15px", lineHeight: 1.6, marginBottom: "12px", whiteSpace: "pre-wrap" }}>
+              {renderContentWithHashtags(post.content)}
+            </p>
             {post.mediaUrl && (
               <div style={{ border: "2px solid #000", borderRadius: "4px", overflow: "hidden", marginBottom: "12px" }}>
                 <img src={post.mediaUrl} alt="Contribution" style={{ width: "100%", height: "auto", display: "block" }} />
@@ -105,7 +118,11 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
         ) : (
           <>
             <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "18px", marginBottom: "8px" }}>{post.eventName}</h3>
-            {post.content && <p style={{ fontSize: "14px", color: "#444", marginBottom: "12px" }}>{post.content}</p>}
+            {post.content && (
+              <p style={{ fontSize: "14px", color: "#444", marginBottom: "12px", whiteSpace: "pre-wrap" }}>
+                {renderContentWithHashtags(post.content)}
+              </p>
+            )}
             
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
               <div style={{ background: "#F5F0E8", border: "2px solid #000", padding: "10px", borderRadius: "4px" }}>

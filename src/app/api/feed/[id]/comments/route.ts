@@ -33,7 +33,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const { content, mentions = [] } = await req.json();
+    const { content, mentions = [], parentId = null } = await req.json();
 
     if (!content?.trim()) {
       return NextResponse.json({ error: "Komentar tidak boleh kosong" }, { status: 400 });
@@ -42,6 +42,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const comment = await prisma.feedComment.create({
       data: {
         postId,
+        parentId,
         authorId: session.user.id,
         content: content.slice(0, 200),
         mentions,

@@ -422,6 +422,8 @@ model FeedPost {
   eventLink   String?
   eventSkills String[]     // array skill tag
 
+  tags        String[]     @default([]) // Untuk menyimpan hashtag dari content
+
   isArchived  Boolean      @default(false)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -449,12 +451,15 @@ model FeedLike {
 model FeedComment {
   id        String   @id @default(cuid())
   postId    String
+  parentId  String?
   authorId  String
   content   String   // maks 200 karakter
   mentions  String[] // array userId yang di-mention
   createdAt DateTime @default(now())
 
   post      FeedPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parent    FeedComment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   FeedComment[] @relation("CommentReplies")
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 

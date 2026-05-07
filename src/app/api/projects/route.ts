@@ -51,10 +51,8 @@ export async function GET(req: NextRequest) {
               image: true, 
               trustScore: true, 
               trustLevel: true,
-              externalLinks: {
-                where: { status: "VERIFIED", platform: { in: ["LINKEDIN", "GITHUB"] } },
-                select: { platform: true, url: true }
-              }
+              linkedinUrl: true,
+              githubUrl: true
             },
           },
         },

@@ -8,6 +8,7 @@ export async function GET(req: NextRequest) {
   const cursor = searchParams.get("cursor");
   const type = searchParams.get("type") as FeedPostType | null;
   const sdg = searchParams.get("sdg") as SDGTag | null;
+  const tag = searchParams.get("tag");
   const limit = 10;
 
   try {
@@ -16,6 +17,7 @@ export async function GET(req: NextRequest) {
         isArchived: false,
         ...(type ? { type } : {}),
         ...(sdg ? { sdgTag: sdg } : {}),
+        ...(tag ? { tags: { has: tag } } : {}),
       },
       take: limit,
       ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
@@ -79,6 +81,9 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { type } = body;
+    
+    // Extract hashtags from content
+    const tags = body.content ? (body.content.match(/#\w+/g)?.map((t: string) => t.slice(1)) || []) : [];
 
     if (type === "CONTRIBUTION") {
       const { content, mediaUrl, sdgTag, impactTag, projectId } = body;
@@ -130,6 +135,7 @@ export async function POST(req: NextRequest) {
           sdgTag,
           impactTag,
           projectId,
+          tags,
         },
       });
 
@@ -178,6 +184,7 @@ export async function POST(req: NextRequest) {
           eventLink,
           eventSkills,
           sdgTag,
+          tags,
         },
       });
 

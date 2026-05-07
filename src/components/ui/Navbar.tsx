@@ -15,6 +15,9 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
 
+  // Hide navbar on auth pages
+  if (pathname === "/login" || pathname === "/register") return null;
+
   const navLinks = session?.user 
     ? [
         { href: "/dashboard", label: "Dashboard" },
@@ -24,7 +27,7 @@ export function Navbar() {
       ]
     : pathname === "/" 
       ? [
-          { href: "#why", label: "Problem" },
+          { href: "#about", label: "About" },
           { href: "#how-it-works", label: "How It Works" },
           { href: "#explore-preview", label: "Explore" },
           { href: "#trust", label: "Trust System" },
@@ -150,7 +153,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-2">
+        <nav className="hidden lg:flex items-center gap-2">
           {filteredLinks.map((link) => {
             const isActive = link.href.startsWith("#") 
               ? activeHash === link.href 
@@ -172,7 +175,7 @@ export function Navbar() {
         {/* Auth section */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           {session?.user ? (
-            <div className="flex items-center gap-2 md:gap-3">
+            <div className="flex items-center gap-2 lg:gap-3">
               <div className="hidden sm:block">
                 <TrustScoreBadge
                   score={session.user.trustScore}
@@ -209,7 +212,7 @@ export function Navbar() {
               </Link>
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
-                className="hidden md:block"
+                className="hidden lg:block"
                 style={{
                   background: "transparent",
                   border: "2px solid #000",
@@ -225,7 +228,7 @@ export function Navbar() {
               </button>
             </div>
           ) : (
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-3">
               <LinkButton href="/login" variant="secondary" size="sm">
                 Masuk
               </LinkButton>
@@ -239,7 +242,7 @@ export function Navbar() {
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             id="navbar-menu-btn"
-            className="md:hidden"
+            className="lg:hidden"
             style={{
               background: menuOpen ? "#FFE500" : "transparent",
               border: "2px solid #000",
@@ -271,7 +274,7 @@ export function Navbar() {
               background: "#FFFFFF",
               overflow: "hidden",
             }}
-            className="md:hidden"
+            className="lg:hidden"
           >
             <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
               {filteredLinks.map((link) => {

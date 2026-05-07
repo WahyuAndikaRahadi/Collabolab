@@ -7,6 +7,7 @@ import { ExplorePreview } from "@/components/landing/ExplorePreview";
 import { MarqueeSection } from "@/components/landing/MarqueeSection";
 import { TrustSection } from "@/components/landing/TrustSection";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
+import { AboutSection } from "@/components/landing/AboutSection";
 import { CtaFooterSection } from "@/components/landing/CtaFooterSection";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -55,6 +56,7 @@ export default async function HomePage() {
       <Navbar />
       <main>
         <HeroSection />
+        <AboutSection />
         <WhySection />
         <HowItWorksSection />
         <ExplorePreview 

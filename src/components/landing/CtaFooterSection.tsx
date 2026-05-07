@@ -154,8 +154,6 @@ export function CtaFooterSection() {
         style={{
           textAlign: "center",
           marginTop: "64px",
-          paddingTop: "32px",
-          borderTop: "3px dashed #000", // Changed to dashed
           color: "#3D3D3D",
           fontSize: "14px",
           fontWeight: 600,

@@ -45,51 +45,71 @@ function LoginForm() {
     <div
       style={{
         background: "#fff",
-        border: "3px solid #000",
-        borderRadius: "8px",
-        boxShadow: "8px 8px 0px #000",
-        padding: "40px",
+        border: "4px solid #000",
+        borderRadius: "12px",
+        boxShadow: "12px 12px 0px #000",
+        padding: "48px",
         width: "100%",
-        maxWidth: "420px",
+        maxWidth: "460px",
+        position: "relative",
       }}
     >
-      <div style={{ marginBottom: "32px" }}>
+      {/* Decorative dot pattern */}
+      <div 
+        style={{ 
+          position: "absolute", 
+          top: "12px", 
+          right: "12px", 
+          display: "grid", 
+          gridTemplateColumns: "repeat(3, 4px)", 
+          gap: "4px",
+          opacity: 0.3
+        }}
+      >
+        {Array.from({ length: 9 }).map((_, i) => (
+          <div key={i} style={{ width: "4px", height: "4px", background: "#000", borderRadius: "50%" }} />
+        ))}
+      </div>
+
+      <div style={{ marginBottom: "40px" }}>
         <div
           style={{
             background: "#FFE500",
             border: "2px solid #000",
-            borderRadius: "6px",
+            borderRadius: "4px",
             display: "inline-flex",
             alignItems: "center",
             gap: "8px",
-            padding: "6px 16px",
-            marginBottom: "16px",
+            padding: "8px 16px",
+            marginBottom: "20px",
+            boxShadow: "4px 4px 0px #000",
           }}
         >
-          <span style={{ fontSize: "18px" }}>👋</span>
-          <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "14px" }}>
+          <span style={{ fontSize: "20px" }}>👋</span>
+          <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "14px", textTransform: "uppercase", letterSpacing: "1px" }}>
             Selamat Datang
           </span>
         </div>
-        <h1 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", margin: "0 0 8px" }}>
-          Masuk ke CollaboLab
+        <h1 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "36px", margin: "0 0 12px", lineHeight: 1.1 }}>
+          Masuk ke <br />CollaboLab
         </h1>
-        <p style={{ color: "#3D3D3D", fontSize: "15px", margin: 0 }}>
-          Tim-mu menunggu kamu! 🤝
+        <p style={{ color: "#3D3D3D", fontSize: "17px", fontWeight: 500 }}>
+          Tim impianmu sedang menunggumu! 🤝
         </p>
       </div>
 
       {isVerified && (
         <div
           style={{
-            background: "#E6FFF5",
-            border: "2px solid #00D37F",
-            borderRadius: "6px",
-            padding: "12px 16px",
-            marginBottom: "20px",
-            color: "#00A060",
-            fontWeight: 600,
+            background: "#00D37F",
+            border: "2px solid #000",
+            borderRadius: "8px",
+            padding: "14px 20px",
+            marginBottom: "24px",
+            color: "#000",
+            fontWeight: 700,
             fontSize: "14px",
+            boxShadow: "4px 4px 0px #000",
           }}
         >
           ✅ Email berhasil diverifikasi! Silakan masuk.

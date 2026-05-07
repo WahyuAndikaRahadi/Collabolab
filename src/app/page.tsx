@@ -6,6 +6,7 @@ import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
 import { ExplorePreview } from "@/components/landing/ExplorePreview";
 import { MarqueeSection } from "@/components/landing/MarqueeSection";
 import { TrustSection } from "@/components/landing/TrustSection";
+import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { CtaFooterSection } from "@/components/landing/CtaFooterSection";
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default function HomePage() {
         <ExplorePreview />
         <MarqueeSection />
         <TrustSection />
+        <TestimonialsSection />
         <CtaFooterSection />
       </main>
     </>

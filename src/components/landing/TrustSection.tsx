@@ -145,10 +145,10 @@ export function TrustSection() {
             transition={{ duration: 0.5, delay: 0.1 }}
             id="anonymous-mode-card"
             style={{
-              background: "#000",
-              border: "3px solid #FFE500",
-              borderRadius: "12px",
-              boxShadow: "0px 0px 20px rgba(255, 229, 0, 0.3), 8px 8px 0px #000",
+              background: "#fff",
+              border: "3px solid #000",
+              borderRadius: "8px",
+              boxShadow: "6px 6px 0px #000",
               padding: "40px",
               position: "relative",
               overflow: "hidden",
@@ -162,9 +162,10 @@ export function TrustSection() {
                 right: "20px",
                 width: "60px",
                 height: "60px",
-                background: "#FFE500",
-                border: "2px solid #FFE500",
+                background: "#0047FF",
+                border: "2px solid #000",
                 transform: "rotate(45deg)",
+                opacity: 0.2,
               }}
             />
 
@@ -182,12 +183,12 @@ export function TrustSection() {
                 fontWeight: 900,
                 fontSize: "24px",
                 marginBottom: "12px",
-                color: "#FFE500",
+                color: "#000",
               }}
             >
               Anonymous Ice-Breaker Mode
             </h3>
-            <p style={{ color: "#ccc", fontSize: "15px", lineHeight: 1.7, marginBottom: "32px" }}>
+            <p style={{ color: "#3D3D3D", fontSize: "15px", lineHeight: 1.7, marginBottom: "32px" }}>
               Introvert? Tidak masalah. Join project dengan username anonim —
               kenalan dulu, reveal identitas asli kapanpun kamu siap.
             </p>
@@ -213,8 +214,8 @@ export function TrustSection() {
                       width: "32px",
                       height: "32px",
                       borderRadius: "50%",
-                      background: msg.revealed ? "#00D37F" : msg.you ? "#FFE500" : "#333",
-                      border: "2px solid #555",
+                      background: msg.revealed ? "#00D37F" : msg.you ? "#FFE500" : "#F5F0E8",
+                      border: "2px solid #000",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -225,22 +226,23 @@ export function TrustSection() {
                     {msg.revealed ? "😊" : msg.you ? "😎" : "👤"}
                   </div>
                   <div>
-                    <div style={{ fontSize: "10px", color: "#999", marginBottom: "3px", textAlign: msg.you ? "right" : "left" }}>
+                    <div style={{ fontSize: "10px", color: "#666", marginBottom: "3px", textAlign: msg.you ? "right" : "left" }}>
                       {msg.name}
                     </div>
                     <div
                       style={{
-                        background: msg.you ? "#FFE500" : msg.revealed ? "#00D37F" : "#222",
-                        color: msg.you ? "#000" : msg.revealed ? "#000" : "#fff",
-                        border: "1.5px solid #555",
+                        background: msg.you ? "#FFE500" : msg.revealed ? "#00D37F" : "#fff",
+                        color: "#000",
+                        border: "2px solid #000",
                         borderRadius: msg.you ? "12px 12px 2px 12px" : "12px 12px 12px 2px",
                         padding: "8px 14px",
                         fontSize: "13px",
                         maxWidth: "220px",
+                        boxShadow: "2px 2px 0px #000",
                       }}
                     >
                       {msg.revealed && (
-                        <span style={{ fontSize: "10px", display: "block", marginBottom: "3px", fontWeight: 700 }}>
+                        <span style={{ fontSize: "10px", display: "block", marginBottom: "3px", fontWeight: 800 }}>
                           ✨ Identitas terungkap!
                         </span>
                       )}

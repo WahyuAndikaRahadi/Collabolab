@@ -28,6 +28,7 @@ export function Navbar() {
           { href: "#how-it-works", label: "How It Works" },
           { href: "#explore-preview", label: "Explore" },
           { href: "#trust", label: "Trust System" },
+          { href: "#testimonials", label: "Testimonials" },
         ]
       : [
           { href: "/", label: "Home" },
@@ -66,9 +67,12 @@ export function Navbar() {
     // Hash change listener
     const handleHashChange = () => setActiveHash(window.location.hash);
     
-    // Clear active state when at the top (Hero section)
+    // Clear active state when at the top (Hero) or bottom (Footer)
     const handleScroll = () => {
-      if (window.scrollY < 100) {
+      const isAtTop = window.scrollY < 100;
+      const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100;
+      
+      if (isAtTop || isAtBottom) {
         setActiveHash("");
       }
     };

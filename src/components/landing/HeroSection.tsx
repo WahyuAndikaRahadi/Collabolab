@@ -219,25 +219,29 @@ export function HeroSection() {
             <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
               {/* Avatar stack */}
               <div style={{ display: "flex", alignItems: "center" }}>
-                {["🧑‍💻", "👩‍🎨", "🧑‍🔬", "👨‍💼"].map((emoji, i) => (
+                {["Felix", "Aneka", "Adrian", "Bernard"].map((seed, i) => (
                   <div
                     key={i}
                     style={{
-                      width: "36px",
-                      height: "36px",
+                      width: "40px",
+                      height: "40px",
                       borderRadius: "50%",
                       border: "2px solid #000",
                       background: ["#FFE500", "#00D37F", "#0047FF", "#FF4D4D"][i],
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "16px",
-                      marginLeft: i === 0 ? 0 : "-10px",
+                      marginLeft: i === 0 ? 0 : "-12px",
                       zIndex: 4 - i,
                       position: "relative",
+                      overflow: "hidden",
                     }}
                   >
-                    {emoji}
+                    <img
+                      src={`https://api.dicebear.com/7.x/notionists/svg?seed=${seed}`}
+                      alt="Avatar"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
                   </div>
                 ))}
               </div>
@@ -249,40 +253,6 @@ export function HeroSection() {
                   dari berbagai universitas Indonesia 🇮🇩
                 </p>
               </div>
-            </div>
-
-            {/* SDG Badges */}
-            <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
-              <span
-                style={{
-                  background: "#A21942",
-                  color: "#fff",
-                  border: "2px solid #000",
-                  borderRadius: "4px",
-                  padding: "6px 12px",
-                  fontFamily: "Space Grotesk, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "12px",
-                  boxShadow: "3px 3px 0px #000",
-                }}
-              >
-                SDG 8
-              </span>
-              <span
-                style={{
-                  background: "#FD6925",
-                  color: "#fff",
-                  border: "2px solid #000",
-                  borderRadius: "4px",
-                  padding: "6px 12px",
-                  fontFamily: "Space Grotesk, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "12px",
-                  boxShadow: "3px 3px 0px #000",
-                }}
-              >
-                SDG 9
-              </span>
             </div>
           </motion.div>
         </div>

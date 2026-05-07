@@ -8,7 +8,6 @@ export function MarqueeSection() {
     "BUILD TOGETHER",
     "TRUST SCORE",
     "GEN-Z TECHPRENEUR",
-    "SDG 8 & 9",
     "ANONYMOUS MODE",
     "REAL-TIME COLLAB",
   ];

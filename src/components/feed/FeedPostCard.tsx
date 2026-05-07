@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import { id } from "date-fns/locale";
 import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
@@ -39,10 +40,16 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
     return "#00D37F"; // Green
   };
 
-  const renderContentWithHashtags = (text: string) => {
+  // Renders text with @[Name] mentions (green) and #tags (blue) highlighted
+  const renderContent = (text: string) => {
     if (!text) return null;
-    const parts = text.split(/(#\w+)/g);
+    // Split on @[Name] and #word patterns
+    const parts = text.split(/(@\[[^\]]+\]|#\w+)/g);
     return parts.map((part, i) => {
+      if (part.startsWith("@[") && part.endsWith("]")) {
+        const name = part.slice(2, -1);
+        return <span key={i} style={{ color: "#00D37F", fontWeight: 800 }}>@{name}</span>;
+      }
       if (part.startsWith("#")) {
         return <span key={i} style={{ color: "#0047FF", fontWeight: 800 }}>{part}</span>;
       }
@@ -51,14 +58,19 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
   };
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      whileHover={{ y: -4, boxShadow: "8px 8px 0px #000000" }}
       style={{
         background: "#FFFFFF",
-        border: "2px solid #000000",
-        boxShadow: "4px 4px 0px #000000",
+        border: "3px solid #000000",
+        boxShadow: "5px 5px 0px #000000",
         borderRadius: "8px",
-        marginBottom: "24px",
+        marginBottom: "28px",
         overflow: "hidden",
+        transition: "box-shadow 0.2s, transform 0.2s",
       }}
     >
       {/* Header */}
@@ -95,7 +107,7 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
         {isContribution ? (
           <>
             <p style={{ fontSize: "15px", lineHeight: 1.6, marginBottom: "12px", whiteSpace: "pre-wrap" }}>
-              {renderContentWithHashtags(post.content)}
+              {renderContent(post.content)}
             </p>
             {post.mediaUrl && (
               <div style={{ border: "2px solid #000", borderRadius: "4px", overflow: "hidden", marginBottom: "12px" }}>
@@ -120,7 +132,7 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
             <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "18px", marginBottom: "8px" }}>{post.eventName}</h3>
             {post.content && (
               <p style={{ fontSize: "14px", color: "#444", marginBottom: "12px", whiteSpace: "pre-wrap" }}>
-                {renderContentWithHashtags(post.content)}
+                {renderContent(post.content)}
               </p>
             )}
             
@@ -192,9 +204,18 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
         </div>
       </div>
 
-      {showComments && (
-        <FeedCommentSection postId={post.id} currentUserId={currentUserId} />
-      )}
-    </div>
+      <AnimatePresence>
+        {showComments && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            style={{ overflow: "hidden" }}
+          >
+            <FeedCommentSection postId={post.id} currentUserId={currentUserId} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

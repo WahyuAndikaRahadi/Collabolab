@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { motion } from "framer-motion";
 import { FeedPostCard } from "./FeedPostCard";
 import { CreatePostBox } from "./CreatePostBox";
 
@@ -63,14 +64,22 @@ export function FeedPage({ user }: Props) {
       alignItems: "start"
     }}>
       {/* Left Sidebar */}
-      <div style={{ position: "sticky", top: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
-        <button
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4 }}
+        style={{ position: "sticky", top: "24px", display: "flex", flexDirection: "column", gap: "16px" }}
+      >
+        {/* Home Button */}
+        <motion.button
           onClick={() => setFilter({})}
+          whileHover={{ x: 3, boxShadow: "4px 4px 0px #000" }}
+          whileTap={{ scale: 0.97 }}
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "12px",
-            background: Object.keys(filter).length === 0 ? "#E6F0FF" : "#F5F0E8",
+            gap: "10px",
+            background: Object.keys(filter).length === 0 ? "#FFE500" : "#F5F0E8",
             border: "2px solid #000",
             borderRadius: "8px",
             padding: "12px 16px",
@@ -78,59 +87,151 @@ export function FeedPage({ user }: Props) {
             fontSize: "15px",
             fontFamily: "Space Grotesk, sans-serif",
             cursor: "pointer",
-            boxShadow: "2px 2px 0px #000",
-            textAlign: "left"
+            boxShadow: Object.keys(filter).length === 0 ? "4px 4px 0px #000" : "2px 2px 0px #000",
+            textAlign: "left",
+            transition: "all 0.15s"
           }}
         >
-          <span style={{ fontSize: "18px" }}>🏠</span> Home
-        </button>
+          <span style={{ fontSize: "18px" }}>🏠</span> Semua Post
+        </motion.button>
 
+        {/* Type Filters */}
         <div>
-          <div style={{ fontSize: "12px", fontWeight: 900, color: "#666", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px", marginLeft: "4px" }}>BIDANG & TAG</div>
-          
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>TIPE POST</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {[
-              { label: "Contribution", value: { type: "CONTRIBUTION" } },
-              { label: "Event", value: { type: "EVENT" } },
-              { label: "React", value: { tag: "React" } },
-              { label: "UI/UX", value: { tag: "UIUX" } },
-              { label: "Data Science", value: { tag: "DataScience" } },
-              { label: "Startup", value: { tag: "Startup" } },
-              { label: "Marketing", value: { tag: "Marketing" } },
-              { label: "SDG 8", value: { sdg: "SDG8" } },
-              { label: "SDG 9", value: { sdg: "SDG9" } },
-            ].map((f) => {
+              { label: "📢 Contribution", value: { type: "CONTRIBUTION" }, color: "#0047FF", bg: "#E6F0FF" },
+              { label: "🏆 Event", value: { type: "EVENT" }, color: "#FF4D4D", bg: "#FFE8E8" },
+            ].map((f, i) => {
               const isActive = JSON.stringify(filter) === JSON.stringify(f.value);
               return (
-                <button
+                <motion.button
                   key={f.label}
                   onClick={() => setFilter(f.value)}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  whileHover={{ x: 4, boxShadow: `3px 3px 0px ${f.color}` }}
+                  whileTap={{ scale: 0.97 }}
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "12px",
-                    padding: "8px 12px",
-                    background: "transparent",
-                    color: isActive ? "#0047FF" : "#444",
-                    border: "none",
-                    fontWeight: isActive ? 900 : 700,
-                    fontSize: "14px",
+                    gap: "8px",
+                    padding: "9px 12px",
+                    background: isActive ? f.bg : "#fff",
+                    color: isActive ? f.color : "#444",
+                    border: `2px solid ${isActive ? f.color : "#ddd"}`,
+                    fontWeight: 800,
+                    fontSize: "13px",
                     cursor: "pointer",
                     textAlign: "left",
-                    borderRadius: "6px",
-                    transition: "all 0.1s",
-                    ...(isActive ? { background: "#E6F0FF" } : {})
+                    borderRadius: "8px",
+                    boxShadow: isActive ? `3px 3px 0px ${f.color}` : "none",
+                    fontFamily: "inherit",
+                    transition: "all 0.15s"
                   }}
-                  onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = "#F5F0E8"; }}
-                  onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
                 >
-                  <span style={{ color: "#999", fontWeight: 800 }}>#</span> {f.label}
-                </button>
+                  {f.label}
+                </motion.button>
               );
             })}
           </div>
         </div>
-      </div>
+
+        {/* Tag Filters */}
+        <div>
+          <div style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>BIDANG & TAG</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            {[
+              { label: "React", value: { tag: "React" }, color: "#61DAFB", bg: "#E8FAFE", emoji: "⚛️" },
+              { label: "UI/UX", value: { tag: "UIUX" }, color: "#FF6B6B", bg: "#FFE8E8", emoji: "🎨" },
+              { label: "Data Science", value: { tag: "DataScience" }, color: "#9B59B6", bg: "#F3E8FF", emoji: "📊" },
+              { label: "Web Dev", value: { tag: "WebDev" }, color: "#E67E22", bg: "#FFF3E0", emoji: "🌐" },
+              { label: "Startup", value: { tag: "Startup" }, color: "#00D37F", bg: "#E0FFF4", emoji: "🚀" },
+              { label: "Marketing", value: { tag: "Marketing" }, color: "#FF4D8D", bg: "#FFE8F2", emoji: "📣" },
+              { label: "Design", value: { tag: "Design" }, color: "#F39C12", bg: "#FFF8E0", emoji: "✏️" },
+            ].map((f, i) => {
+              const isActive = JSON.stringify(filter) === JSON.stringify(f.value);
+              return (
+                <motion.button
+                  key={f.label}
+                  onClick={() => setFilter(f.value)}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 + i * 0.04 }}
+                  whileHover={{ x: 4, boxShadow: `3px 3px 0px ${f.color}` }}
+                  whileTap={{ scale: 0.97 }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "8px 12px",
+                    background: isActive ? f.bg : "#fff",
+                    color: isActive ? f.color : "#555",
+                    border: `2px solid ${isActive ? f.color : "#e8e8e8"}`,
+                    fontWeight: 800,
+                    fontSize: "13px",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    borderRadius: "8px",
+                    boxShadow: isActive ? `3px 3px 0px ${f.color}` : "none",
+                    fontFamily: "inherit",
+                    transition: "all 0.15s"
+                  }}
+                >
+                  <span style={{ fontSize: "14px" }}>{f.emoji}</span>
+                  {f.label}
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* SDG Tags */}
+        <div>
+          <div style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>SDG GOALS</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            {[
+              { label: "SDG 8: Decent Work", value: { sdg: "SDG8" }, color: "#A21942", bg: "#FFE8EE", emoji: "💼" },
+              { label: "SDG 9: Innovation", value: { sdg: "SDG9" }, color: "#FD6925", bg: "#FFF0E8", emoji: "🏗️" },
+              { label: "SDG 12: Responsible", value: { sdg: "SDG12" }, color: "#BF8B2E", bg: "#FFF9E0", emoji: "♻️" },
+            ].map((f, i) => {
+              const isActive = JSON.stringify(filter) === JSON.stringify(f.value);
+              return (
+                <motion.button
+                  key={f.label}
+                  onClick={() => setFilter(f.value)}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.38 + i * 0.04 }}
+                  whileHover={{ x: 4, boxShadow: `3px 3px 0px ${f.color}` }}
+                  whileTap={{ scale: 0.97 }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "8px 12px",
+                    background: isActive ? f.bg : "#fff",
+                    color: isActive ? f.color : "#555",
+                    border: `2px solid ${isActive ? f.color : "#e8e8e8"}`,
+                    fontWeight: 800,
+                    fontSize: "12px",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    borderRadius: "8px",
+                    boxShadow: isActive ? `3px 3px 0px ${f.color}` : "none",
+                    fontFamily: "inherit",
+                    transition: "all 0.15s"
+                  }}
+                >
+                  <span style={{ fontSize: "13px" }}>{f.emoji}</span>
+                  {f.label}
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+      </motion.div>
 
       {/* Main Feed Content */}
       <div style={{ display: "flex", flexDirection: "column" }}>

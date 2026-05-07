@@ -20,7 +20,7 @@ export function ContributionPostForm({ isOpen, onClose, onSuccess }: Props) {
 
   useEffect(() => {
     if (isOpen) {
-      fetch("/api/users/me/projects?status=IN_PROGRESS")
+      fetch("/api/users/me/projects")
         .then(r => r.json())
         .then(data => {
           if (Array.isArray(data)) setProjects(data);

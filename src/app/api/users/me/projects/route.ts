@@ -10,25 +10,20 @@ export async function GET(req: NextRequest) {
   const status = searchParams.get("status");
 
   try {
-    const memberships = await prisma.projectMember.findMany({
+    const projects = await prisma.project.findMany({
       where: {
-        userId: session.user.id,
-        project: {
-          ...(status ? { status: status as any } : {}),
-        }
+        OR: [
+          { ownerId: session.user.id },
+          { members: { some: { userId: session.user.id } } }
+        ],
+        ...(status ? { status: status as any } : {}),
       },
-      include: {
-        project: {
-          select: {
-            id: true,
-            title: true,
-            status: true,
-          }
-        }
+      select: {
+        id: true,
+        title: true,
+        status: true,
       }
     });
-
-    const projects = memberships.map(m => m.project);
 
     return NextResponse.json(projects);
   } catch (error) {

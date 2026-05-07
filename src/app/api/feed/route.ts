@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { pusherServer, CHANNELS, EVENTS } from "@/lib/pusher";
 import { FeedPostType, SDGTag } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
@@ -80,10 +81,35 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { type } = body;
+    const { type, mentions = [] } = body;
     
     // Extract hashtags from content
     const tags = body.content ? (body.content.match(/#\w+/g)?.map((t: string) => t.slice(1)) || []) : [];
+
+    // Helper: send mention notifications
+    const sendMentionNotifications = async (postId: string, authorName: string, postType: string) => {
+      for (const userId of mentions as string[]) {
+        if (userId === session.user.id) continue;
+        try {
+          await prisma.notification.create({
+            data: {
+              userId,
+              title: "🏷️ Kamu di-mention",
+              message: `${authorName} menyebutmu dalam sebuah ${postType === "EVENT" ? "info event" : "post kontribusi"}.`,
+              type: "MENTION",
+              link: `/feed?post=${postId}`,
+            },
+          });
+          await pusherServer.trigger(
+            CHANNELS.user(userId),
+            EVENTS.NEW_NOTIFICATION,
+            { type: "MENTION" }
+          );
+        } catch (err) {
+          console.error("Mention notify error", err);
+        }
+      }
+    };
 
     if (type === "CONTRIBUTION") {
       const { content, mediaUrl, sdgTag, impactTag, projectId } = body;
@@ -99,13 +125,6 @@ export async function POST(req: NextRequest) {
         },
         include: { project: true },
       });
-
-      if (!member || member.project.status !== "IN_PROGRESS") {
-        return NextResponse.json(
-          { error: "Kamu harus menjadi anggota di project yang sedang IN PROGRESS" },
-          { status: 403 }
-        );
-      }
 
       // Check daily limit (max 2)
       const startOfDay = new Date();
@@ -138,6 +157,8 @@ export async function POST(req: NextRequest) {
           tags,
         },
       });
+
+      await sendMentionNotifications(post.id, session.user.name || "Someone", "CONTRIBUTION");
 
       return NextResponse.json(post);
     } 
@@ -187,6 +208,8 @@ export async function POST(req: NextRequest) {
           tags,
         },
       });
+
+      await sendMentionNotifications(post.id, session.user.name || "Someone", "EVENT");
 
       return NextResponse.json(post);
     }

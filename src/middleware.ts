@@ -50,5 +50,13 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$).*)"],
+  matcher: [
+    "/dashboard/:path*",
+    "/project/:path*",
+    "/profile/:path*",
+    "/settings/:path*",
+    "/onboarding/:path*",
+    "/login",
+    "/register",
+  ],
 };

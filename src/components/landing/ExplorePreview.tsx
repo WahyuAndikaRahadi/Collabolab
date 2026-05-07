@@ -100,6 +100,7 @@ function CommitmentBadge({ level }: { level: CommitmentLevel }) {
 export function ExplorePreview() {
   return (
     <section
+      id="explore-preview"
       style={{
         background: "#fff",
         borderBottom: "3px solid #000",
@@ -113,14 +114,28 @@ export function ExplorePreview() {
             style={{
               fontFamily: "Space Grotesk, sans-serif",
               fontWeight: 900,
-              fontSize: "clamp(28px, 4vw, 48px)",
+              fontSize: "clamp(32px, 5vw, 56px)",
               marginTop: "8px",
+              lineHeight: 1.1,
             }}
           >
-            Project yang lagi cari anggota
+            Project yang lagi{" "}
+            <span
+              style={{
+                background: "#FF4D4D",
+                color: "#fff",
+                padding: "0 12px",
+                transform: "rotate(-1deg)",
+                display: "inline-block",
+                border: "3px solid #000",
+              }}
+            >
+              hot
+            </span>{" "}
+            cari anggota.
           </h2>
-          <p style={{ color: "#3D3D3D", fontSize: "16px", marginTop: "8px" }}>
-            Ini baru sebagian kecil. Login untuk lihat semua + skill match kamu.
+          <p style={{ color: "#3D3D3D", fontSize: "18px", marginTop: "16px", maxWidth: "600px", margin: "16px auto 0" }}>
+            Ini baru sebagian kecil. Login untuk melihat persentase <strong>Skill Match</strong> kamu dan mulai apply.
           </p>
         </div>
 
@@ -142,24 +157,46 @@ export function ExplorePreview() {
                 id={`preview-card-${index + 1}`}
                 style={{
                   background: "#fff",
-                  border: "2px solid #000",
+                  border: "3px solid #000",
                   borderRadius: "8px",
-                  boxShadow: "4px 4px 0px #000",
+                  boxShadow: "6px 6px 0px #000",
                   padding: "24px",
                   display: "flex",
                   flexDirection: "column",
                   gap: "16px",
                   transition: "all 0.15s ease",
+                  transform: `rotate(${index % 2 === 0 ? -0.5 : 0.5}deg)`,
                 }}
                 onMouseEnter={(e) => {
                   (e.currentTarget as HTMLDivElement).style.boxShadow = "2px 2px 0px #000";
-                  (e.currentTarget as HTMLDivElement).style.transform = "translate(2px, 2px)";
+                  (e.currentTarget as HTMLDivElement).style.transform = "translate(2px, 2px) rotate(0deg)";
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = "4px 4px 0px #000";
-                  (e.currentTarget as HTMLDivElement).style.transform = "translate(0, 0)";
+                  (e.currentTarget as HTMLDivElement).style.boxShadow = "6px 6px 0px #000";
+                  (e.currentTarget as HTMLDivElement).style.transform = `translate(0, 0) rotate(${index % 2 === 0 ? -0.5 : 0.5}deg)`;
                 }}
               >
+                {index === 0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "-12px",
+                      left: "-12px",
+                      background: "#FFE500",
+                      border: "2px solid #000",
+                      padding: "4px 10px",
+                      fontFamily: "Space Grotesk, sans-serif",
+                      fontWeight: 900,
+                      fontSize: "12px",
+                      transform: "rotate(-10deg)",
+                      boxShadow: "3px 3px 0px #000",
+                      zIndex: 10,
+                    }}
+                  >
+                    🔥 TOP RESULT
+                  </div>
+                )}
+
                 {/* Top row */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span

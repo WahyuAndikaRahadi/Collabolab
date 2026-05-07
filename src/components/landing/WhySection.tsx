@@ -12,7 +12,7 @@ const painPoints = [
     id: "why-card-team",
   },
   {
-    icon: "🙈",
+    icon: "🫣",
     problem: "Susah mulai kenalan online?",
     solution:
       "Anonymous Ice-Breaker Mode: bergabung dulu dengan nama anonim, reveal kapan kamu siap.",
@@ -32,10 +32,13 @@ const painPoints = [
 export function WhySection() {
   return (
     <section
+      id="why"
       style={{
         background: "#fff",
+        backgroundImage: "radial-gradient(#eee 2px, transparent 2px)",
+        backgroundSize: "32px 32px",
         borderBottom: "3px solid #000",
-        padding: "80px 24px",
+        padding: "100px 24px",
       }}
     >
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
@@ -78,11 +81,13 @@ export function WhySection() {
                 overflow: "hidden",
                 transition: "all 0.15s ease",
                 cursor: "default",
+                transform: `rotate(${index === 0 ? -1.5 : index === 1 ? 1.2 : -0.8}deg)`,
               }}
               whileHover={{
                 y: 4,
                 x: 4,
                 boxShadow: "2px 2px 0px #000",
+                rotate: 0,
               }}
             >
               {/* Top accent bar */}
@@ -141,6 +146,23 @@ export function WhySection() {
               >
                 {item.solution}
               </p>
+              {/* Sticker badge */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "12px",
+                  right: "12px",
+                  background: "#000",
+                  color: "#fff",
+                  fontSize: "10px",
+                  fontWeight: 900,
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  transform: "rotate(-5deg)",
+                  border: "1.5px solid #000",
+                }}
+              >
+              </div>
             </motion.div>
           ))}
         </div>

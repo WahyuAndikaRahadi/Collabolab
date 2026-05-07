@@ -7,6 +7,8 @@ import Credentials from "next-auth/providers/credentials";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  basePath: "/api/auth",
+  trustHost: true,
   adapter: PrismaAdapter(prisma),
   providers: [
     ...authConfig.providers.filter((p) => p.id !== "credentials"),

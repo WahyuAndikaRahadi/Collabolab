@@ -16,6 +16,10 @@ export default {
       authorize: async () => null,
     }),
   ],
+  secret: process.env.AUTH_SECRET,
+  trustHost: true,
+  debug: process.env.NODE_ENV === "development",
+  basePath: "/api/auth",
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (user) {

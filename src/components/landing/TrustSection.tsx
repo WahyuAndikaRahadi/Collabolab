@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 export function TrustSection() {
   return (
     <section
+      id="trust"
       style={{
         background: "#F5F0E8",
         borderBottom: "3px solid #000",
@@ -45,21 +46,27 @@ export function TrustSection() {
             }}
           >
             {/* Decoration */}
-            <div
+            <motion.div
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
               style={{
                 position: "absolute",
-                top: "-20px",
-                right: "-20px",
-                width: "100px",
-                height: "100px",
-                background: "#FFE500",
-                border: "2px solid #000",
+                top: "-40px",
+                right: "-40px",
+                width: "120px",
+                height: "120px",
+                border: "2px dashed #000",
                 borderRadius: "50%",
-                boxShadow: "3px 3px 0px #000",
               }}
             />
 
-            <div style={{ fontSize: "48px", marginBottom: "16px" }}>🏅</div>
+            <motion.div
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              style={{ fontSize: "56px", marginBottom: "16px" }}
+            >
+              🛡️
+            </motion.div>
 
             <h3
               style={{
@@ -139,9 +146,9 @@ export function TrustSection() {
             id="anonymous-mode-card"
             style={{
               background: "#000",
-              border: "3px solid #000",
-              borderRadius: "8px",
-              boxShadow: "6px 6px 0px #FFE500",
+              border: "3px solid #FFE500",
+              borderRadius: "12px",
+              boxShadow: "0px 0px 20px rgba(255, 229, 0, 0.3), 8px 8px 0px #000",
               padding: "40px",
               position: "relative",
               overflow: "hidden",
@@ -161,7 +168,13 @@ export function TrustSection() {
               }}
             />
 
-            <div style={{ fontSize: "48px", marginBottom: "16px" }}>🕵️</div>
+            <motion.div
+              animate={{ y: [0, -10, 0], rotate: [0, -5, 5, 0] }}
+              transition={{ duration: 4, repeat: Infinity }}
+              style={{ fontSize: "48px", marginBottom: "16px" }}
+            >
+              🕵️
+            </motion.div>
 
             <h3
               style={{

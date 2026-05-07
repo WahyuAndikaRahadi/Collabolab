@@ -10,6 +10,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   isLoading?: boolean;
+  fullWidth?: boolean;
   asChild?: false;
   href?: undefined;
 }
@@ -20,6 +21,7 @@ interface LinkButtonProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 
   href: string;
   asChild?: true;
   isLoading?: boolean;
+  fullWidth?: boolean;
 }
 
 type Props = ButtonProps | LinkButtonProps;
@@ -38,8 +40,8 @@ const sizeClass: Record<ButtonSize, string> = {
   lg: "btn-lg",
 };
 
-export function Button({ variant = "primary", size = "md", isLoading, className = "", ...props }: ButtonProps) {
-  const cls = `${variantClass[variant]} ${sizeClass[size]} ${className} ${props.disabled || isLoading ? "opacity-60 cursor-not-allowed" : ""}`;
+export function Button({ variant = "primary", size = "md", isLoading, fullWidth, className = "", ...props }: ButtonProps) {
+  const cls = `${variantClass[variant]} ${sizeClass[size]} ${fullWidth ? "w-full" : ""} ${className} ${props.disabled || isLoading ? "opacity-60 cursor-not-allowed" : ""}`;
 
   return (
     <button
@@ -55,8 +57,8 @@ export function Button({ variant = "primary", size = "md", isLoading, className 
   );
 }
 
-export function LinkButton({ variant = "primary", size = "md", href, className = "", isLoading, ...props }: LinkButtonProps) {
-  const cls = `${variantClass[variant]} ${sizeClass[size]} ${className}`;
+export function LinkButton({ variant = "primary", size = "md", href, fullWidth, className = "", isLoading, ...props }: LinkButtonProps) {
+  const cls = `${variantClass[variant]} ${sizeClass[size]} ${fullWidth ? "w-full" : ""} ${className}`;
   return (
     <Link href={href} {...props} className={cls}>
       {props.children}

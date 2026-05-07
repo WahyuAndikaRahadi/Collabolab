@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { LinkButton } from "@/components/ui/Button";
 import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
 import { NotificationBell } from "@/components/ui/NotificationBell";
@@ -12,26 +13,86 @@ export function Navbar() {
   const { data: session } = useSession();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeHash, setActiveHash] = useState("");
 
-  const navLinks = [
-    { href: "/explore", label: "Explore" },
-    { href: "/feed", label: "Feed", requireAuth: true },
-    { href: "/dashboard", label: "Dashboard", requireAuth: true },
-    { href: "/project/create", label: "Buat Project", requireAuth: true },
-  ];
+  const navLinks = session?.user 
+    ? [
+        { href: "/dashboard", label: "Dashboard" },
+        { href: "/explore", label: "Explore" },
+        { href: "/feed", label: "Feed" },
+        { href: "/project/create", label: "Buat Project" },
+      ]
+    : pathname === "/" 
+      ? [
+          { href: "#why", label: "Problem" },
+          { href: "#how-it-works", label: "How It Works" },
+          { href: "#explore-preview", label: "Explore" },
+          { href: "#trust", label: "Trust System" },
+        ]
+      : [
+          { href: "/", label: "Home" },
+          { href: "/explore", label: "Explore" },
+        ];
 
-  const filteredLinks = navLinks.filter(
-    (l) => !l.requireAuth || !!session?.user
-  );
+  const filteredLinks = navLinks;
+
+  useEffect(() => {
+    // Scroll spy logic
+    const sections = navLinks
+      .filter(link => link.href.startsWith("#"))
+      .map(link => link.href.substring(1));
+
+    const observerOptions = {
+      root: null,
+      rootMargin: "-40% 0px -40% 0px",
+      threshold: 0
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setActiveHash(`#${entry.target.id}`);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    
+    sections.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    });
+
+    // Hash change listener
+    const handleHashChange = () => setActiveHash(window.location.hash);
+    
+    // Clear active state when at the top (Hero section)
+    const handleScroll = () => {
+      if (window.scrollY < 100) {
+        setActiveHash("");
+      }
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    window.addEventListener("scroll", handleScroll);
+    
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("hashchange", handleHashChange);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [navLinks]);
 
   return (
     <header
       style={{
         background: "#fff",
         borderBottom: "3px solid #000",
+        boxShadow: "0 4px 0px rgba(0,0,0,0.05)", // Subtle shadow for depth
         position: "sticky",
-        top: 0,
+        top: "0",
         zIndex: 100,
+        width: "100%",
       }}
     >
       <div
@@ -39,7 +100,7 @@ export function Navbar() {
           maxWidth: "1200px",
           margin: "0 auto",
           padding: "0 24px",
-          height: "64px",
+          height: "72px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -85,39 +146,37 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav style={{ display: "flex", alignItems: "center", gap: "8px" }} className="hidden md:flex">
-          {filteredLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              style={{
-                fontFamily: "Space Grotesk, sans-serif",
-                fontWeight: 600,
-                fontSize: "15px",
-                color: "#000",
-                textDecoration: "none",
-                padding: "6px 14px",
-                borderRadius: "4px",
-                background: pathname === link.href ? "#FFE500" : "transparent",
-                border: pathname === link.href ? "2px solid #000" : "2px solid transparent",
-                transition: "all 0.15s ease",
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
+        <nav className="hidden md:flex items-center gap-2">
+          {filteredLinks.map((link) => {
+            const isActive = link.href.startsWith("#") 
+              ? activeHash === link.href 
+              : pathname === link.href;
+            
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`nav-link ${isActive ? "active" : ""}`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Auth section */}
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        {/* Auth section */}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           {session?.user ? (
-            <>
-              <TrustScoreBadge
-                score={session.user.trustScore}
-                level={session.user.trustLevel}
-                variant="compact"
-                showScore
-              />
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="hidden sm:block">
+                <TrustScoreBadge
+                  score={session.user.trustScore}
+                  level={session.user.trustLevel}
+                  variant="compact"
+                  showScore
+                />
+              </div>
               <NotificationBell userId={session.user.id} />
               <Link
                 href={`/profile/${session.user.id}`}
@@ -146,6 +205,7 @@ export function Navbar() {
               </Link>
               <button
                 onClick={() => signOut({ callbackUrl: "/" })}
+                className="hidden md:block"
                 style={{
                   background: "transparent",
                   border: "2px solid #000",
@@ -155,22 +215,20 @@ export function Navbar() {
                   fontWeight: 700,
                   fontSize: "13px",
                   cursor: "pointer",
-                  transition: "all 0.15s ease",
                 }}
-                id="navbar-signout-btn"
               >
                 Keluar
               </button>
-            </>
+            </div>
           ) : (
-            <>
+            <div className="hidden md:flex items-center gap-3">
               <LinkButton href="/login" variant="secondary" size="sm">
                 Masuk
               </LinkButton>
               <LinkButton href="/register" variant="primary" size="sm">
                 Daftar Gratis
               </LinkButton>
-            </>
+            </div>
           )}
 
           {/* Mobile hamburger */}
@@ -179,13 +237,15 @@ export function Navbar() {
             id="navbar-menu-btn"
             className="md:hidden"
             style={{
-              background: "transparent",
+              background: menuOpen ? "#FFE500" : "transparent",
               border: "2px solid #000",
               borderRadius: "4px",
               padding: "6px 10px",
               cursor: "pointer",
               fontWeight: 900,
               fontSize: "18px",
+              transition: "all 0.15s ease",
+              boxShadow: menuOpen ? "2px 2px 0px #000" : "none",
             }}
             aria-label="Toggle menu"
           >
@@ -195,46 +255,73 @@ export function Navbar() {
       </div>
 
       {/* Mobile menu */}
-      {menuOpen && (
-        <div
-          style={{
-            borderTop: "2px solid #000",
-            background: "#F5F0E8",
-            padding: "16px 24px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "8px",
-          }}
-          className="md:hidden"
-        >
-          {filteredLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              style={{
-                fontFamily: "Space Grotesk, sans-serif",
-                fontWeight: 700,
-                fontSize: "16px",
-                color: "#000",
-                textDecoration: "none",
-                padding: "10px",
-                borderRadius: "4px",
-                background: pathname === link.href ? "#FFE500" : "transparent",
-                border: "2px solid transparent",
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
-          {session?.user && (
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px", borderTop: "1px solid #000", marginTop: "4px" }}>
-              <NotificationBell userId={session.user.id} />
-              <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px" }}>Notifikasi</span>
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "circOut" }}
+            style={{
+              borderTop: "2px solid #000",
+              background: "#FFFFFF",
+              overflow: "hidden",
+            }}
+            className="md:hidden"
+          >
+            <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+              {filteredLinks.map((link) => {
+                const isActive = link.href.startsWith("#") 
+                  ? activeHash === link.href 
+                  : pathname === link.href;
+                
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    className={`nav-link ${isActive ? "active" : ""}`}
+                    style={{ display: "block", textAlign: "left", fontSize: "18px" }}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+              
+              {!session?.user ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "12px", paddingTop: "12px", borderTop: "2px solid #000" }}>
+                  <LinkButton href="/login" variant="secondary" fullWidth onClick={() => setMenuOpen(false)}>
+                    Masuk
+                  </LinkButton>
+                  <LinkButton href="/register" variant="primary" fullWidth onClick={() => setMenuOpen(false)}>
+                    Daftar Gratis
+                  </LinkButton>
+                </div>
+              ) : (
+                <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "2px solid #000" }}>
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    style={{
+                      width: "100%",
+                      background: "#FF4D4D",
+                      color: "#fff",
+                      border: "2px solid #000",
+                      borderRadius: "6px",
+                      padding: "12px",
+                      fontFamily: "Space Grotesk, sans-serif",
+                      fontWeight: 800,
+                      cursor: "pointer",
+                      boxShadow: "3px 3px 0px #000",
+                    }}
+                  >
+                    Keluar Akun
+                  </button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

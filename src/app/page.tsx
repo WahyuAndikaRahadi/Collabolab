@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/landing/HeroSection";
 import { WhySection } from "@/components/landing/WhySection";
 import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
 import { ExplorePreview } from "@/components/landing/ExplorePreview";
+import { MarqueeSection } from "@/components/landing/MarqueeSection";
 import { TrustSection } from "@/components/landing/TrustSection";
 import { CtaFooterSection } from "@/components/landing/CtaFooterSection";
 
@@ -22,6 +23,7 @@ export default function HomePage() {
         <WhySection />
         <HowItWorksSection />
         <ExplorePreview />
+        <MarqueeSection />
         <TrustSection />
         <CtaFooterSection />
       </main>

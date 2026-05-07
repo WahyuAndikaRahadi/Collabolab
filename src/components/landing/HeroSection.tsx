@@ -8,10 +8,12 @@ export function HeroSection() {
     <section
       style={{
         background: "#F5F0E8",
+        backgroundImage: "radial-gradient(#000 1px, transparent 1px)",
+        backgroundSize: "24px 24px",
         borderBottom: "3px solid #000",
         position: "relative",
         overflow: "hidden",
-        minHeight: "calc(100vh - 64px)",
+        minHeight: "calc(100vh - 72px)",
         display: "flex",
         alignItems: "center",
       }}
@@ -19,7 +21,9 @@ export function HeroSection() {
       {/* Geometric decorations */}
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
         {/* Big yellow block top-right */}
-        <div
+        <motion.div
+          animate={{ y: [0, -15, 0], rotate: [15, 12, 15] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           style={{
             position: "absolute",
             top: "-40px",
@@ -28,12 +32,13 @@ export function HeroSection() {
             height: "280px",
             background: "#FFE500",
             border: "3px solid #000",
-            transform: "rotate(15deg)",
             boxShadow: "8px 8px 0px #000",
           }}
         />
         {/* Blue block bottom-left */}
-        <div
+        <motion.div
+          animate={{ y: [0, 20, 0], rotate: [-8, -12, -8] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
           style={{
             position: "absolute",
             bottom: "60px",
@@ -42,12 +47,13 @@ export function HeroSection() {
             height: "160px",
             background: "#0047FF",
             border: "3px solid #000",
-            transform: "rotate(-8deg)",
             boxShadow: "6px 6px 0px #000",
           }}
         />
         {/* Green circle bottom-right */}
-        <div
+        <motion.div
+          animate={{ scale: [1, 1.1, 1], x: [0, 10, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           style={{
             position: "absolute",
             bottom: "-30px",
@@ -61,7 +67,9 @@ export function HeroSection() {
           }}
         />
         {/* Small coral square */}
-        <div
+        <motion.div
+          animate={{ rotate: [20, 380] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
           style={{
             position: "absolute",
             top: "30%",
@@ -70,12 +78,13 @@ export function HeroSection() {
             height: "60px",
             background: "#FF4D4D",
             border: "3px solid #000",
-            transform: "rotate(20deg)",
             boxShadow: "3px 3px 0px #000",
           }}
         />
         {/* Dashed outline square top-left */}
-        <div
+        <motion.div
+          animate={{ x: [0, -20, 0], y: [0, 10, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           style={{
             position: "absolute",
             top: "60px",
@@ -102,6 +111,7 @@ export function HeroSection() {
             <div key={i} style={{ width: "6px", height: "6px", background: "#000", borderRadius: "50%" }} />
           ))}
         </div>
+
       </div>
 
       <div
@@ -113,14 +123,23 @@ export function HeroSection() {
           zIndex: 1,
         }}
       >
-        <div style={{ maxWidth: "680px" }}>
+        <div
+          style={{
+            maxWidth: "800px",
+            margin: "0 auto",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           {/* Label */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <span className="section-label">🏆 Team Galatea — Gen-Z TechPreneur</span>
+            <span className="section-label">Bangun Project Impianmu Sekarang</span>
           </motion.div>
 
           {/* Main heading */}
@@ -135,6 +154,7 @@ export function HeroSection() {
               lineHeight: 1.05,
               color: "#000",
               marginBottom: "24px",
+              marginTop: "16px",
             }}
           >
             Temukan Tim-mu.{" "}
@@ -144,6 +164,7 @@ export function HeroSection() {
                 borderBottom: "4px solid #000",
                 padding: "0 8px",
                 display: "inline-block",
+                transform: "rotate(-1deg)",
               }}
             >
               Build Together.
@@ -160,7 +181,7 @@ export function HeroSection() {
               color: "#3D3D3D",
               lineHeight: 1.7,
               marginBottom: "40px",
-              maxWidth: "520px",
+              maxWidth: "600px",
             }}
           >
             Platform kolaborasi untuk Gen-Z — temukan partner project, join lomba, dan bangun portofolio bersama.
@@ -172,7 +193,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}
+            style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}
           >
             <Link href="/register" className="btn-primary btn-lg" id="hero-cta-register">
               🚀 Mulai Gratis
@@ -182,7 +203,7 @@ export function HeroSection() {
             </Link>
           </motion.div>
 
-          {/* Social proof */}
+          {/* Social proof & SDG */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -190,56 +211,59 @@ export function HeroSection() {
             style={{
               marginTop: "48px",
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
-              gap: "16px",
-              flexWrap: "wrap",
+              gap: "24px",
             }}
           >
-            {/* Avatar stack */}
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {["🧑‍💻", "👩‍🎨", "🧑‍🔬", "👨‍💼"].map((emoji, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    borderRadius: "50%",
-                    border: "2px solid #000",
-                    background: ["#FFE500", "#00D37F", "#0047FF", "#FF4D4D"][i],
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "16px",
-                    marginLeft: i === 0 ? 0 : "-10px",
-                    zIndex: 4 - i,
-                    position: "relative",
-                  }}
-                >
-                  {emoji}
-                </div>
-              ))}
-            </div>
-            <div>
-              <p style={{ fontSize: "14px", fontWeight: 700, margin: 0 }}>
-                Ribuan Gen-Z sudah kolaborasi
-              </p>
-              <p style={{ fontSize: "12px", color: "#3D3D3D", margin: 0 }}>
-                dari berbagai universitas Indonesia 🇮🇩
-              </p>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
+              {/* Avatar stack */}
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {["🧑‍💻", "👩‍🎨", "🧑‍🔬", "👨‍💼"].map((emoji, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "50%",
+                      border: "2px solid #000",
+                      background: ["#FFE500", "#00D37F", "#0047FF", "#FF4D4D"][i],
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "16px",
+                      marginLeft: i === 0 ? 0 : "-10px",
+                      zIndex: 4 - i,
+                      position: "relative",
+                    }}
+                  >
+                    {emoji}
+                  </div>
+                ))}
+              </div>
+              <div style={{ textAlign: "left" }}>
+                <p style={{ fontSize: "14px", fontWeight: 700, margin: 0 }}>
+                  Ribuan Gen-Z sudah kolaborasi
+                </p>
+                <p style={{ fontSize: "12px", color: "#3D3D3D", margin: 0 }}>
+                  dari berbagai universitas Indonesia 🇮🇩
+                </p>
+              </div>
             </div>
 
             {/* SDG Badges */}
-            <div style={{ display: "flex", gap: "8px", marginLeft: "auto" }}>
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
               <span
                 style={{
                   background: "#A21942",
                   color: "#fff",
                   border: "2px solid #000",
                   borderRadius: "4px",
-                  padding: "4px 10px",
+                  padding: "6px 12px",
                   fontFamily: "Space Grotesk, sans-serif",
                   fontWeight: 700,
-                  fontSize: "11px",
+                  fontSize: "12px",
+                  boxShadow: "3px 3px 0px #000",
                 }}
               >
                 SDG 8
@@ -250,10 +274,11 @@ export function HeroSection() {
                   color: "#fff",
                   border: "2px solid #000",
                   borderRadius: "4px",
-                  padding: "4px 10px",
+                  padding: "6px 12px",
                   fontFamily: "Space Grotesk, sans-serif",
                   fontWeight: 700,
-                  fontSize: "11px",
+                  fontSize: "12px",
+                  boxShadow: "3px 3px 0px #000",
                 }}
               >
                 SDG 9

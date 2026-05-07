@@ -35,6 +35,7 @@ const steps = [
 export function HowItWorksSection() {
   return (
     <section
+      id="how-it-works"
       style={{
         background: "#F5F0E8",
         borderBottom: "3px solid #000",
@@ -58,9 +59,9 @@ export function HowItWorksSection() {
 
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "0",
+            display: "flex",
+            flexDirection: "column",
+            gap: "100px",
             position: "relative",
           }}
         >
@@ -68,103 +69,93 @@ export function HowItWorksSection() {
             <motion.div
               key={step.id}
               id={step.id}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: index * 0.15 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
               style={{
                 display: "flex",
-                flexDirection: "column",
-                padding: "40px 32px",
-                border: "3px solid #000",
-                borderRight: index < steps.length - 1 ? "3px solid #000" : "3px solid #000",
-                marginRight: index < steps.length - 1 ? "-3px" : 0,
-                background: "#fff",
+                flexDirection: index % 2 === 0 ? "row" : "row-reverse",
+                alignItems: "center",
+                gap: "40px",
                 position: "relative",
               }}
             >
-              {/* Big number */}
+              {/* Card */}
               <div
                 style={{
-                  fontFamily: "Space Grotesk, sans-serif",
-                  fontWeight: 900,
-                  fontSize: "80px",
-                  lineHeight: 1,
-                  color: step.color,
-                  WebkitTextStroke: "2px #000",
-                  marginBottom: "16px",
+                  flex: 1,
+                  background: "#fff",
+                  border: "3px solid #000",
+                  boxShadow: "8px 8px 0px #000",
+                  padding: "40px",
+                  borderRadius: "12px",
+                  position: "relative",
+                  zIndex: 2,
                 }}
               >
-                {step.number}
-              </div>
-
-              {/* Icon badge */}
-              <div
-                style={{
-                  width: "56px",
-                  height: "56px",
-                  background: step.color,
-                  border: "2px solid #000",
-                  borderRadius: "8px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "28px",
-                  marginBottom: "20px",
-                  boxShadow: "3px 3px 0px #000",
-                }}
-              >
-                {step.icon}
-              </div>
-
-              <h3
-                style={{
-                  fontFamily: "Space Grotesk, sans-serif",
-                  fontWeight: 800,
-                  fontSize: "20px",
-                  marginBottom: "12px",
-                }}
-              >
-                {step.title}
-              </h3>
-
-              <p
-                style={{
-                  color: "#3D3D3D",
-                  fontSize: "15px",
-                  lineHeight: 1.6,
-                  margin: 0,
-                }}
-              >
-                {step.description}
-              </p>
-
-              {/* Connector arrow */}
-              {index < steps.length - 1 && (
+                {/* Big overlapping number */}
                 <div
                   style={{
                     position: "absolute",
-                    right: "-24px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: "48px",
-                    height: "48px",
-                    background: "#FFE500",
-                    border: "2px solid #000",
-                    borderRadius: "50%",
+                    top: "-40px",
+                    right: "-30px",
+                    fontFamily: "Space Grotesk, sans-serif",
+                    fontWeight: 900,
+                    fontSize: "120px",
+                    lineHeight: 1,
+                    color: step.color,
+                    WebkitTextStroke: "3px #000",
+                    opacity: 0.8,
+                    zIndex: -1,
+                  }}
+                >
+                  {step.number}
+                </div>
+
+                <div
+                  style={{
+                    width: "64px",
+                    height: "64px",
+                    background: step.color,
+                    border: "3px solid #000",
+                    borderRadius: "8px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontWeight: 900,
-                    fontSize: "20px",
-                    zIndex: 10,
-                    boxShadow: "2px 2px 0px #000",
+                    fontSize: "32px",
+                    marginBottom: "24px",
+                    boxShadow: "4px 4px 0px #000",
                   }}
-                  className="hidden lg:flex"
                 >
-                  →
+                  {step.icon}
                 </div>
-              )}
+
+                <h3
+                  style={{
+                    fontFamily: "Space Grotesk, sans-serif",
+                    fontWeight: 900,
+                    fontSize: "28px",
+                    marginBottom: "16px",
+                  }}
+                >
+                  {step.title}
+                </h3>
+
+                <p
+                  style={{
+                    color: "#3D3D3D",
+                    fontSize: "17px",
+                    lineHeight: 1.6,
+                    margin: 0,
+                  }}
+                >
+                  {step.description}
+                </p>
+              </div>
+
+              {/* Spacer */}
+              <div className="hidden md:block" style={{ flex: 1 }} />
             </motion.div>
           ))}
         </div>

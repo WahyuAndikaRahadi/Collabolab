@@ -70,8 +70,8 @@ export async function POST(req: NextRequest) {
       include: { externalLinks: true }
     });
     
-    let finalScore = user.trustScore;
-    let finalLevel = user.trustLevel;
+    let finalScore = updatedUser?.trustScore || 20;
+    let finalLevel = updatedUser?.trustLevel || "NEWCOMER";
 
     if (updatedUser) {
       const result = refreshUserTrustScore(updatedUser);
@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ message: "Onboarding selesai!", trustScore: newScore });
+    return NextResponse.json({ message: "Onboarding selesai!", trustScore: finalScore });
   } catch (err) {
     console.error("[onboarding]", err);
     return NextResponse.json({ error: "Terjadi kesalahan server." }, { status: 500 });

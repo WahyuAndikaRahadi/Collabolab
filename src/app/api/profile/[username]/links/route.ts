@@ -10,8 +10,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
   const currentUserId = session?.user?.id;
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { name: username }, // Using name as username based on earlier schema check
+    const user = await prisma.user.findFirst({
+      where: { name: username },
       select: { id: true },
     });
 

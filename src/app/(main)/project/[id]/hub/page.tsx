@@ -138,6 +138,7 @@ export default async function CollabHubPage({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                overflow: "hidden",
                 fontSize: "13px",
                 fontWeight: 800,
                 color: "#000000",
@@ -146,7 +147,17 @@ export default async function CollabHubPage({
                 zIndex: project.members.length - i,
               }}
             >
-              {m.isAnonymous && !m.revealedAt ? "👤" : m.user.name[0]}
+              {m.isAnonymous && !m.revealedAt ? (
+                "👤"
+              ) : m.user.image ? (
+                <img
+                  src={m.user.image}
+                  alt={m.user.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                m.user.name[0]
+              )}
             </div>
           ))}
           {project.members.length > 6 && (

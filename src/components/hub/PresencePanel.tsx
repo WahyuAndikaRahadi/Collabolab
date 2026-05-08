@@ -95,10 +95,17 @@ export function PresencePanel({ projectId, members, currentUserId, onStatusChang
             background: isMe ? "#FFE500" : "#FFFFFF",
             border: `2px solid ${isOnline ? "#00D37F" : "#000000"}`,
             display: "flex", alignItems: "center", justifyContent: "center",
+            overflow: "hidden",
             fontSize: "12px", fontWeight: 800,
             color: "#000000",
           }}>
-            {m.isAnonymous && !m.revealedAt ? "👤" : name[0]}
+            {m.isAnonymous && !m.revealedAt ? (
+              "👤"
+            ) : m.user.image ? (
+              <img src={m.user.image} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              name[0]
+            )}
           </div>
           <div style={{
             position: "absolute", bottom: 0, right: 0,

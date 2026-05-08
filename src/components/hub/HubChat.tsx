@@ -201,17 +201,23 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
                 return (
                   <div key={msg.id} id={`hub-msg-${msg.id}`} style={{ display: "flex", flexDirection: isMe ? "row-reverse" : "row", gap: "10px", marginBottom: sameAuthor ? "2px" : "12px", alignItems: "flex-end" }}>
                     {/* Avatar */}
-                    {!sameAuthor && !isMe && (
+                    {!sameAuthor && (
                       <div style={{
                         width: "32px", height: "32px", borderRadius: "50%",
-                        background: "#F5F0E8", border: "2px solid #000000",
+                        background: isMe ? "#FFE500" : "#F5F0E8", border: "2px solid #000000",
                         display: "flex", alignItems: "center", justifyContent: "center",
-                        fontSize: "13px", fontWeight: 800, color: "#000000", flexShrink: 0,
+                        overflow: "hidden", flexShrink: 0,
                       }}>
-                        {msg.sender.isAnonymous ? "👤" : msg.sender.name[0]}
+                        {msg.sender.isAnonymous ? (
+                          <span style={{ fontSize: "13px", fontWeight: 800 }}>👤</span>
+                        ) : msg.sender.image ? (
+                          <img src={msg.sender.image} alt={msg.sender.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : (
+                          <span style={{ fontSize: "13px", fontWeight: 800 }}>{msg.sender.name[0]}</span>
+                        )}
                       </div>
                     )}
-                    {(sameAuthor || isMe) && !isMe && <div style={{ width: "32px", flexShrink: 0 }} />}
+                    {sameAuthor && <div style={{ width: "32px", flexShrink: 0 }} />}
 
                     <div style={{ maxWidth: "65%" }}>
                       {!sameAuthor && !isMe && (

@@ -17,6 +17,7 @@ type Props = {
   isOwner: boolean;
   projectTitle: string;
   unlockedRooms: Set<string>;
+  unreadStatus: Record<string, "message" | "mention" | null>;
 };
 
 const ROOM_ICON: Record<HubRoomDef["type"], string> = {
@@ -26,7 +27,7 @@ const ROOM_ICON: Record<HubRoomDef["type"], string> = {
   CUSTOM: "#",
 };
 
-export function RoomSidebar({ rooms, activeRoomId, onSelectRoom, onCreateRoom, isOwner, projectTitle, unlockedRooms }: Props) {
+export function RoomSidebar({ rooms, activeRoomId, onSelectRoom, onCreateRoom, isOwner, projectTitle, unlockedRooms, unreadStatus }: Props) {
   const defaultRooms = rooms.filter((r) => r.type !== "CUSTOM");
   const customRooms = rooms.filter((r) => r.type === "CUSTOM");
 
@@ -75,6 +76,28 @@ export function RoomSidebar({ rooms, activeRoomId, onSelectRoom, onCreateRoom, i
         </span>
         {locked && (
           <span style={{ fontSize: "12px", color: isActive ? "#000000" : "#3D3D3D", flexShrink: 0 }}>🔒</span>
+        )}
+        
+        {/* Notification Bubble */}
+        {!isActive && unreadStatus[room.id] && (
+          <div style={{
+            background: unreadStatus[room.id] === "mention" ? "#0047FF" : "#FF4D4D",
+            color: "#FFFFFF",
+            width: "20px",
+            height: "20px",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "10px",
+            fontWeight: 900,
+            border: "2px solid #000000",
+            boxShadow: "1px 1px 0px #000000",
+            flexShrink: 0,
+            animation: "bounce 0.5s infinite alternate",
+          }}>
+            {unreadStatus[room.id] === "mention" ? "@" : "!"}
+          </div>
         )}
       </button>
     );

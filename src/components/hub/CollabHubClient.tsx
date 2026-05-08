@@ -59,6 +59,7 @@ export function CollabHubClient({
   const [showCreateRoom, setShowCreateRoom] = useState(false);
   const [passwordRoom, setPasswordRoom] = useState<HubRoom | null>(null);
   const [onlineStatus, setOnlineStatus] = useState<{ [userId: string]: "online" | "away" | "offline" }>({});
+  const [unreadStatus, setUnreadStatus] = useState<Record<string, "message" | "mention" | null>>({});
 
   // Select initial room
   useEffect(() => {
@@ -91,6 +92,28 @@ export function CollabHubClient({
     };
   }, [initialProject.id]);
 
+  // Listen for room messages for notifications
+  useEffect(() => {
+    let pusher: ReturnType<typeof getPusherClient>;
+    try {
+      pusher = getPusherClient();
+      const channel = pusher.subscribe(CHANNELS.hub(initialProject.id));
+      channel.bind("room-message", (data: { roomId: string; mentions: string[] }) => {
+        // If not in this room, mark as unread
+        if (activeRoom?.id !== data.roomId) {
+          const isMention = data.mentions.includes(currentUserId) || data.mentions.includes("all");
+          setUnreadStatus((prev) => ({
+            ...prev,
+            [data.roomId]: isMention ? "mention" : "message",
+          }));
+        }
+      });
+    } catch {}
+    return () => {
+      try { pusher?.unsubscribe(CHANNELS.hub(initialProject.id)); } catch {}
+    };
+  }, [initialProject.id, activeRoom?.id, currentUserId]);
+
   function handleSelectRoom(room: HubRoom) {
     if (room.isPrivate && !unlockedRooms.has(room.id) && !isOwner) {
       setPasswordRoom(room);
@@ -98,6 +121,8 @@ export function CollabHubClient({
     }
     setActiveRoom(room);
     setCustomTab("chat");
+    // Clear unread status when entering a room
+    setUnreadStatus((prev) => ({ ...prev, [room.id]: null }));
   }
 
   function handlePasswordSuccess() {
@@ -130,6 +155,7 @@ export function CollabHubClient({
         isOwner={isOwner}
         projectTitle={initialProject.title}
         unlockedRooms={unlockedRooms}
+        unreadStatus={unreadStatus}
       />
 
       {/* ─── Center: Main Content ─── */}

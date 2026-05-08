@@ -116,6 +116,13 @@ export async function POST(req: NextRequest, { params }: Params) {
   // Broadcast to room channel
   try {
     await pusherServer.trigger(CHANNELS.hubRoom(roomId), EVENTS.HUB_MESSAGE, payload);
+    
+    // Also broadcast to project channel for sidebar notifications
+    await pusherServer.trigger(CHANNELS.hub(projectId), "room-message", {
+      roomId,
+      messageId: message.id,
+      mentions: payload.mentions,
+    });
   } catch {}
 
   // Send mention notifications

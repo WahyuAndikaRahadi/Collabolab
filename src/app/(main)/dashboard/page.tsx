@@ -472,7 +472,7 @@ export default async function DashboardPage() {
           >
             <p className="section-label">⚡ Aktivitas Terkini</p>
             <Link
-              href="/explore"
+              href="/project/my-projects"
               style={{
                 fontFamily: "Space Grotesk, sans-serif",
                 fontWeight: 700,

@@ -24,7 +24,7 @@ export function Navbar() {
         { href: "/explore", label: "Explore" },
         { href: "/feed", label: "Feed" },
         { href: "/ai-hub", label: "AI Hub" },
-        { href: "/project/create", label: "Buat Project" },
+        { href: "/project/my-projects", label: "My Projects" },
       ]
     : pathname === "/" 
       ? [

@@ -29,9 +29,17 @@ export default {
         token.availStatus = (user as any).availStatus ?? "OPEN";
         token.onboardingDone = (user as any).onboardingDone ?? false;
       }
-      // When session.update() is called from the client, refresh onboardingDone
-      if (trigger === "update" && session?.onboardingDone !== undefined) {
-        token.onboardingDone = session.onboardingDone;
+      // When session.update() is called from the client, refresh token fields
+      if (trigger === "update") {
+        if (session?.onboardingDone !== undefined) {
+          token.onboardingDone = session.onboardingDone;
+        }
+        if (session?.trustScore !== undefined) {
+          token.trustScore = session.trustScore;
+        }
+        if (session?.trustLevel !== undefined) {
+          token.trustLevel = session.trustLevel;
+        }
       }
       return token;
     },

@@ -77,15 +77,20 @@ export async function POST(req: NextRequest) {
       include: { externalLinks: true }
     });
 
+    let finalScore = 20;
+    let finalLevel = "NEWCOMER";
+
     if (updatedUser) {
       const { score, level } = refreshUserTrustScore(updatedUser);
+      finalScore = score;
+      finalLevel = level;
       await prisma.user.update({
         where: { id: session.user.id },
         data: { trustScore: score, trustLevel: level }
       });
     }
     
-    return NextResponse.json(link);
+    return NextResponse.json({ ...link, trustScore: finalScore, trustLevel: finalLevel });
   } catch (error) {
     console.error("POST /api/settings/links error:", error);
     return NextResponse.json({ error: "Failed to add link" }, { status: 500 });

@@ -43,15 +43,20 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       include: { externalLinks: true }
     });
 
+    let finalScore = 20;
+    let finalLevel = "NEWCOMER";
+
     if (updatedUser) {
       const { score, level } = refreshUserTrustScore(updatedUser);
+      finalScore = score;
+      finalLevel = level;
       await prisma.user.update({
         where: { id: session.user.id },
         data: { trustScore: score, trustLevel: level }
       });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, trustScore: finalScore, trustLevel: finalLevel });
   } catch (error) {
     return NextResponse.json({ error: "Failed to delete link" }, { status: 500 });
   }

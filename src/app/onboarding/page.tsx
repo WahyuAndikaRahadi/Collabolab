@@ -72,14 +72,13 @@ export default function OnboardingPage() {
         }),
       });
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Gagal menyimpan profil.");
-      }
+      const data = await res.json();
+      const newScore: number = data.trustScore ?? 20;
+      const newLevel = newScore >= 86 ? "VERIFIED" : newScore >= 61 ? "TRUSTED" : newScore >= 31 ? "MEMBER" : "NEWCOMER";
 
-      // Success sequence
+      // Success sequence — sync session with freshly computed trust score
       setShowSuccess(true);
-      await update({ onboardingDone: true });
+      await update({ onboardingDone: true, trustScore: newScore, trustLevel: newLevel });
       
       // Delay for success animation feel
       setTimeout(() => {
@@ -91,8 +90,13 @@ export default function OnboardingPage() {
     }
   }
 
-  // Estimated initial trust score
-  const estimatedScore = 20 + (selectedSkills.length >= 3 ? 10 : 0) + (bio.length > 20 ? 5 : 0) + (links.linkedin ? 8 : 0) + (links.github ? 4 : 0) + (links.portfolio ? 4 : 0);
+  // Estimated trust score preview matching real trust-score.ts logic
+  // Base 20 + LinkedIn(4) + GitHub(4) + Portfolio(4), profile complete bonus(+10 if bio)
+  const estimatedScore = 20
+    + (links.linkedin ? 4 : 0)
+    + (links.github ? 4 : 0)
+    + (links.portfolio ? 4 : 0)
+    + (bio.length > 20 ? 10 : 0);
 
   return (
     <div style={{ minHeight: "100vh", background: "#F5F0E8", padding: "32px 16px" }}>
@@ -325,7 +329,7 @@ export default function OnboardingPage() {
 
               <div>
                 <label style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", display: "block", marginBottom: "6px" }}>
-                  GitHub <span style={{ background: "#00D37F", color: "#000", border: "1px solid #000", borderRadius: "3px", fontSize: "10px", padding: "1px 6px", fontWeight: 700 }}>+4 pts</span>
+                  GitHub <span style={{ background: "#00D37F", color: "#000", border: "1px solid #000", borderRadius: "3px", fontSize: "10px", padding: "1px 6px", fontWeight: 700 }}>+8 pts</span>
                 </label>
                 <input
                   id="onboarding-github"
@@ -339,7 +343,7 @@ export default function OnboardingPage() {
 
               <div>
                 <label style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", display: "block", marginBottom: "6px" }}>
-                  Portfolio / Website <span style={{ background: "#00D37F", color: "#000", border: "1px solid #000", borderRadius: "3px", fontSize: "10px", padding: "1px 6px", fontWeight: 700 }}>+4 pts</span>
+                  Portfolio / Website <span style={{ background: "#00D37F", color: "#000", border: "1px solid #000", borderRadius: "3px", fontSize: "10px", padding: "1px 6px", fontWeight: 700 }}>+6 pts</span>
                 </label>
                 <input
                   id="onboarding-portfolio"

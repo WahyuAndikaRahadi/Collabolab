@@ -3,8 +3,10 @@
 
 import { useState, useEffect } from "react";
 import { ExternalPlatform, LinkVisibility } from "@prisma/client";
+import { useSession } from "next-auth/react";
 
 export function ExternalLinksManager() {
+  const { update } = useSession();
   const [links, setLinks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
@@ -44,7 +46,11 @@ export function ExternalLinksManager() {
       });
       
       if (res.ok) {
+        const data = await res.json();
         setNewUrl("");
+        if (data.trustScore !== undefined) {
+          await update({ trustScore: data.trustScore, trustLevel: data.trustLevel });
+        }
         await fetchLinks();
       } else {
         const data = await res.json();
@@ -74,19 +80,26 @@ export function ExternalLinksManager() {
       const res = await fetch(`/api/settings/links/${id}`, {
         method: "DELETE",
       });
-      if (res.ok) await fetchLinks();
+      if (res.ok) {
+        const data = await res.json();
+        if (data.trustScore !== undefined) {
+          await update({ trustScore: data.trustScore, trustLevel: data.trustLevel });
+        }
+        await fetchLinks();
+      }
     } catch (err) {}
   };
 
   const totalPoints = links.reduce((acc, l) => {
     if (l.status !== "VERIFIED") return acc;
     const points: Record<string, number> = {
-      LINKEDIN: 8, GITHUB: 8, PORTFOLIO: 6, BEHANCE: 5, DRIBBBLE: 5, INSTAGRAM: 3, YOUTUBE: 3, CUSTOM: 2
+      LINKEDIN: 4, GITHUB: 4, PORTFOLIO: 4, BEHANCE: 4, DRIBBBLE: 4, INSTAGRAM: 4, YOUTUBE: 4, CUSTOM: 4
     };
     return acc + (points[l.platform] || 0);
   }, 0);
 
-  const cappedPoints = Math.min(totalPoints, 20);
+  // Following the new no-cap policy to match user rules
+  const finalPoints = totalPoints;
 
   return (
     <div style={{ fontFamily: "Space Grotesk, sans-serif" }}>
@@ -213,7 +226,7 @@ export function ExternalLinksManager() {
           <div style={{ fontSize: "14px", lineHeight: 1.5 }}>
             Link yang terverifikasi berkontribusi ke Trust Score kamu.
             <br />
-            Saat ini kamu mendapat <strong>+{cappedPoints} poin</strong> dari external links.
+            Saat ini kamu mendapat <strong>+{finalPoints} poin</strong> dari external links.
           </div>
         </div>
       )}

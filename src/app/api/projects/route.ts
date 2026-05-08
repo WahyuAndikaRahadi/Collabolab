@@ -7,9 +7,9 @@ import { canCreateProject, getMaxActiveProjects } from "@/lib/trust-score";
 const createProjectSchema = z.object({
   title: z.string().min(5, "Judul minimal 5 karakter").max(100),
   description: z.string().min(20, "Deskripsi minimal 20 karakter").max(2000),
-  category: z.enum(["LOMBA", "STARTUP", "KREATIF", "BELAJAR", "SOSIAL"]),
+  category: z.enum(["LOMBA", "STARTUP", "KREATIF", "BELAJAR", "SOSIAL", "AKADEMIK", "BISNIS", "PERTANIAN", "TEKNOLOGI", "PERKANTORAN"]),
   commitmentLevel: z.enum(["CASUAL", "SERIUS", "KOMPETISI"]),
-  sdgTag: z.enum(["SDG8", "SDG9", "SDG12"]),
+  projectTopic: z.enum(["TEKNOLOGI", "PERTANIAN", "PENDIDIKAN", "LINGKUNGAN", "EKONOMI", "KARYA_TULIS", "RESEARCH", "PENGABDIAN", "KESEHATAN", "SENI_BUDAYA"]),
   maxMembers: z.number().int().min(2).max(20),
   requiredSkills: z.array(z.string().min(1)).min(1).max(10),
   deadline: z.string().datetime().nullable().optional(),
@@ -86,13 +86,15 @@ export async function POST(req: NextRequest) {
     }
 
     // Check active project limit
-    const maxActive = getMaxActiveProjects(session.user.trustLevel);
+    const maxActive = getMaxActiveProjects(session.user.trustLevel as any, (session.user as any).trustScore || 0);
     if (maxActive !== Infinity) {
       const activeCount = await prisma.project.count({
         where: { ownerId: session.user.id, status: { in: ["OPEN", "IN_PROGRESS"] } },
       });
       if (activeCount >= maxActive) {
-        return NextResponse.json({ error: `Kamu sudah memiliki ${activeCount} project aktif. Maksimal ${maxActive} untuk levelmu.` }, { status: 403 });
+        return NextResponse.json({ 
+          error: `Kamu sudah memiliki ${activeCount} project aktif. Maksimal ${maxActive} project untuk level kamu. Selesaikan salah satu project untuk membuka slot baru.` 
+        }, { status: 403 });
       }
     }
 

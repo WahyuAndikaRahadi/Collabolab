@@ -31,6 +31,11 @@ enum ProjectCategory {
   KREATIF
   BELAJAR
   SOSIAL
+  AKADEMIK
+  BISNIS
+  PERTANIAN
+  TEKNOLOGI
+  PERKANTORAN
 }
 
 enum CommitmentLevel {
@@ -39,10 +44,17 @@ enum CommitmentLevel {
   KOMPETISI
 }
 
-enum SDGTag {
-  SDG8
-  SDG9
-  SDG12
+enum ProjectTopic {
+  TEKNOLOGI
+  PERTANIAN
+  PENDIDIKAN
+  LINGKUNGAN
+  EKONOMI
+  KARYA_TULIS
+  RESEARCH
+  PENGABDIAN
+  KESEHATAN
+  SENI_BUDAYA
 }
 
 enum ProjectStatus {
@@ -74,6 +86,13 @@ enum HubRoomType {
   GENERAL
   KANBAN
   CUSTOM
+}
+
+enum AITool {
+  PROJECT_BRIEF_GENERATOR
+  SKILL_GAP_ANALYZER
+  PROJECT_RECOMMENDATION
+  REVIEW_SUMMARIZER
 }
 
 // ─── Models ──────────────────────────────────────────────────────────────────
@@ -115,6 +134,8 @@ model User {
   feedComments      FeedComment[]
   feedBookmarks     FeedBookmark[]
   feedReports       FeedReport[]
+  aiUsage           AIToolUsage[]
+  aiResults         AIToolResult[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -172,7 +193,7 @@ model Project {
   description     String
   category        ProjectCategory
   commitmentLevel CommitmentLevel
-  sdgTag          SDGTag
+  projectTopic    ProjectTopic
   maxMembers      Int
   status          ProjectStatus @default(OPEN)
   ownerId         String
@@ -409,7 +430,7 @@ model FeedPost {
   type        FeedPostType // CONTRIBUTION | EVENT
   content     String       // maks 500 karakter untuk contribution, 280 untuk event
   mediaUrl    String?      // opsional, URL gambar (contribution)
-  sdgTag      SDGTag?
+  projectTopic ProjectTopic?
   impactTag   String?
 
   // Khusus contribution post
@@ -498,6 +519,8 @@ enum EventCategory {
   HACKATHON
   WORKSHOP
   SEMINAR
+  ESSAY_AKADEMIK
+  BISNIS_UMKM
   LAINNYA
 }
 
@@ -548,4 +571,30 @@ enum LinkVisibility {
   PUBLIC
   MEMBERS_ONLY
   COLLABORATORS_ONLY
+}
+
+model AIToolUsage {
+  id        String   @id @default(cuid())
+  userId    String
+  toolType  AITool
+  usedAt    DateTime @default(now())
+  expiresAt DateTime
+
+  user      User     @relation(fields: [userId], references: [id])
+  result    AIToolResult?
+
+  @@index([userId, toolType])
+}
+
+model AIToolResult {
+  id        String   @id @default(cuid())
+  usageId   String   @unique
+  userId    String
+  toolType  AITool
+  input     Json
+  output    Json
+  createdAt DateTime @default(now())
+
+  user      User         @relation(fields: [userId], references: [id])
+  usage     AIToolUsage  @relation(fields: [usageId], references: [id], onDelete: Cascade)
 }

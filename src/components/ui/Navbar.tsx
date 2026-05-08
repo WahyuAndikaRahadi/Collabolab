@@ -23,6 +23,7 @@ export function Navbar() {
         { href: "/dashboard", label: "Dashboard" },
         { href: "/explore", label: "Explore" },
         { href: "/feed", label: "Feed" },
+        { href: "/ai-hub", label: "AI Hub" },
         { href: "/project/create", label: "Buat Project" },
       ]
     : pathname === "/" 

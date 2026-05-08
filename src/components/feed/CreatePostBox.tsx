@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const PREDEFINED_TAGS = [
-  "React", "NextJS", "UIUX", "DataScience", "Startup", "Marketing", "SDG8", "SDG9", "SDG12", "WebDev", "MobileDev", "Design", "Product", "Collaboration", "Event"
+  "React", "NextJS", "Akademik", "Bisnis", "Pertanian", "Riset", "Writing", "Design", "Marketing", "Event", "Collaboration", "Inovasi", "UMKM"
 ];
 
 interface Props {
@@ -22,7 +22,7 @@ export function CreatePostBox({ user, onSuccess }: Props) {
   // Contribution specific
   const [projects, setProjects] = useState<any[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState("");
-  const [sdgTag, setSdgTag] = useState("");
+  const [projectTopic, setProjectTopic] = useState("");
 
   // Event specific
   const [eventName, setEventName] = useState("");
@@ -195,8 +195,8 @@ export function CreatePostBox({ user, onSuccess }: Props) {
     setLoading(true);
     try {
       const payload = type === "CONTRIBUTION"
-        ? { type, projectId: selectedProjectId, content, sdgTag: sdgTag || null, mentions: mentionedUsers.map(u => u.id) }
-        : { type, content, eventName, eventCategory, eventDeadline, eventLink, sdgTag: sdgTag || null, eventSkills: [], mentions: mentionedUsers.map(u => u.id) };
+        ? { type, projectId: selectedProjectId, content, projectTopic: projectTopic || null, mentions: mentionedUsers.map(u => u.id) }
+        : { type, content, eventName, eventCategory, eventDeadline, eventLink, projectTopic: projectTopic || null, eventSkills: [], mentions: mentionedUsers.map(u => u.id) };
 
       const res = await fetch("/api/feed", {
         method: "POST",
@@ -211,7 +211,7 @@ export function CreatePostBox({ user, onSuccess }: Props) {
         setEventName("");
         setEventLink("");
         setEventDeadline("");
-        setSdgTag("");
+        setProjectTopic("");
         setMentionedUsers([]);
         setIsExpanded(false);
       } else {
@@ -494,6 +494,8 @@ export function CreatePostBox({ user, onSuccess }: Props) {
                             <option value="HACKATHON">Hackathon</option>
                             <option value="WORKSHOP">Workshop</option>
                             <option value="SEMINAR">Seminar</option>
+                            <option value="ESSAY_AKADEMIK">Esai / Akademik</option>
+                            <option value="BISNIS_UMKM">Bisnis / UMKM</option>
                             <option value="LAINNYA">Lainnya</option>
                           </select>
                           <input type="date" value={eventDeadline} onChange={e => setEventDeadline(e.target.value)} style={{ padding: "10px", border: "2px solid #000", borderRadius: "4px", fontSize: "14px", fontWeight: 600, outline: "none" }} />
@@ -506,14 +508,18 @@ export function CreatePostBox({ user, onSuccess }: Props) {
 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px" }}>
                   <select
-                    value={sdgTag}
-                    onChange={(e) => setSdgTag(e.target.value)}
+                    value={projectTopic}
+                    onChange={(e) => setProjectTopic(e.target.value)}
                     style={{ padding: "8px 12px", border: "2px solid #000", borderRadius: "4px", background: "#fff", fontWeight: 700, fontSize: "13px", cursor: "pointer", outline: "none" }}
                   >
-                    <option value="">🌱 Tanpa SDG Tag</option>
-                    <option value="SDG8">💼 SDG 8: Decent Work</option>
-                    <option value="SDG9">🏗️ SDG 9: Industry & Innovation</option>
-                    <option value="SDG12">♻️ SDG 12: Responsible Consumption</option>
+                    <option value="">🔖 Pilih Topik</option>
+                    <option value="TEKNOLOGI">💻 Teknologi</option>
+                    <option value="PERTANIAN">🚜 Pertanian</option>
+                    <option value="PENDIDIKAN">📚 Pendidikan</option>
+                    <option value="EKONOMI">📈 Ekonomi</option>
+                    <option value="KARYA_TULIS">✍️ Karya Tulis</option>
+                    <option value="RESEARCH">🔬 Research</option>
+                    <option value="SENI_BUDAYA">🎨 Seni Budaya</option>
                   </select>
 
                   <motion.button

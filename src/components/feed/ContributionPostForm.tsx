@@ -14,7 +14,7 @@ export function ContributionPostForm({ isOpen, onClose, onSuccess }: Props) {
   const [selectedProjectId, setSelectedProjectId] = useState("");
   const [content, setContent] = useState("");
   const [mediaUrl, setMediaUrl] = useState("");
-  const [sdgTag, setSdgTag] = useState("");
+  const [projectTopic, setProjectTopic] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -44,7 +44,7 @@ export function ContributionPostForm({ isOpen, onClose, onSuccess }: Props) {
           projectId: selectedProjectId,
           content,
           mediaUrl,
-          sdgTag: sdgTag || null,
+          projectTopic: projectTopic || null,
         }),
       });
 
@@ -100,22 +100,21 @@ export function ContributionPostForm({ isOpen, onClose, onSuccess }: Props) {
         </div>
 
         <div>
-          <label style={{ display: "block", fontSize: "14px", fontWeight: 800, marginBottom: "6px" }}>SDG Tag (Opsional)</label>
-          <div style={{ display: "flex", gap: "10px" }}>
-            {["SDG8", "SDG9", "SDG12"].map((tag) => (
+          <label style={{ display: "block", fontSize: "14px", fontWeight: 800, marginBottom: "6px" }}>Topik Utama (Opsional)</label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+            {["TEKNOLOGI", "PERTANIAN", "PENDIDIKAN", "EKONOMI", "RESEARCH"].map((tag) => (
               <button
                 key={tag}
                 type="button"
-                onClick={() => setSdgTag(sdgTag === tag ? "" : tag)}
+                onClick={() => setProjectTopic(projectTopic === tag ? "" : tag)}
                 style={{
-                  flex: 1,
-                  padding: "8px",
+                  padding: "6px 12px",
                   border: "2px solid #000",
                   borderRadius: "4px",
-                  background: sdgTag === tag ? "#000" : "#fff",
-                  color: sdgTag === tag ? "#FFE500" : "#000",
+                  background: projectTopic === tag ? "#000" : "#fff",
+                  color: projectTopic === tag ? "#FFE500" : "#000",
                   fontWeight: 800,
-                  fontSize: "12px",
+                  fontSize: "11px",
                   cursor: "pointer"
                 }}
               >

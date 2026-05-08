@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { CATEGORY_META, COMMITMENT_META, SDG_META } from "@/types";
+import { CATEGORY_META, COMMITMENT_META, TOPIC_META } from "@/types";
 import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
 import { ProjectDetailClient } from "@/components/project/ProjectDetailClient";
 
@@ -35,7 +35,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const isOwner = project.ownerId === session?.user?.id;
   const cat = CATEGORY_META[project.category];
   const commit = COMMITMENT_META[project.commitmentLevel];
-  const sdg = SDG_META[project.sdgTag];
+  const topic = TOPIC_META[project.projectTopic];
 
   const totalTasks = project.tasks.length;
   const doneTasks = project.tasks.filter((t) => t.status === "DONE").length;
@@ -65,8 +65,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 <span style={{ background: project.commitmentLevel === "KOMPETISI" ? "#FF4D4D" : project.commitmentLevel === "SERIUS" ? "#0047FF" : "#00D37F", color: project.commitmentLevel === "CASUAL" ? "#000" : "#fff", border: "2px solid #000", borderRadius: "4px", padding: "4px 12px", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px" }}>
                   {commit.label}
                 </span>
-                <span style={{ background: sdg.color, color: "#fff", border: "2px solid #000", borderRadius: "4px", padding: "4px 12px", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px" }}>
-                  {sdg.label}
+                <span style={{ background: topic.color, color: "#fff", border: "2px solid #000", borderRadius: "4px", padding: "4px 12px", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px" }}>
+                  {topic.label}
                 </span>
                 <span style={{ background: project.status === "OPEN" ? "#00D37F" : "#FF4D4D", color: project.status === "OPEN" ? "#000" : "#fff", border: "2px solid #000", borderRadius: "4px", padding: "4px 12px", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px" }}>
                   {project.status === "OPEN" ? "● Open" : project.status}
@@ -192,8 +192,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   <span style={{ fontWeight: 700 }}>{new Date(project.createdAt).toLocaleDateString("id-ID")}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#3D3D3D" }}>SDG</span>
-                  <span style={{ fontWeight: 700, color: sdg.color }}>{sdg.label}</span>
+                  <span style={{ color: "#3D3D3D" }}>Topik</span>
+                  <span style={{ fontWeight: 700, color: topic.color }}>{topic.label}</span>
                 </div>
               </div>
             </div>

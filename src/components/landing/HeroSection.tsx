@@ -157,7 +157,7 @@ export function HeroSection() {
               marginTop: "16px",
             }}
           >
-            Temukan Tim-mu.{" "}
+            Temukan Partner.{" "}
             <span
               style={{
                 background: "#FFE500",
@@ -167,7 +167,7 @@ export function HeroSection() {
                 transform: "rotate(-1deg)",
               }}
             >
-              Build Together.
+              Build Future.
             </span>
           </motion.h1>
 
@@ -184,8 +184,8 @@ export function HeroSection() {
               maxWidth: "600px",
             }}
           >
-            Platform kolaborasi untuk Gen-Z — temukan partner project, join lomba, dan bangun portofolio bersama.
-            Sistem <strong>Trust Score</strong> menjaga ekosistem tetap sehat & anti-spam.
+            Platform kolaborasi untuk Gen-Z — temukan partner untuk project, lomba, riset, hingga bisnis kreatif.
+            Apapun idemu, bangun bersama di ekosistem yang transparan & terpercaya.
           </motion.p>
 
           {/* CTA Buttons */}

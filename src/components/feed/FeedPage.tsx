@@ -13,7 +13,7 @@ export function FeedPage({ user }: Props) {
   const [posts, setPosts] = useState<any[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [filter, setFilter] = useState<{ type?: string; sdg?: string; tag?: string }>({});
+  const [filter, setFilter] = useState<{ type?: string; topic?: string; tag?: string }>({});
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastPostElementRef = useCallback((node: any) => {
@@ -33,7 +33,7 @@ export function FeedPage({ user }: Props) {
       const params = new URLSearchParams();
       if (cursor) params.set("cursor", cursor);
       if (filter.type) params.set("type", filter.type);
-      if (filter.sdg) params.set("sdg", filter.sdg);
+      if (filter.topic) params.set("topic", filter.topic);
       if (filter.tag) params.set("tag", filter.tag);
 
       const res = await fetch(`/api/feed?${params.toString()}`);
@@ -145,11 +145,11 @@ export function FeedPage({ user }: Props) {
             {[
               { label: "React", value: { tag: "React" }, color: "#61DAFB", bg: "#E8FAFE", emoji: "⚛️" },
               { label: "UI/UX", value: { tag: "UIUX" }, color: "#FF6B6B", bg: "#FFE8E8", emoji: "🎨" },
-              { label: "Data Science", value: { tag: "DataScience" }, color: "#9B59B6", bg: "#F3E8FF", emoji: "📊" },
-              { label: "Web Dev", value: { tag: "WebDev" }, color: "#E67E22", bg: "#FFF3E0", emoji: "🌐" },
-              { label: "Startup", value: { tag: "Startup" }, color: "#00D37F", bg: "#E0FFF4", emoji: "🚀" },
+              { label: "Akademik", value: { tag: "Akademik" }, color: "#0047FF", bg: "#E6F0FF", emoji: "📖" },
+              { label: "Bisnis", value: { tag: "Bisnis" }, color: "#00D37F", bg: "#E0FFF4", emoji: "📊" },
+              { label: "Pertanian", value: { tag: "Pertanian" }, color: "#E67E22", bg: "#FFF3E0", emoji: "🚜" },
+              { label: "Riset", value: { tag: "Riset" }, color: "#9B59B6", bg: "#F3E8FF", emoji: "🔬" },
               { label: "Marketing", value: { tag: "Marketing" }, color: "#FF4D8D", bg: "#FFE8F2", emoji: "📣" },
-              { label: "Design", value: { tag: "Design" }, color: "#F39C12", bg: "#FFF8E0", emoji: "✏️" },
             ].map((f, i) => {
               const isActive = JSON.stringify(filter) === JSON.stringify(f.value);
               return (
@@ -187,14 +187,15 @@ export function FeedPage({ user }: Props) {
           </div>
         </div>
 
-        {/* SDG Tags */}
+        {/* Topic Filters */}
         <div>
-          <div style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>SDG GOALS</div>
+          <div style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>TOPIK UTAMA</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {[
-              { label: "SDG 8: Decent Work", value: { sdg: "SDG8" }, color: "#A21942", bg: "#FFE8EE", emoji: "💼" },
-              { label: "SDG 9: Innovation", value: { sdg: "SDG9" }, color: "#FD6925", bg: "#FFF0E8", emoji: "🏗️" },
-              { label: "SDG 12: Responsible", value: { sdg: "SDG12" }, color: "#BF8B2E", bg: "#FFF9E0", emoji: "♻️" },
+              { label: "Teknologi", value: { topic: "TEKNOLOGI" }, color: "#0047FF", bg: "#E6F0FF", emoji: "💻" },
+              { label: "Pertanian", value: { topic: "PERTANIAN" }, color: "#00D37F", bg: "#E0FFF4", emoji: "🚜" },
+              { label: "Ekonomi", value: { topic: "EKONOMI" }, color: "#FF4D4D", bg: "#FFE8E8", emoji: "📈" },
+              { label: "Karya Tulis", value: { topic: "KARYA_TULIS" }, color: "#BF8B2E", bg: "#FFF9E0", emoji: "✍️" },
             ].map((f, i) => {
               const isActive = JSON.stringify(filter) === JSON.stringify(f.value);
               return (

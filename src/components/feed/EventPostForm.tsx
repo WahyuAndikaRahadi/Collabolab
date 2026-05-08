@@ -17,7 +17,7 @@ export function EventPostForm({ isOpen, onClose, onSuccess, trustScore }: Props)
     eventDeadline: "",
     eventLink: "",
     content: "",
-    sdgTag: "",
+    projectTopic: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -54,7 +54,7 @@ export function EventPostForm({ isOpen, onClose, onSuccess, trustScore }: Props)
           eventDeadline: "",
           eventLink: "",
           content: "",
-          sdgTag: "",
+          projectTopic: "",
         });
       } else {
         const data = await res.json();
@@ -104,6 +104,8 @@ export function EventPostForm({ isOpen, onClose, onSuccess, trustScore }: Props)
                 <option value="HACKATHON">Hackathon</option>
                 <option value="WORKSHOP">Workshop</option>
                 <option value="SEMINAR">Seminar</option>
+                <option value="ESSAY_AKADEMIK">Esai / Akademik</option>
+                <option value="BISNIS_UMKM">Bisnis / UMKM</option>
                 <option value="LAINNYA">Lainnya</option>
               </select>
             </div>
@@ -131,16 +133,20 @@ export function EventPostForm({ isOpen, onClose, onSuccess, trustScore }: Props)
               />
             </div>
             <div>
-              <label style={{ display: "block", fontSize: "13px", fontWeight: 800, marginBottom: "4px" }}>SDG Tag</label>
+              <label style={{ display: "block", fontSize: "13px", fontWeight: 800, marginBottom: "4px" }}>Topik Utama</label>
               <select
-                value={formData.sdgTag}
-                onChange={(e) => setFormData({ ...formData, sdgTag: e.target.value })}
+                value={formData.projectTopic}
+                onChange={(e) => setFormData({ ...formData, projectTopic: e.target.value })}
                 style={{ width: "100%", padding: "10px", border: "2px solid #000", borderRadius: "4px", background: "#fff", fontWeight: 700 }}
               >
                 <option value="">Tidak ada</option>
-                <option value="SDG8">SDG 8</option>
-                <option value="SDG9">SDG 9</option>
-                <option value="SDG12">SDG 12</option>
+                <option value="TEKNOLOGI">Teknologi</option>
+                <option value="PERTANIAN">Pertanian</option>
+                <option value="PENDIDIKAN">Pendidikan</option>
+                <option value="EKONOMI">Ekonomi</option>
+                <option value="KARYA_TULIS">Karya Tulis</option>
+                <option value="RESEARCH">Research</option>
+                <option value="SENI_BUDAYA">Seni Budaya</option>
               </select>
             </div>
           </div>

@@ -454,3 +454,19 @@ code, kbd, pre, samp {
   box-shadow: 2px 2px 0px #000;
   transform: translate(0px, 0px) rotate(0deg);
 }
+
+/* ─── AI Hub Grid ───────────────────────────────────────────────────────────── */
+.ai-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto 80px;
+}
+
+@media (max-width: 900px) {
+  .ai-hub-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+}

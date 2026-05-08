@@ -1,4 +1,4 @@
-import type { TrustLevel, AvailStatus, ProjectCategory, CommitmentLevel, SDGTag, ProjectStatus, TaskStatus, Priority, MemberRole } from "@prisma/client";
+import type { TrustLevel, AvailStatus, ProjectCategory, CommitmentLevel, ProjectTopic, ProjectStatus, TaskStatus, Priority, MemberRole } from "@prisma/client";
 import "next-auth/jwt";
 
 // ─── NextAuth type augmentation ──────────────────────────────────────────────
@@ -83,7 +83,7 @@ export type ProjectCardData = {
   description: string;
   category: ProjectCategory;
   commitmentLevel: CommitmentLevel;
-  sdgTag: SDGTag;
+  projectTopic: ProjectTopic;
   maxMembers: number;
   status: ProjectStatus;
   deadline: Date | null;
@@ -152,6 +152,11 @@ export const CATEGORY_META: Record<ProjectCategory, { emoji: string; label: stri
   KREATIF: { emoji: "🎨", label: "Kreatif", color: "#FF4D4D" },
   BELAJAR: { emoji: "📚", label: "Belajar", color: "#00D37F" },
   SOSIAL: { emoji: "🌱", label: "Sosial", color: "#00D37F" },
+  AKADEMIK: { emoji: "📖", label: "Akademik", color: "#0047FF" },
+  BISNIS: { emoji: "📊", label: "Bisnis", color: "#00D37F" },
+  PERTANIAN: { emoji: "🚜", label: "Pertanian", color: "#00D37F" },
+  TEKNOLOGI: { emoji: "💻", label: "Teknologi", color: "#FFE500" },
+  PERKANTORAN: { emoji: "📎", label: "Perkantoran", color: "#FF4D4D" },
 };
 
 export const COMMITMENT_META: Record<CommitmentLevel, { label: string; description: string }> = {
@@ -160,10 +165,17 @@ export const COMMITMENT_META: Record<CommitmentLevel, { label: string; descripti
   KOMPETISI: { label: "Kompetisi", description: "Deadline ketat, high commitment" },
 };
 
-export const SDG_META: Record<SDGTag, { label: string; description: string; color: string }> = {
-  SDG8: { label: "SDG 8", description: "Decent Work & Economic Growth", color: "#A21942" },
-  SDG9: { label: "SDG 9", description: "Industry, Innovation & Infrastructure", color: "#FD6925" },
-  SDG12: { label: "SDG 12", description: "Responsible Consumption & Production", color: "#BF8B2E" },
+export const TOPIC_META: Record<ProjectTopic, { label: string; description: string; color: string }> = {
+  TEKNOLOGI: { label: "Teknologi", description: "Inovasi & Pengembangan Digital", color: "#0047FF" },
+  PERTANIAN: { label: "Pertanian", description: "Ketahanan Pangan & Agrikultur", color: "#00D37F" },
+  PENDIDIKAN: { label: "Pendidikan", description: "Pengembangan SDM & Belajar", color: "#FFE500" },
+  LINGKUNGAN: { label: "Lingkungan", description: "Sustainability & Alam", color: "#00D37F" },
+  EKONOMI: { label: "Ekonomi", description: "Bisnis, Finance & UMKM", color: "#FF4D4D" },
+  KARYA_TULIS: { label: "Karya Tulis", description: "Esai, Artikel & Publikasi", color: "#0047FF" },
+  RESEARCH: { label: "Research", description: "Penelitian & Analisis Data", color: "#00D37F" },
+  PENGABDIAN: { label: "Pengabdian", description: "Sosial & Masyarakat", color: "#FF4D4D" },
+  KESEHATAN: { label: "Kesehatan", description: "Wellness & Medis", color: "#00D37F" },
+  SENI_BUDAYA: { label: "Seni Budaya", description: "Ekspresi Kreatif & Tradisi", color: "#FFE500" },
 };
 
 export const AVAIL_META: Record<AvailStatus, { label: string; color: string; emoji: string }> = {
@@ -175,21 +187,16 @@ export const AVAIL_META: Record<AvailStatus, { label: string; color: string; emo
 // ─── Skill Suggestions ────────────────────────────────────────────────────────
 
 export const SKILL_SUGGESTIONS = [
-  // Frontend
-  "React", "Next.js", "Vue.js", "Angular", "TypeScript", "JavaScript", "HTML/CSS", "Tailwind CSS",
-  // Backend
-  "Node.js", "Express.js", "FastAPI", "Django", "Laravel", "Spring Boot", "Go",
-  // Mobile
-  "React Native", "Flutter", "Swift", "Kotlin",
-  // Design
-  "UI/UX Design", "Figma", "Adobe XD", "Canva", "Illustrator", "Photoshop",
-  // Data
-  "Python", "Machine Learning", "Data Analysis", "TensorFlow", "PyTorch",
-  // Database
-  "PostgreSQL", "MySQL", "MongoDB", "Redis", "Firebase",
-  // DevOps
-  "Docker", "Kubernetes", "CI/CD", "AWS", "GCP", "Vercel",
+  // Teknologi
+  "React", "Next.js", "TypeScript", "Node.js", "Python", "UI/UX Design", "Figma",
+  // Akademik & Riset
+  "Penulisan Esai", "Karya Tulis Ilmiah", "Analisis Data", "Research", "Metode Penelitian",
+  // Bisnis & Perkantoran
+  "Business Planning", "Digital Marketing", "Public Speaking", "Microsoft Excel", "Manajemen Proyek", "Copywriting",
+  // Pertanian & Lingkungan
+  "Urban Farming", "Hidroponik", "Manajemen Lingkungan", "Agroteknologi",
+  // Kreatif
+  "Video Editing", "Content Creation", "Graphic Design", "Photography", "Storytelling",
   // Soft Skills
-  "Project Management", "Content Writing", "Marketing", "Business Analysis",
-  "Video Editing", "3D Modeling", "Game Development",
+  "Leadership", "Negosiasi", "Problem Solving", "Teamwork"
 ];

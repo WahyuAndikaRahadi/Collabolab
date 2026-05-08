@@ -7,7 +7,7 @@ const steps = [
     number: "01",
     title: "Buat profil & pilih skill",
     description:
-      "Daftar 30 detik. Pilih skill tags kamu — React, UI/UX, Python, atau apapun yang kamu jago. Trust Score dimulai.",
+      "Daftar 30 detik. Pilih skill tags kamu — Riset, Penulisan, Akuntansi, atau apapun yang kamu jago. Trust Score dimulai.",
     icon: "🎯",
     color: "#FFE500",
     id: "step-create-profile",

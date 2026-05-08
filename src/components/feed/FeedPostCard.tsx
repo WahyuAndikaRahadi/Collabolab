@@ -120,9 +120,9 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
                   📁 {post.project.title}
                 </Link>
               )}
-              {post.sdgTag && (
+              {post.projectTopic && (
                 <span style={{ background: "#000", color: "#FFE500", padding: "4px 10px", borderRadius: "4px", fontSize: "11px", fontWeight: 800 }}>
-                  {post.sdgTag}
+                  {post.projectTopic}
                 </span>
               )}
             </div>
@@ -152,7 +152,7 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
               {post.eventSkills.map((s: string) => (
                 <span key={s} style={{ background: "#F5F0E8", border: "1px solid #000", padding: "2px 8px", borderRadius: "4px", fontSize: "11px", fontWeight: 700 }}>#{s}</span>
               ))}
-              {post.sdgTag && <span style={{ background: "#000", color: "#FFE500", padding: "2px 8px", borderRadius: "4px", fontSize: "11px", fontWeight: 800 }}>{post.sdgTag}</span>}
+              {post.projectTopic && <span style={{ background: "#000", color: "#FFE500", padding: "2px 8px", borderRadius: "4px", fontSize: "11px", fontWeight: 800 }}>{post.projectTopic}</span>}
             </div>
           </>
         )}

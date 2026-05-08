@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { pusherServer, CHANNELS, EVENTS } from "@/lib/pusher";
-import { FeedPostType, SDGTag } from "@prisma/client";
+import { FeedPostType, ProjectTopic } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const cursor = searchParams.get("cursor");
   const type = searchParams.get("type") as FeedPostType | null;
-  const sdg = searchParams.get("sdg") as SDGTag | null;
+  const topic = searchParams.get("topic") as ProjectTopic | null;
   const tag = searchParams.get("tag");
   const limit = 10;
 
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
       where: {
         isArchived: false,
         ...(type ? { type } : {}),
-        ...(sdg ? { sdgTag: sdg } : {}),
+        ...(topic ? { projectTopic: topic } : {}),
         ...(tag ? { tags: { has: tag } } : {}),
       },
       take: limit,
@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
     };
 
     if (type === "CONTRIBUTION") {
-      const { content, mediaUrl, sdgTag, impactTag, projectId } = body;
+      const { content, mediaUrl, projectTopic, impactTag, projectId } = body;
 
       if (!projectId) {
         return NextResponse.json({ error: "Project wajib dicantumkan" }, { status: 400 });
@@ -151,7 +151,7 @@ export async function POST(req: NextRequest) {
           type: "CONTRIBUTION",
           content: content.slice(0, 500),
           mediaUrl,
-          sdgTag,
+          projectTopic,
           impactTag,
           projectId,
           tags,
@@ -171,7 +171,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const { eventName, eventCategory, eventDeadline, eventLink, eventSkills, sdgTag, content } = body;
+      const { eventName, eventCategory, eventDeadline, eventLink, eventSkills, projectTopic, content } = body;
 
       if (!eventName || !eventCategory || !eventDeadline || !eventLink) {
         return NextResponse.json({ error: "Field wajib event belum lengkap" }, { status: 400 });
@@ -204,10 +204,15 @@ export async function POST(req: NextRequest) {
           eventDeadline: new Date(eventDeadline),
           eventLink,
           eventSkills,
-          sdgTag,
+          projectTopic,
           tags,
         },
       });
+
+      await sendMentionNotifications(post.id, session.user.name || "Someone", "EVENT");
+
+      return NextResponse.json(post);
+    }
 
       await sendMentionNotifications(post.id, session.user.name || "Someone", "EVENT");
 

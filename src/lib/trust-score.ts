@@ -100,8 +100,8 @@ export function canInviteDirectly(level: TrustLevel): boolean {
   return level === "TRUSTED" || level === "VERIFIED";
 }
 
-export function getMaxActiveProjects(level: TrustLevel): number {
+export function getMaxActiveProjects(level: TrustLevel, score: number): number {
   if (level === "NEWCOMER") return 0;
-  if (level === "MEMBER") return 2;
-  return Infinity;
+  if (score >= 100) return Infinity;
+  return 3;
 }

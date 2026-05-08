@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { SKILL_SUGGESTIONS, CATEGORY_META, COMMITMENT_META, SDG_META } from "@/types";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { SKILL_SUGGESTIONS, CATEGORY_META, COMMITMENT_META, TOPIC_META } from "@/types";
 
 export default function CreateProjectPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
@@ -16,10 +17,33 @@ export default function CreateProjectPage() {
     description: "",
     category: "LOMBA",
     commitmentLevel: "SERIUS",
-    sdgTag: "SDG8",
+    projectTopic: "TEKNOLOGI",
     maxMembers: 4,
     deadline: "",
   });
+
+  // Load AI draft if present
+  useEffect(() => {
+    const draftJson = searchParams.get("ai_draft");
+    if (draftJson) {
+      try {
+        const draft = JSON.parse(decodeURIComponent(draftJson));
+        setForm(prev => ({
+          ...prev,
+          title: draft.title || prev.title,
+          description: draft.description || prev.description,
+          category: draft.category || prev.category,
+          commitmentLevel: draft.commitmentLevel || prev.commitmentLevel,
+          projectTopic: draft.projectTopic || prev.projectTopic,
+        }));
+        if (Array.isArray(draft.requiredSkills)) {
+          setSelectedSkills(draft.requiredSkills);
+        }
+      } catch (e) {
+        console.error("Failed to parse AI draft", e);
+      }
+    }
+  }, [searchParams]);
 
   function toggleSkill(skill: string) {
     setSelectedSkills((prev) => prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]);
@@ -136,19 +160,19 @@ export default function CreateProjectPage() {
               </div>
             </div>
 
-            {/* SDG Tag + Max Members */}
+            {/* Project Topic + Max Members */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
               <div>
                 <label style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", display: "block", marginBottom: "6px" }}>
-                  SDG Tag *
+                  Topik Utama *
                 </label>
                 <select
-                  id="create-project-sdg"
+                  id="create-project-topic"
                   className="nb-select"
-                  value={form.sdgTag}
-                  onChange={(e) => setForm({ ...form, sdgTag: e.target.value })}
+                  value={form.projectTopic}
+                  onChange={(e) => setForm({ ...form, projectTopic: e.target.value })}
                 >
-                  {Object.entries(SDG_META).map(([key, val]) => (
+                  {Object.entries(TOPIC_META).map(([key, val]) => (
                     <option key={key} value={key}>{val.label} — {val.description}</option>
                   ))}
                 </select>

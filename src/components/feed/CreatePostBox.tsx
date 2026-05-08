@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const PREDEFINED_TAGS = [
-  "React", "NextJS", "Akademik", "Bisnis", "Pertanian", "Riset", "Writing", "Design", "Marketing", "Event", "Collaboration", "Inovasi", "UMKM"
+  "Frontend", "Backend", "Design", "Research", "Business", "Marketing", "Writing", 
+  "Engineering", "Management", "Education", "Agrotech", "Finance", "Creative"
 ];
 
 interface Props {
@@ -521,6 +522,12 @@ export function CreatePostBox({ user, onSuccess }: Props) {
                     <option value="KARYA_TULIS">✍️ Karya Tulis</option>
                     <option value="RESEARCH">🔬 Research</option>
                     <option value="SENI_BUDAYA">🎨 Seni Budaya</option>
+                    <option value="HUKUM_POLITIK">⚖️ Hukum & Politik</option>
+                    <option value="MANUFAKTUR">⚙️ Manufaktur</option>
+                    <option value="KULINER_PARIWISATA">🍳 Kuliner & Tour</option>
+                    <option value="OLAHRAGA_KEBUGARAN">⚽ Olahraga</option>
+                    <option value="MARITIM_DIRGANTARA">🚀 Maritim & Udara</option>
+                    <option value="SAINS_MURNI">🧪 Sains Murni</option>
                   </select>
 
                   <motion.button

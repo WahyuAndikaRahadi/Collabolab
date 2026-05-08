@@ -157,6 +157,13 @@ export const CATEGORY_META: Record<ProjectCategory, { emoji: string; label: stri
   PERTANIAN: { emoji: "🚜", label: "Pertanian", color: "#00D37F" },
   TEKNOLOGI: { emoji: "💻", label: "Teknologi", color: "#FFE500" },
   PERKANTORAN: { emoji: "📎", label: "Perkantoran", color: "#FF4D4D" },
+  KESEHATAN: { emoji: "🏥", label: "Kesehatan", color: "#00D37F" },
+  HUKUM: { emoji: "⚖️", label: "Hukum", color: "#0047FF" },
+  TEKNIK: { emoji: "⚙️", label: "Teknik", color: "#FF4D4D" },
+  SENI: { emoji: "🎭", label: "Seni", color: "#FFE500" },
+  OLAHRAGA: { emoji: "⚽", label: "Olahraga", color: "#0047FF" },
+  KULINER: { emoji: "🍳", label: "Kuliner", color: "#FF4D4D" },
+  SAINS: { emoji: "🧪", label: "Sains", color: "#00D37F" },
 };
 
 export const COMMITMENT_META: Record<CommitmentLevel, { label: string; description: string }> = {
@@ -176,6 +183,12 @@ export const TOPIC_META: Record<ProjectTopic, { label: string; description: stri
   PENGABDIAN: { label: "Pengabdian", description: "Sosial & Masyarakat", color: "#FF4D4D" },
   KESEHATAN: { label: "Kesehatan", description: "Wellness & Medis", color: "#00D37F" },
   SENI_BUDAYA: { label: "Seni Budaya", description: "Ekspresi Kreatif & Tradisi", color: "#FFE500" },
+  HUKUM_POLITIK: { label: "Hukum & Politik", description: "Legal, Kebijakan & Diplomasi", color: "#0047FF" },
+  MANUFAKTUR: { label: "Manufaktur", description: "Produksi, Teknik & Industri", color: "#FF4D4D" },
+  KULINER_PARIWISATA: { label: "Kuliner & Tour", description: "Pariwisata & Seni Memasak", color: "#FFE500" },
+  OLAHRAGA_KEBUGARAN: { label: "Olahraga", description: "Kesehatan Fisik & Prestasi", color: "#0047FF" },
+  MARITIM_DIRGANTARA: { label: "Maritim & Udara", description: "Aviation & Ocean Science", color: "#00D37F" },
+  SAINS_MURNI: { label: "Sains Murni", description: "MIPA, Laboratorium & Inovasi", color: "#FF4D4D" },
 };
 
 export const AVAIL_META: Record<AvailStatus, { label: string; color: string; emoji: string }> = {
@@ -184,19 +197,45 @@ export const AVAIL_META: Record<AvailStatus, { label: string; color: string; emo
   BUSY: { label: "Sibuk", color: "#FF4D4D", emoji: "🔴" },
 };
 
-// ─── Skill Suggestions ────────────────────────────────────────────────────────
+// ─── Skill Groups for UI Categorization ──────────────────────────────────────
 
-export const SKILL_SUGGESTIONS = [
-  // Teknologi
-  "React", "Next.js", "TypeScript", "Node.js", "Python", "UI/UX Design", "Figma",
-  // Akademik & Riset
-  "Penulisan Esai", "Karya Tulis Ilmiah", "Analisis Data", "Research", "Metode Penelitian",
-  // Bisnis & Perkantoran
-  "Business Planning", "Digital Marketing", "Public Speaking", "Microsoft Excel", "Manajemen Proyek", "Copywriting",
-  // Pertanian & Lingkungan
-  "Urban Farming", "Hidroponik", "Manajemen Lingkungan", "Agroteknologi",
-  // Kreatif
-  "Video Editing", "Content Creation", "Graphic Design", "Photography", "Storytelling",
-  // Soft Skills
-  "Leadership", "Negosiasi", "Problem Solving", "Teamwork"
+export const SKILL_GROUPS = [
+  {
+    name: "Teknologi & Digital",
+    skills: ["Frontend Developer", "Backend Developer", "Mobile Developer", "Fullstack Developer", "UI/UX Designer", "Data Analyst", "Data Scientist", "Cyber Security", "Cloud Engineer", "Game Developer", "Blockchain Developer", "AI/ML Engineer", "DevOps Specialist", "Quality Assurance", "Product Manager", "Systems Architect", "Network Engineer"]
+  },
+  {
+    name: "Akademik & Riset",
+    skills: ["Researcher", "Scientific Writing", "Academic Research", "Statistical Analysis", "Mathematics", "Physics", "Chemistry", "Biology", "Biotechnology", "Neuroscience", "Astronomy", "Microbiology", "Geology", "Laboratory Management", "Social Research"]
+  },
+  {
+    name: "Bisnis & Manajemen",
+    skills: ["Business Developer", "Project Manager", "Accountant", "Human Resources", "Finance Analyst", "Investment Banking", "Public Relations", "Digital Marketer", "Marketing Strategist", "Auditor", "Tax Consultant", "Supply Chain Manager", "Business Intelligence", "Risk Management", "Entrepreneurship", "Customer Success"]
+  },
+  {
+    name: "Hukum & Sosial",
+    skills: ["Legal Consultant", "Advokat", "Notaris", "Diplomasi", "Public Policy", "Sosiologi", "Psikologi", "Konselor", "Kriminologi", "Hubungan Internasional", "Antropologi", "Politik & Pemerintahan", "Hak Asasi Manusia"]
+  },
+  {
+    name: "Kesehatan & Medis",
+    skills: ["Dokter Umum", "Dokter Spesialis", "Perawat", "Apoteker", "Ahli Gizi", "Fisioterapi", "Psikiater", "Kedokteran Gigi", "Kesehatan Masyarakat", "Radiologi", "Paramedis", "Veterinary (Dokter Hewan)"]
+  },
+  {
+    name: "Teknik & Vokasi",
+    skills: ["Mechanical Engineer", "Electrical Technician", "Civil Engineer", "Architecture", "Industrial Design", "Automotive Specialist", "Robotics Engineer", "Aerospace Engineering", "Petroleum Engineer", "Mining Engineer", "Telecommunication", "Maintenance Specialist", "Welding Technician", "Electronic Engineering"]
+  },
+  {
+    name: "Pertanian & Lingkungan",
+    skills: ["Agribusiness", "Food Technology", "Urban Farming", "Hidroponik", "Manajemen Lingkungan", "Sustainability Specialist", "Oceanography", "Marine Biology", "Naval Architect", "Fisheries Management", "Forestry", "Meteorology"]
+  },
+  {
+    name: "Kreatif & Seni",
+    skills: ["Graphic Designer", "Video Editor", "Content Creator", "Copywriter", "Photographer", "Animator", "Social Media Manager", "Music Producer", "Fashion Designer", "Interior Design", "Fine Arts", "Illustrator", "Creative Writing", "Journalism", "Broadcasting"]
+  },
+  {
+    name: "Pendidikan & Umum",
+    skills: ["Teacher/Tutor", "Curriculum Developer", "Educational Technology", "Social Worker", "Linguistik", "Translator/Penerjemah", "Interpreter", "Library Management", "Chef/Cook", "Pastry Artist", "Event Planner", "Athlete", "Sports Coach", "Logistics Coordinator", "Pilot"]
+  }
 ];
+
+export const SKILL_SUGGESTIONS = SKILL_GROUPS.flatMap(group => group.skills);

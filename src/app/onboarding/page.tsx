@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { SKILL_SUGGESTIONS } from "@/types";
+import { SKILL_SUGGESTIONS, SKILL_GROUPS } from "@/types";
 import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
 
 type Step = 1 | 2 | 3;
@@ -184,35 +184,49 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* Skill suggestions */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "20px" }}>
-              {SKILL_SUGGESTIONS.filter((s) => !selectedSkills.includes(s)).map((skill) => (
-                <button
-                  key={skill}
-                  onClick={() => toggleSkill(skill)}
-                  className="skill-chip"
-                  id={`skill-suggest-${skill.replace(/\s+/g, "-").toLowerCase()}`}
-                >
-                  {skill}
-                </button>
-              ))}
-            </div>
+            <div style={{ background: "#F5F0E8", border: "2px solid #000", borderRadius: "8px", padding: "20px", marginBottom: "16px" }}>
+              <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+                <input
+                  id="onboarding-skill-search"
+                  type="text"
+                  className="nb-input"
+                  placeholder="Cari skill kamu..."
+                  value={customSkill}
+                  onChange={(e) => setCustomSkill(e.target.value)}
+                  style={{ flex: 1, background: "#fff" }}
+                />
+              </div>
 
-            {/* Custom skill */}
-            <div style={{ display: "flex", gap: "8px" }}>
-              <input
-                id="custom-skill-input"
-                type="text"
-                className="nb-input"
-                placeholder="Tambah skill lain..."
-                value={customSkill}
-                onChange={(e) => setCustomSkill(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustomSkill())}
-                style={{ flex: 1 }}
-              />
-              <button onClick={addCustomSkill} className="btn-secondary btn-sm" id="add-custom-skill-btn">
-                + Tambah
-              </button>
+              {customSkill ? (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                  {SKILL_SUGGESTIONS.filter(s => s.toLowerCase().includes(customSkill.toLowerCase()) && !selectedSkills.includes(s)).slice(0, 15).map(skill => (
+                    <button key={skill} type="button" onClick={() => { toggleSkill(skill); setCustomSkill(""); }} className="skill-chip" style={{ background: "#fff" }}>
+                      + {skill}
+                    </button>
+                  ))}
+                  {customSkill.trim() && !SKILL_SUGGESTIONS.some(s => s.toLowerCase() === customSkill.toLowerCase()) && (
+                    <button type="button" onClick={addCustomSkill} className="skill-chip" style={{ background: "#00D37F", color: "#fff" }}>
+                      + Tambah "{customSkill}"
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  {SKILL_GROUPS.slice(0, 4).map(group => (
+                    <div key={group.name}>
+                      <div style={{ fontSize: "11px", fontWeight: 800, color: "#666", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>{group.name}</div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                        {group.skills.filter(s => !selectedSkills.includes(s)).slice(0, 8).map(skill => (
+                          <button key={skill} type="button" onClick={() => toggleSkill(skill)} className="skill-chip" style={{ background: "#fff", fontSize: "12px" }}>
+                            {skill}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  <div style={{ fontSize: "12px", fontWeight: 600, color: "#3D3D3D", fontStyle: "italic" }}>Gunakan kolom pencarian di atas untuk melihat bidang lainnya...</div>
+                </div>
+              )}
             </div>
           </div>
         )}

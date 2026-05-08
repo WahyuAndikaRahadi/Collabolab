@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { SKILL_SUGGESTIONS, CATEGORY_META, COMMITMENT_META, TOPIC_META } from "@/types";
+import { SKILL_SUGGESTIONS, SKILL_GROUPS, CATEGORY_META, COMMITMENT_META, TOPIC_META } from "@/types";
 
 export default function CreateProjectPage() {
   const router = useRouter();
@@ -243,29 +243,51 @@ export default function CreateProjectPage() {
                 </div>
               )}
 
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "12px" }}>
-                {SKILL_SUGGESTIONS.filter((s) => !selectedSkills.includes(s)).slice(0, 20).map((skill) => (
-                  <button key={skill} type="button" onClick={() => toggleSkill(skill)} className="skill-chip" id={`suggest-${skill.replace(/\s+/g, "-").toLowerCase()}`}>
-                    {skill}
-                  </button>
-                ))}
+              <div style={{ background: "#F5F0E8", border: "2px solid #000", borderRadius: "8px", padding: "20px", marginBottom: "16px" }}>
+                <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+                  <input
+                    id="create-project-skill-search"
+                    type="text"
+                    className="nb-input"
+                    placeholder="Cari skill (misal: Frontend, Riset, Masak)..."
+                    value={customSkill}
+                    onChange={(e) => setCustomSkill(e.target.value)}
+                    style={{ flex: 1, background: "#fff" }}
+                  />
+                </div>
+
+                {customSkill ? (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    {SKILL_SUGGESTIONS.filter(s => s.toLowerCase().includes(customSkill.toLowerCase()) && !selectedSkills.includes(s)).slice(0, 15).map(skill => (
+                      <button key={skill} type="button" onClick={() => { toggleSkill(skill); setCustomSkill(""); }} className="skill-chip" style={{ background: "#fff" }}>
+                        + {skill}
+                      </button>
+                    ))}
+                    {customSkill.trim() && !SKILL_SUGGESTIONS.some(s => s.toLowerCase() === customSkill.toLowerCase()) && (
+                      <button type="button" onClick={addCustomSkill} className="skill-chip" style={{ background: "#00D37F", color: "#fff" }}>
+                        + Tambah "{customSkill}"
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    {SKILL_GROUPS.slice(0, 4).map(group => (
+                      <div key={group.name}>
+                        <div style={{ fontSize: "11px", fontWeight: 800, color: "#666", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>{group.name}</div>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                          {group.skills.filter(s => !selectedSkills.includes(s)).slice(0, 8).map(skill => (
+                            <button key={skill} type="button" onClick={() => toggleSkill(skill)} className="skill-chip" style={{ background: "#fff", fontSize: "12px" }}>
+                              {skill}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                    <div style={{ fontSize: "12px", fontWeight: 600, color: "#3D3D3D", fontStyle: "italic" }}>Gunakan kolom pencarian di atas untuk melihat lebih banyak bidang...</div>
+                  </div>
+                )}
               </div>
 
-              <div style={{ display: "flex", gap: "8px" }}>
-                <input
-                  id="create-project-custom-skill"
-                  type="text"
-                  className="nb-input"
-                  placeholder="Tambah skill lain..."
-                  value={customSkill}
-                  onChange={(e) => setCustomSkill(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustomSkill())}
-                  style={{ flex: 1 }}
-                />
-                <button type="button" onClick={addCustomSkill} className="btn-secondary btn-sm" id="create-project-add-skill-btn">
-                  + Tambah
-                </button>
-              </div>
             </div>
 
             {/* Submit */}

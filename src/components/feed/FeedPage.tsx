@@ -143,13 +143,13 @@ export function FeedPage({ user }: Props) {
           <div style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>BIDANG & TAG</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {[
-              { label: "React", value: { tag: "React" }, color: "#61DAFB", bg: "#E8FAFE", emoji: "⚛️" },
+              { label: "Frontend", value: { tag: "Frontend" }, color: "#0047FF", bg: "#E6F0FF", emoji: "💻" },
               { label: "UI/UX", value: { tag: "UIUX" }, color: "#FF6B6B", bg: "#FFE8E8", emoji: "🎨" },
               { label: "Akademik", value: { tag: "Akademik" }, color: "#0047FF", bg: "#E6F0FF", emoji: "📖" },
-              { label: "Bisnis", value: { tag: "Bisnis" }, color: "#00D37F", bg: "#E0FFF4", emoji: "📊" },
-              { label: "Pertanian", value: { tag: "Pertanian" }, color: "#E67E22", bg: "#FFF3E0", emoji: "🚜" },
-              { label: "Riset", value: { tag: "Riset" }, color: "#9B59B6", bg: "#F3E8FF", emoji: "🔬" },
-              { label: "Marketing", value: { tag: "Marketing" }, color: "#FF4D8D", bg: "#FFE8F2", emoji: "📣" },
+              { label: "Manajemen", value: { tag: "Management" }, color: "#00D37F", bg: "#E0FFF4", emoji: "📊" },
+              { label: "Agrotek", value: { tag: "Agrotech" }, color: "#E67E22", bg: "#FFF3E0", emoji: "🚜" },
+              { label: "Engineering", value: { tag: "Engineering" }, color: "#9B59B6", bg: "#F3E8FF", emoji: "⚙️" },
+              { label: "Kreatif", value: { tag: "Creative" }, color: "#FF4D8D", bg: "#FFE8F2", emoji: "📣" },
             ].map((f, i) => {
               const isActive = JSON.stringify(filter) === JSON.stringify(f.value);
               return (
@@ -196,6 +196,9 @@ export function FeedPage({ user }: Props) {
               { label: "Pertanian", value: { topic: "PERTANIAN" }, color: "#00D37F", bg: "#E0FFF4", emoji: "🚜" },
               { label: "Ekonomi", value: { topic: "EKONOMI" }, color: "#FF4D4D", bg: "#FFE8E8", emoji: "📈" },
               { label: "Karya Tulis", value: { topic: "KARYA_TULIS" }, color: "#BF8B2E", bg: "#FFF9E0", emoji: "✍️" },
+              { label: "Hukum & Pol", value: { topic: "HUKUM_POLITIK" }, color: "#0047FF", bg: "#E6F0FF", emoji: "⚖️" },
+              { label: "Manufaktur", value: { topic: "MANUFAKTUR" }, color: "#FF4D4D", bg: "#FFE8E8", emoji: "⚙️" },
+              { label: "Sains Murni", value: { topic: "SAINS_MURNI" }, color: "#00D37F", bg: "#E0FFF4", emoji: "🧪" },
             ].map((f, i) => {
               const isActive = JSON.stringify(filter) === JSON.stringify(f.value);
               return (

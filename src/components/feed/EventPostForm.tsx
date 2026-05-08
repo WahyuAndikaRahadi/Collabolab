@@ -20,20 +20,20 @@ export function EventPostForm({ isOpen, onClose, onSuccess, trustScore }: Props)
     projectTopic: "",
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
   const isLowScore = trustScore < 31;
+  const toast = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isLowScore) return;
     
     if (!formData.eventName || !formData.eventLink || !formData.eventDeadline) {
-      return setError("Mohon isi semua field wajib.");
+      return toast.error("Data tidak lengkap", "Mohon isi semua field wajib.");
     }
 
     setLoading(true);
-    setError("");
+    const toastId = toast.loading("Membagikan event...", "Info event sedang diproses");
+    
     try {
       const res = await fetch("/api/feed", {
         method: "POST",
@@ -41,11 +41,16 @@ export function EventPostForm({ isOpen, onClose, onSuccess, trustScore }: Props)
         body: JSON.stringify({
           type: "EVENT",
           ...formData,
-          eventSkills: [], // Could be expanded later
+          eventSkills: [],
         }),
       });
 
       if (res.ok) {
+        toast.update(toastId, {
+          type: "success",
+          title: "Event berhasil dibagikan!",
+          description: `"${formData.eventName}" sudah muncul di feed.`
+        });
         onSuccess();
         onClose();
         setFormData({
@@ -58,10 +63,18 @@ export function EventPostForm({ isOpen, onClose, onSuccess, trustScore }: Props)
         });
       } else {
         const data = await res.json();
-        setError(data.error || "Gagal memposting event.");
+        toast.update(toastId, {
+          type: "error",
+          title: "Gagal memposting event",
+          description: data.error || "Terjadi kesalahan saat memproses data."
+        });
       }
     } catch {
-      setError("Terjadi kesalahan server.");
+      toast.update(toastId, {
+        type: "error",
+        title: "Koneksi Bermasalah",
+        description: "Terjadi kesalahan server. Coba lagi nanti."
+      });
     } finally {
       setLoading(false);
     }
@@ -80,7 +93,6 @@ export function EventPostForm({ isOpen, onClose, onSuccess, trustScore }: Props)
         </div>
       ) : (
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-          {error && <div style={{ color: "red", fontSize: "14px", fontWeight: 700 }}>⚠️ {error}</div>}
           
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
             <div>
@@ -139,14 +151,20 @@ export function EventPostForm({ isOpen, onClose, onSuccess, trustScore }: Props)
                 onChange={(e) => setFormData({ ...formData, projectTopic: e.target.value })}
                 style={{ width: "100%", padding: "10px", border: "2px solid #000", borderRadius: "4px", background: "#fff", fontWeight: 700 }}
               >
-                <option value="">Tidak ada</option>
-                <option value="TEKNOLOGI">Teknologi</option>
-                <option value="PERTANIAN">Pertanian</option>
-                <option value="PENDIDIKAN">Pendidikan</option>
-                <option value="EKONOMI">Ekonomi</option>
-                <option value="KARYA_TULIS">Karya Tulis</option>
-                <option value="RESEARCH">Research</option>
-                <option value="SENI_BUDAYA">Seni Budaya</option>
+                <option value="">🔖 Pilih Topik</option>
+                <option value="TEKNOLOGI">💻 Teknologi</option>
+                <option value="PERTANIAN">🚜 Pertanian</option>
+                <option value="PENDIDIKAN">📚 Pendidikan</option>
+                <option value="EKONOMI">📈 Ekonomi</option>
+                <option value="KARYA_TULIS">✍️ Karya Tulis</option>
+                <option value="RESEARCH">🔬 Research</option>
+                <option value="SENI_BUDAYA">🎨 Seni Budaya</option>
+                <option value="HUKUM_POLITIK">⚖️ Hukum & Politik</option>
+                <option value="MANUFAKTUR">⚙️ Manufaktur</option>
+                <option value="KULINER_PARIWISATA">🍳 Kuliner & Tour</option>
+                <option value="OLAHRAGA_KEBUGARAN">⚽ Olahraga</option>
+                <option value="MARITIM_DIRGANTARA">🚀 Maritim & Udara</option>
+                <option value="SAINS_MURNI">🧪 Sains Murni</option>
               </select>
             </div>
           </div>

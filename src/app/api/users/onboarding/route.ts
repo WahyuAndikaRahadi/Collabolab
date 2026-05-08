@@ -8,11 +8,11 @@ import { z } from "zod";
 
 const onboardingSchema = z.object({
   skills: z.array(z.string().min(1)).min(3),
-  bio: z.string().max(300).optional(),
+  bio: z.string().max(300).optional().nullable(),
   availStatus: z.enum(["OPEN", "FOCUS", "BUSY"]),
-  linkedinUrl: z.string().url().nullable().optional(),
-  githubUrl: z.string().url().nullable().optional(),
-  portfolioUrl: z.string().url().nullable().optional(),
+  linkedinUrl: z.string().nullable().optional(),
+  githubUrl: z.string().nullable().optional(),
+  portfolioUrl: z.string().nullable().optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -25,16 +25,33 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const parsed = onboardingSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: "Data tidak valid." }, { status: 400 });
+      console.error("[onboarding] Validation error:", parsed.error.format());
+      return NextResponse.json({ 
+        error: "Data tidak valid.", 
+        details: parsed.error.flatten().fieldErrors 
+      }, { status: 400 });
     }
 
     const { skills, bio, availStatus, linkedinUrl, githubUrl, portfolioUrl } = parsed.data;
 
+    // Helper to normalize URLs
+    const normalizeUrl = (url: string | null | undefined) => {
+      if (!url) return null;
+      const trimmed = url.trim();
+      if (!trimmed) return null;
+      if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed;
+      return `https://${trimmed}`;
+    };
+
+    const cleanLinkedin = normalizeUrl(linkedinUrl);
+    const cleanGithub = normalizeUrl(githubUrl);
+    const cleanPortfolio = normalizeUrl(portfolioUrl);
+
     // Process external links with verification
     const linkUrls = [
-      { url: linkedinUrl, platform: "LINKEDIN" as ExternalPlatform },
-      { url: githubUrl, platform: "GITHUB" as ExternalPlatform },
-      { url: portfolioUrl, platform: "PORTFOLIO" as ExternalPlatform },
+      { url: cleanLinkedin, platform: "LINKEDIN" as ExternalPlatform },
+      { url: cleanGithub, platform: "GITHUB" as ExternalPlatform },
+      { url: cleanPortfolio, platform: "PORTFOLIO" as ExternalPlatform },
     ].filter(l => l.url);
 
     if (linkUrls.length > 0) {

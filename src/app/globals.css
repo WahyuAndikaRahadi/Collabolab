@@ -214,8 +214,10 @@ code, kbd, pre, samp {
 }
 
 .nb-input:focus {
-  box-shadow: 4px 4px 0px var(--accent-blue);
-  border-color: var(--accent-blue);
+  border-color: var(--text-primary);
+  box-shadow: 4px 4px 0px var(--accent-yellow);
+  transform: translate(-1px, -1px);
+  outline: none;
 }
 
 .nb-input::placeholder {
@@ -239,8 +241,10 @@ code, kbd, pre, samp {
 }
 
 .nb-textarea:focus {
-  box-shadow: 4px 4px 0px var(--accent-blue);
-  border-color: var(--accent-blue);
+  border-color: var(--text-primary);
+  box-shadow: 4px 4px 0px var(--accent-yellow);
+  transform: translate(-1px, -1px);
+  outline: none;
 }
 
 .nb-select {
@@ -264,8 +268,37 @@ code, kbd, pre, samp {
 }
 
 .nb-select:focus {
-  box-shadow: 4px 4px 0px var(--accent-blue);
-  border-color: var(--accent-blue);
+  border-color: var(--text-primary);
+  box-shadow: 4px 4px 0px var(--accent-yellow);
+  transform: translate(-1px, -1px);
+  outline: none;
+}
+
+/* ─── OTP Input ────────────────────────────────────────────────────────────── */
+.otp-input {
+  width: 52px;
+  height: 64px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 900;
+  font-family: var(--font-space-grotesk), sans-serif;
+  border: 3px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  box-shadow: 3px 3px 0px var(--border);
+  outline: none;
+  transition: var(--transition);
+}
+
+.otp-input:focus {
+  border-color: var(--text-primary);
+  box-shadow: 5px 5px 0px var(--accent-yellow);
+  transform: translate(-2px, -2px);
+  outline: none;
+}
+
+.otp-input.has-value {
+  background: var(--accent-yellow);
 }
 
 /* ─── Badge / Tag ────────────────────────────────────────────────────────────── */
@@ -382,7 +415,7 @@ code, kbd, pre, samp {
 
 /* ─── Focus visible ──────────────────────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid var(--accent-blue);
+  outline: 2px solid var(--text-primary);
   outline-offset: 2px;
 }
 

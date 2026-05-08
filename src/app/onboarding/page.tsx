@@ -42,6 +42,8 @@ export default function OnboardingPage() {
     setCustomSkill("");
   }
 
+  const [showSuccess, setShowSuccess] = useState(false);
+
   async function handleComplete() {
     if (step === 1 && selectedSkills.length < 3) {
       setError("Pilih minimal 3 skill.");
@@ -69,13 +71,22 @@ export default function OnboardingPage() {
           portfolioUrl: links.portfolio || null,
         }),
       });
-      if (!res.ok) throw new Error("Gagal menyimpan profil.");
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Gagal menyimpan profil.");
+      }
+
+      // Success sequence
+      setShowSuccess(true);
       await update({ onboardingDone: true });
-      router.refresh();
-      window.location.href = "/dashboard";
+      
+      // Delay for success animation feel
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
-    } finally {
       setIsLoading(false);
     }
   }
@@ -89,7 +100,7 @@ export default function OnboardingPage() {
       <div style={{ maxWidth: "640px", margin: "0 auto 32px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
           <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px" }}>
-            🤝 Setup Profilmu
+             Setup Profilmu
           </div>
           <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", color: "#3D3D3D" }}>
             Step {step} / 3
@@ -226,6 +237,7 @@ export default function OnboardingPage() {
                 placeholder="Misal: Mahasiswa Informatika semester 4 yang passionate di web development. Suka bangun project yang solve real problems!"
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
+                maxLength={300}
                 style={{ minHeight: "100px" }}
               />
               <span style={{ fontSize: "12px", color: "#999" }}>{bio.length}/300 karakter</span>
@@ -355,10 +367,44 @@ export default function OnboardingPage() {
             disabled={isLoading}
             style={{ fontSize: "16px", padding: "12px 28px" }}
           >
-            {isLoading ? "Menyimpan..." : step < 3 ? "Lanjut →" : "🎉 Selesai & Masuk Dashboard"}
+            {isLoading ? "Menyimpan..." : step < 3 ? "Lanjut →" : "Selesai & Masuk Dashboard"}
           </button>
         </div>
       </div>
+      {/* ─── Overlays ────────────────────────────────────── */}
+      
+      {/* Loading Overlay */}
+      {isLoading && !showSuccess && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(245, 240, 232, 0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, backdropFilter: "blur(4px)" }}>
+          <div style={{ background: "#fff", border: "4px solid #000", padding: "32px 48px", borderRadius: "12px", boxShadow: "12px 12px 0px #000", textAlign: "center" }}>
+            <div style={{ width: "40px", height: "40px", border: "4px solid #000", borderTopColor: "#FFE500", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 20px" }} />
+            <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "20px" }}>Menyimpan Profil...</h3>
+          </div>
+        </div>
+      )}
+
+      {/* Success Overlay */}
+      {showSuccess && (
+        <div style={{ position: "fixed", inset: 0, background: "#FFE500", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 101 }}>
+          <div style={{ background: "#fff", border: "4px solid #000", padding: "48px", borderRadius: "12px", boxShadow: "16px 16px 0px #000", textAlign: "center", maxWidth: "90%", width: "400px", transform: "rotate(-1deg)" }}>
+            <div style={{ fontSize: "64px", marginBottom: "24px" }}>🎉</div>
+            <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "32px", marginBottom: "12px", lineHeight: 1.1 }}>
+              YEAY! <br />SIAP TEMUKAN TIM?
+            </h2>
+            <p style={{ fontWeight: 600, color: "#3D3D3D", marginBottom: "32px" }}>
+              Profilmu sudah keren! <br />Mengarahkan ke Dashboard...
+            </p>
+            <div style={{ height: "6px", background: "#f0f0f0", border: "2px solid #000", borderRadius: "3px", overflow: "hidden" }}>
+              <div style={{ height: "100%", background: "#00D37F", animation: "progress 2s linear forwards" }} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes progress { from { width: 0%; } to { width: 100%; } }
+      `}</style>
     </div>
   );
 }

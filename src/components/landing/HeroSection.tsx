@@ -307,7 +307,7 @@ export function HeroSection() {
             <Link href="/register" className="btn-primary btn-lg" id="hero-cta-register">
               🚀 Mulai Gratis
             </Link>
-            <Link href="/explore" className="btn-secondary btn-lg" id="hero-cta-explore">
+            <Link href="#explore-preview" className="btn-secondary btn-lg" id="hero-cta-explore">
               Lihat Project →
             </Link>
           </motion.div>

@@ -9,6 +9,7 @@ import { TrustSection } from "@/components/landing/TrustSection";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { AboutSection } from "@/components/landing/AboutSection";
 import { CtaFooterSection } from "@/components/landing/CtaFooterSection";
+import { AIAssistantWidget } from "@/components/landing/AIAssistantWidget";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { CustomCursor } from "@/components/ui/CustomCursor";
@@ -76,6 +77,7 @@ export default async function HomePage() {
         <TestimonialsSection />
         <CtaFooterSection />
       </main>
+      <AIAssistantWidget />
     </>
   );
 }

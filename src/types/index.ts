@@ -67,6 +67,7 @@ export type ProjectMemberData = {
   anonymousTag: string | null;
   revealedAt: Date | null;
   role: MemberRole;
+  roleTitle: string | null;
   joinedAt: Date;
   user: {
     id: string;

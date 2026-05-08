@@ -110,10 +110,28 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
   }
 
   function renderContent(content: string, myMessage: boolean) {
-    // Highlight @mentions (e.g. @name or @all)
-    const parts = content.split(/(@\w+)/g);
+    // Get all possible display names for project members
+    const possibleNames = members.map((m) => {
+      if (m.isAnonymous && !m.revealedAt) return `Anon#${m.anonymousTag || "0000"}`;
+      return m.user.name;
+    });
+    possibleNames.push("all");
+
+    // Sort by length descending so we match "Kamen Raiding" before "Kamen"
+    const sortedNames = [...possibleNames].sort((a, b) => b.length - a.length);
+    
+    // Escape special characters in names for use in regex
+    const escapedNames = sortedNames.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    
+    // Create regex that matches @ followed by any of the member names
+    const mentionRegex = new RegExp(`(@(?:${escapedNames.join("|")}))`, "g");
+
+    const parts = content.split(mentionRegex);
     return parts.map((part, i) => {
-      if (part.startsWith("@")) {
+      // Check if this part is a valid mention from our list
+      const isMention = part.startsWith("@") && possibleNames.some(n => `@${n}` === part);
+      
+      if (isMention) {
         return (
           <span key={i} style={{ color: "#0047FF", fontWeight: 900 }}>
             {part}

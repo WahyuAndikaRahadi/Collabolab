@@ -138,18 +138,20 @@ export function FeedPage({ user }: Props) {
           </div>
         </div>
 
-        {/* Tag Filters */}
+        {/* Skill Filters */}
         <div>
-          <div style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>BIDANG & TAG</div>
+          <div style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>SKILL & KEAHLIAN</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {[
               { label: "Frontend", value: { tag: "Frontend" }, color: "#0047FF", bg: "#E6F0FF", emoji: "💻" },
-              { label: "UI/UX", value: { tag: "UIUX" }, color: "#FF6B6B", bg: "#FFE8E8", emoji: "🎨" },
-              { label: "Akademik", value: { tag: "Akademik" }, color: "#0047FF", bg: "#E6F0FF", emoji: "📖" },
-              { label: "Manajemen", value: { tag: "Management" }, color: "#00D37F", bg: "#E0FFF4", emoji: "📊" },
-              { label: "Agrotek", value: { tag: "Agrotech" }, color: "#E67E22", bg: "#FFF3E0", emoji: "🚜" },
-              { label: "Engineering", value: { tag: "Engineering" }, color: "#9B59B6", bg: "#F3E8FF", emoji: "⚙️" },
-              { label: "Kreatif", value: { tag: "Creative" }, color: "#FF4D8D", bg: "#FFE8F2", emoji: "📣" },
+              { label: "Backend", value: { tag: "Backend" }, color: "#FF4D4D", bg: "#FFE8E8", emoji: "⚙️" },
+              { label: "Mobile Dev", value: { tag: "Mobile" }, color: "#00D37F", bg: "#E0FFF4", emoji: "📱" },
+              { label: "UI/UX Design", value: { tag: "Designer" }, color: "#FFE500", bg: "#FFFBEB", emoji: "🎨" },
+              { label: "Researcher", value: { tag: "Researcher" }, color: "#00D37F", bg: "#E0FFF4", emoji: "🧪" },
+              { label: "Management", value: { tag: { contains: "ProjectManager" } as any }, color: "#BF8B2E", bg: "#FFF9E0", emoji: "📊" },
+              { label: "Business", value: { tag: "Business" }, color: "#0047FF", bg: "#E6F0FF", emoji: "💼" },
+              { label: "Legal", value: { tag: "Legal" }, color: "#FF4D4D", bg: "#FFE8E8", emoji: "⚖️" },
+              { label: "Content", value: { tag: "Content" }, color: "#00D37F", bg: "#E0FFF4", emoji: "🎬" },
             ].map((f, i) => {
               const isActive = JSON.stringify(filter) === JSON.stringify(f.value);
               return (
@@ -193,12 +195,14 @@ export function FeedPage({ user }: Props) {
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {[
               { label: "Teknologi", value: { topic: "TEKNOLOGI" }, color: "#0047FF", bg: "#E6F0FF", emoji: "💻" },
+              { label: "Pendidikan", value: { topic: "PENDIDIKAN" }, color: "#FFE500", bg: "#FFFBEB", emoji: "📚" },
               { label: "Pertanian", value: { topic: "PERTANIAN" }, color: "#00D37F", bg: "#E0FFF4", emoji: "🚜" },
               { label: "Ekonomi", value: { topic: "EKONOMI" }, color: "#FF4D4D", bg: "#FFE8E8", emoji: "📈" },
-              { label: "Karya Tulis", value: { topic: "KARYA_TULIS" }, color: "#BF8B2E", bg: "#FFF9E0", emoji: "✍️" },
+              { label: "Lingkungan", value: { topic: "LINGKUNGAN" }, color: "#00D37F", bg: "#E0FFF4", emoji: "🌱" },
+              { label: "Karya Tulis", value: { topic: "KARYA_TULIS" }, color: "#0047FF", bg: "#E6F0FF", emoji: "✍️" },
+              { label: "Research", value: { topic: "RESEARCH" }, color: "#00D37F", bg: "#E0FFF4", emoji: "🧪" },
+              { label: "Seni Budaya", value: { topic: "SENI_BUDAYA" }, color: "#FFE500", bg: "#FFFBEB", emoji: "🎨" },
               { label: "Hukum & Pol", value: { topic: "HUKUM_POLITIK" }, color: "#0047FF", bg: "#E6F0FF", emoji: "⚖️" },
-              { label: "Manufaktur", value: { topic: "MANUFAKTUR" }, color: "#FF4D4D", bg: "#FFE8E8", emoji: "⚙️" },
-              { label: "Sains Murni", value: { topic: "SAINS_MURNI" }, color: "#00D37F", bg: "#E0FFF4", emoji: "🧪" },
             ].map((f, i) => {
               const isActive = JSON.stringify(filter) === JSON.stringify(f.value);
               return (

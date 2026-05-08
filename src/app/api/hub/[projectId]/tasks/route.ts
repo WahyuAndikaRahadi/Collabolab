@@ -68,12 +68,25 @@ export async function POST(req: NextRequest, { params }: Params) {
   const parsed = createTaskSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
 
-  const { roomId, deadline, ...rest } = parsed.data;
+  const { roomId, deadline, assigneeId, ...rest } = parsed.data;
+
+  if (assigneeId && member.role === "MEMBER" && !member.roleTitle) {
+      return NextResponse.json({ error: "Hanya Admin atau anggota dengan Role yang bisa menugaskan task." }, { status: 403 });
+  }
+
+  // Anti-overcommit check (max 3 tasks in IN_PROGRESS)
+  if (assigneeId && rest.status === "IN_PROGRESS") {
+    const inProgressCount = await prisma.hubTask.count({
+      where: { assigneeId, status: "IN_PROGRESS" }
+    });
+    if (inProgressCount >= 3) {
+      return NextResponse.json({ error: "Anggota ini sudah memiliki 3 tugas di In Progress. Selesaikan dulu tugas yang ada!" }, { status: 400 });
+    }
+  }
 
   // Validate room belongs to project
   let resolvedRoomId = roomId;
   if (!roomId) {
-    // Use global kanban room
     const kanbanRoom = await prisma.hubRoom.findFirst({ where: { projectId, type: "KANBAN" } });
     if (kanbanRoom) resolvedRoomId = kanbanRoom.id;
   }
@@ -87,6 +100,7 @@ export async function POST(req: NextRequest, { params }: Params) {
   const task = await prisma.hubTask.create({
     data: {
       ...rest,
+      assigneeId: assigneeId ?? null,
       projectId,
       roomId: resolvedRoomId ?? null,
       deadline: deadline ? new Date(deadline) : null,
@@ -135,6 +149,46 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const { id, ...updates } = parsed.data;
 
   const existingTask = await prisma.hubTask.findUnique({ where: { id } });
+  if (!existingTask) return NextResponse.json({ error: "Task not found" }, { status: 404 });
+
+  // Assignment logic
+  if (updates.assigneeId !== undefined) {
+      const isPrivileged = member.role === "OWNER" || member.role === "ADMIN" || !!member.roleTitle;
+      
+      if (updates.assigneeId === null) {
+          // Unclaiming/Unassigning
+          // Anyone can unassign themselves, Privileged can unassign anyone
+          if (!isPrivileged && existingTask.assigneeId !== session.user.id) {
+              return NextResponse.json({ error: "Hanya Admin atau penanggung jawab task yang bisa melepas penugasan." }, { status: 403 });
+          }
+      } else {
+          // Assigning
+          // Privileged can assign anyone
+          // Non-privileged can only claim if it was unassigned
+          if (!isPrivileged) {
+              if (existingTask.assigneeId !== null) {
+                  return NextResponse.json({ error: "Task sudah memiliki penanggung jawab." }, { status: 403 });
+              }
+              if (updates.assigneeId !== session.user.id) {
+                  return NextResponse.json({ error: "Kamu hanya bisa mengklaim task untuk dirimu sendiri." }, { status: 403 });
+              }
+          }
+
+          // Anti-overcommit check
+          if (updates.status === "IN_PROGRESS" || (existingTask.status === "IN_PROGRESS" && updates.assigneeId)) {
+            const targetAssigneeId = updates.assigneeId || existingTask.assigneeId;
+            if (targetAssigneeId) {
+                const inProgressCount = await prisma.hubTask.count({
+                    where: { assigneeId: targetAssigneeId, status: "IN_PROGRESS", NOT: { id } }
+                });
+                if (inProgressCount >= 3) {
+                    return NextResponse.json({ error: "Anggota ini sudah memiliki 3 tugas di In Progress. Selesaikan dulu tugas yang ada!" }, { status: 400 });
+                }
+            }
+          }
+      }
+  }
+
   const task = await prisma.hubTask.update({ where: { id }, data: updates });
 
   try {

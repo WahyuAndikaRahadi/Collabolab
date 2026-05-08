@@ -91,6 +91,7 @@ enum Priority {
 
 enum MemberRole {
   OWNER
+  ADMIN
   MEMBER
 }
 
@@ -246,6 +247,7 @@ model ProjectMember {
   anonymousTag  String?
   revealedAt    DateTime?
   role          MemberRole @default(MEMBER)
+  roleTitle     String?
   joinedAt      DateTime @default(now())
 
   project       Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)

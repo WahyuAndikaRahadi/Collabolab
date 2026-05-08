@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { CATEGORY_META, COMMITMENT_META, TOPIC_META } from "@/types";
 import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
 import { ProjectDetailClient } from "@/components/project/ProjectDetailClient";
+import { ProjectMembersList } from "@/components/project/ProjectMembersList";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -112,29 +113,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", marginBottom: "16px" }}>
                 👥 Anggota ({project.members.length}/{project.maxMembers})
               </h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {project.members.map((m) => {
-                  const isAnon = m.isAnonymous && !m.revealedAt;
-                  const displayName = isAnon ? `Anon#${m.anonymousTag || "0000"}` : m.user.name;
-                  return (
-                    <div key={m.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px", background: "#F5F0E8", border: "1.5px solid #000", borderRadius: "6px" }}>
-                      <div style={{ width: "40px", height: "40px", borderRadius: "50%", border: "2px solid #000", background: m.role === "OWNER" ? "#FFE500" : "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "16px" }}>
-                        {isAnon ? "👤" : displayName[0]}
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px" }}>{displayName}</div>
-                        <div style={{ fontSize: "12px", color: "#3D3D3D" }}>{m.role === "OWNER" ? "👑 Owner" : "Member"}</div>
-                      </div>
-                      {!isAnon && (
-                        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                          <span>{TRUST_EMOJI[m.user.trustLevel]}</span>
-                          <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px" }}>{m.user.trustScore}</span>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+              <ProjectMembersList 
+                initialMembers={JSON.parse(JSON.stringify(project.members))} 
+                projectId={id}
+                currentUserId={session?.user?.id}
+                isOwner={isOwner}
+                isAdmin={project.members.find(m => m.userId === session?.user?.id)?.role === "ADMIN"}
+              />
             </div>
           </div>
 

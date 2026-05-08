@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useCallback } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { ToastContainer } from '@/components/ui/toast/ToastContainer'
 
@@ -34,6 +34,11 @@ const ToastContext = createContext<ToastContextValue | null>(null)
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([])
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const dismiss = useCallback((id: string) => {
     setToasts(prev => prev.filter(t => t.id !== id))
@@ -92,7 +97,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ toasts, toast }}>
       {children}
-      {typeof window !== 'undefined' &&
+      {mounted &&
         createPortal(<ToastContainer toasts={toasts} onDismiss={dismiss} />, document.body)
       }
     </ToastContext.Provider>

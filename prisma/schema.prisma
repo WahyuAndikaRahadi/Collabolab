@@ -193,7 +193,7 @@ model Project {
   description     String
   category        ProjectCategory
   commitmentLevel CommitmentLevel
-  projectTopic    ProjectTopic
+  projectTopic    ProjectTopic @default(TEKNOLOGI)
   maxMembers      Int
   status          ProjectStatus @default(OPEN)
   ownerId         String

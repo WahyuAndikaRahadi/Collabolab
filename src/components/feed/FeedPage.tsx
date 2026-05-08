@@ -54,13 +54,21 @@ export function FeedPage({ user }: Props) {
   }, [filter]);
 
   return (
-    <div className="feed-layout">
+    <div style={{ 
+      maxWidth: "1100px", 
+      margin: "0 auto", 
+      padding: "24px 16px",
+      display: "grid",
+      gridTemplateColumns: "250px 1fr",
+      gap: "32px",
+      alignItems: "start"
+    }}>
       {/* Left Sidebar */}
       <motion.div 
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4 }}
-        className="feed-sidebar"
+        style={{ position: "sticky", top: "24px", display: "flex", flexDirection: "column", gap: "16px" }}
       >
         {/* Home Button */}
         <motion.button
@@ -89,7 +97,7 @@ export function FeedPage({ user }: Props) {
 
         {/* Type Filters */}
         <div>
-          <div className="feed-sidebar-label" style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>TIPE POST</div>
+          <div style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>TIPE POST</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {[
               { label: "📢 Contribution", value: { type: "CONTRIBUTION" }, color: "#0047FF", bg: "#E6F0FF" },
@@ -105,7 +113,6 @@ export function FeedPage({ user }: Props) {
                   transition={{ delay: i * 0.05 }}
                   whileHover={{ x: 4, boxShadow: `3px 3px 0px ${f.color}` }}
                   whileTap={{ scale: 0.97 }}
-                 className="feed-filter-btn"
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -133,7 +140,7 @@ export function FeedPage({ user }: Props) {
 
         {/* Tag Filters */}
         <div>
-          <div className="feed-sidebar-label" style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>BIDANG & TAG</div>
+          <div style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>BIDANG & TAG</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {[
               { label: "React", value: { tag: "React" }, color: "#61DAFB", bg: "#E8FAFE", emoji: "⚛️" },
@@ -154,7 +161,6 @@ export function FeedPage({ user }: Props) {
                   transition={{ delay: 0.1 + i * 0.04 }}
                   whileHover={{ x: 4, boxShadow: `3px 3px 0px ${f.color}` }}
                   whileTap={{ scale: 0.97 }}
-                  className="feed-filter-btn"
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -183,7 +189,7 @@ export function FeedPage({ user }: Props) {
 
         {/* Topic Filters */}
         <div>
-          <div className="feed-sidebar-label" style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>TOPIK UTAMA</div>
+          <div style={{ fontSize: "10px", fontWeight: 900, color: "#888", textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px", paddingLeft: "4px" }}>TOPIK UTAMA</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {[
               { label: "Teknologi", value: { topic: "TEKNOLOGI" }, color: "#0047FF", bg: "#E6F0FF", emoji: "💻" },
@@ -201,7 +207,6 @@ export function FeedPage({ user }: Props) {
                   transition={{ delay: 0.38 + i * 0.04 }}
                   whileHover={{ x: 4, boxShadow: `3px 3px 0px ${f.color}` }}
                   whileTap={{ scale: 0.97 }}
-                  className="feed-filter-btn"
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -230,7 +235,7 @@ export function FeedPage({ user }: Props) {
       </motion.div>
 
       {/* Main Feed Content */}
-      <div className="feed-main">
+      <div style={{ display: "flex", flexDirection: "column" }}>
         
         <CreatePostBox user={user} onSuccess={() => fetchPosts(null, true)} />
 

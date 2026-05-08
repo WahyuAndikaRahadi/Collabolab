@@ -214,11 +214,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(post);
     }
 
-      await sendMentionNotifications(post.id, session.user.name || "Someone", "EVENT");
-
-      return NextResponse.json(post);
-    }
-
     return NextResponse.json({ error: "Tipe post tidak valid" }, { status: 400 });
   } catch (error) {
     console.error("[FEED_POST]", error);

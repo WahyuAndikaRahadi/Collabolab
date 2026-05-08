@@ -169,6 +169,19 @@ export function FeedCommentSection({ postId, currentUserId }: Props) {
     });
   };
 
+  const highlightInput = (text: string) => {
+    if (!text) return null;
+    const parts = text.split(/(@\[[^\]]+\]|#\w+)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith("@[") && part.endsWith("]")) {
+        const name = part.slice(2, -1);
+        return <span key={i} style={{ color: "#00D37F", fontWeight: 800 }}>@{name}</span>;
+      }
+      if (part.startsWith("#")) return <span key={i} style={{ color: "#0047FF", fontWeight: 800 }}>{part}</span>;
+      return <span key={i} style={{ color: "#000" }}>{part}</span>;
+    });
+  };
+
   const commentTree = buildTree(comments);
 
   const renderReply = (c: CommentData, rootId: string) => (
@@ -289,16 +302,49 @@ export function FeedCommentSection({ postId, currentUserId }: Props) {
             </AnimatePresence>
 
             <form onSubmit={handlePostComment} style={{ display: "flex", gap: "8px" }}>
-              <input
-                ref={inputRef}
-                type="text"
-                value={newComment}
-                onChange={handleInputChange}
-                onKeyUp={(e) => checkMention(e.currentTarget)}
-                placeholder={replyTo ? `Balas ${replyTo.name}...` : "Tulis komentar... (@ untuk mention)"}
-                maxLength={200}
-                style={{ flex: 1, background: "#F5F0E8", border: "2px solid #000", padding: "9px 13px", borderRadius: "4px", fontSize: "13px", fontFamily: "inherit", outline: "none", boxShadow: "2px 2px 0 #000" }}
-              />
+              <div style={{ flex: 1, position: "relative", border: "2px solid #000", borderRadius: "4px", background: "#F5F0E8", boxShadow: "2px 2px 0 #000", overflow: "hidden" }}>
+                {/* Overlay */}
+                <div style={{
+                  position: "absolute",
+                  inset: 0,
+                  padding: "9px 13px",
+                  pointerEvents: "none",
+                  fontFamily: "inherit",
+                  fontSize: "13px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  color: "transparent",
+                  zIndex: 2
+                }}>
+                  {newComment ? highlightInput(newComment) : (
+                    <span style={{ color: "#666", opacity: 0.7 }}>
+                      {replyTo ? `Balas ${replyTo.name}...` : "Tulis komentar... (@ untuk mention)"}
+                    </span>
+                  )}
+                </div>
+
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={newComment}
+                  onChange={handleInputChange}
+                  onKeyUp={(e) => checkMention(e.currentTarget)}
+                  maxLength={200}
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    padding: "9px 13px",
+                    fontSize: "13px",
+                    fontFamily: "inherit",
+                    outline: "none",
+                    color: "transparent",
+                    caretColor: "#000",
+                    position: "relative",
+                    zIndex: 1
+                  }}
+                />
+              </div>
               <button
                 type="submit"
                 disabled={sending || !newComment.trim()}

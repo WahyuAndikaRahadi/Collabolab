@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ExploreClient } from "@/components/explore/ExploreClient";
 import { LinkButton } from "@/components/ui/Button";
@@ -14,7 +15,7 @@ async function getInitialProjects() {
   try {
     const projects = await prisma.project.findMany({
       where: { status: "OPEN" },
-      take: 12,
+      take: 48,
       orderBy: { createdAt: "desc" },
       include: {
         requiredSkills: { select: { skillName: true } },
@@ -33,6 +34,18 @@ async function getInitialProjects() {
 }
 
 export default async function ExplorePage() {
+  const session = await auth();
+
+  // Fetch logged-in user's skills for "Untuk Kamu" tab
+  let userSkills: string[] = [];
+  if (session?.user?.id) {
+    const userWithSkills = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { skills: { select: { skillName: true } } },
+    });
+    userSkills = userWithSkills?.skills.map((s) => s.skillName) ?? [];
+  }
+
   const initialProjects = await getInitialProjects();
 
   return (
@@ -57,7 +70,7 @@ export default async function ExplorePage() {
 
       {/* Content */}
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "32px 24px" }}>
-        <ExploreClient initialProjects={initialProjects as Parameters<typeof ExploreClient>[0]["initialProjects"]} />
+        <ExploreClient initialProjects={initialProjects as Parameters<typeof ExploreClient>[0]["initialProjects"]} userSkills={userSkills} />
       </div>
     </div>
   );

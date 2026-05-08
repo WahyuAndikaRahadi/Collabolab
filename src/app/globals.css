@@ -470,3 +470,85 @@ code, kbd, pre, samp {
     max-width: 500px;
   }
 }
+
+/* ─── Feed Page Mobile ───────────────────────────────────────────────────────── */
+
+/* Layout wrapper: sidebar + main */
+.feed-layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* Sidebar sticky */
+.feed-sidebar {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Main feed column */
+.feed-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .feed-layout {
+    grid-template-columns: 1fr;
+    padding: 16px 12px;
+    gap: 16px;
+  }
+
+  /* Sidebar becomes a horizontal scrollable chip strip */
+  .feed-sidebar {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px;
+    padding-bottom: 4px;
+    /* hide scrollbar visually */
+    scrollbar-width: none;
+  }
+  .feed-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Each sidebar section becomes inline-flex */
+  .feed-sidebar > div {
+    display: contents;
+  }
+
+  /* Section labels hidden on mobile */
+  .feed-sidebar-label {
+    display: none;
+  }
+
+  /* Each filter button → compact chip */
+  .feed-filter-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    border-radius: 20px !important;
+  }
+}
+
+/* Post card: full-width on mobile */
+.feed-post-card {
+  border-bottom: 2px solid #000;
+}
+
+@media (max-width: 480px) {
+  .feed-post-card {
+    padding: 14px 12px !important;
+  }
+}

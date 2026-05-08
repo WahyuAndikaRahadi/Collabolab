@@ -270,11 +270,13 @@ export function CreatePostBox({ user, onSuccess }: Props) {
                 lineHeight: "1.5",
                 whiteSpace: "pre-wrap",
                 wordWrap: "break-word",
-                color: "transparent", // base transparent, colored spans override
+                color: "transparent", 
                 zIndex: 2,
                 overflow: "hidden",
               }}>
-                {highlightText(content)}
+                {content ? highlightText(content) : (
+                  <span style={{ color: "#666", opacity: 0.7 }}>Apa yang sedang kamu pelajari? Gunakan # untuk tag bidang...</span>
+                )}
               </div>
 
               {/* Actual Textarea — text is transparent so overlay shows through */}
@@ -285,7 +287,6 @@ export function CreatePostBox({ user, onSuccess }: Props) {
                 onKeyUp={handleKeyUp}
                 onMouseUp={handleMouseUp}
                 onFocus={() => setIsExpanded(true)}
-                placeholder="Apa yang sedang kamu pelajari? Gunakan # untuk tag bidang..."
                 rows={isExpanded ? 3 : 1}
                 style={{
                   width: "100%",

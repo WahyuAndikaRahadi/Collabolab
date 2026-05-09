@@ -114,17 +114,16 @@ export async function POST(req: NextRequest) {
     if (type === "CONTRIBUTION") {
       const { content, mediaUrl, projectTopic, impactTag, projectId } = body;
 
-      if (!projectId) {
-        return NextResponse.json({ error: "Project wajib dicantumkan" }, { status: 400 });
+      // projectId is now optional (General Post)
+      if (projectId) {
+        // Check membership if projectId is provided
+        const member = await prisma.projectMember.findUnique({
+          where: {
+            projectId_userId: { projectId, userId: session.user.id },
+          },
+        });
+        // We don't strictly block if they aren't a member, but it's good for tagging.
       }
-
-      // Check membership
-      const member = await prisma.projectMember.findUnique({
-        where: {
-          projectId_userId: { projectId, userId: session.user.id },
-        },
-        include: { project: true },
-      });
 
       // Check daily limit (max 2)
       const startOfDay = new Date();

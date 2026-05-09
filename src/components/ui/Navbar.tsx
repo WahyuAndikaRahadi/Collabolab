@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LinkButton } from "@/components/ui/Button";
-import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
+import { getTrustLevelEmoji, getTrustLevelColor } from "@/lib/trust-score";
 import { NotificationBell } from "@/components/ui/NotificationBell";
 
 export function Navbar() {
@@ -178,12 +178,30 @@ export function Navbar() {
           {session?.user ? (
             <div className="flex items-center gap-2 lg:gap-3">
               <div className="hidden sm:block">
-                <TrustScoreBadge
-                  score={session.user.trustScore}
-                  level={session.user.trustLevel}
-                  variant="compact"
-                  showScore
-                />
+                <div 
+                  title={`Trust Score: ${session.user.trustScore}`}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    background: "#F5F0E8",
+                    border: "2px solid #000",
+                    borderRadius: "6px",
+                    padding: "3px 8px",
+                    boxShadow: "2px 2px 0px #000",
+                    cursor: "help"
+                  }}
+                >
+                  <span style={{ fontSize: "14px" }}>{getTrustLevelEmoji(session.user.trustLevel)}</span>
+                  <span style={{ 
+                    fontFamily: "Space Grotesk, sans-serif", 
+                    fontWeight: 800, 
+                    fontSize: "13px",
+                    color: "#000"
+                  }}>
+                    {session.user.trustScore}
+                  </span>
+                </div>
               </div>
               <NotificationBell userId={session.user.id} />
               <Link
@@ -211,22 +229,6 @@ export function Navbar() {
                   session.user.name?.[0]?.toUpperCase() ?? "U"
                 )}
               </Link>
-              <button
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="hidden lg:block"
-                style={{
-                  background: "transparent",
-                  border: "2px solid #000",
-                  borderRadius: "4px",
-                  padding: "6px 12px",
-                  fontFamily: "Space Grotesk, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "13px",
-                  cursor: "pointer",
-                }}
-              >
-                Keluar
-              </button>
             </div>
           ) : (
             <div className="hidden lg:flex items-center gap-3">

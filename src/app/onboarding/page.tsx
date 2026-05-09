@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { SKILL_SUGGESTIONS, SKILL_GROUPS } from "@/types";
-import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
+import { getTrustLevelEmoji, getTrustLevelColor, getTrustLevelLabel } from "@/lib/trust-score";
 
 type Step = 1 | 2 | 3;
 
@@ -303,13 +303,60 @@ export default function OnboardingPage() {
               Opsional, tapi boost Trust Score kamu!
             </p>
 
-            {/* Trust Score Preview */}
             <div style={{ marginBottom: "28px" }}>
-              <TrustScoreBadge
-                score={estimatedScore}
-                level={estimatedScore >= 86 ? "VERIFIED" : estimatedScore >= 61 ? "TRUSTED" : estimatedScore >= 31 ? "MEMBER" : "NEWCOMER"}
-                variant="full"
-              />
+              <div
+                style={{
+                  background: "#F5F0E8",
+                  border: "3px solid #000",
+                  borderRadius: "8px",
+                  padding: "20px",
+                  boxShadow: "4px 4px 0px #000",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
+                  <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "14px", color: "#3D3D3D", textTransform: "uppercase" }}>
+                    Estimasi Trust Score
+                  </span>
+                  <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "32px", lineHeight: 1 }}>
+                    {estimatedScore}
+                  </span>
+                </div>
+                
+                <div
+                  style={{
+                    background: "#fff",
+                    border: "2px solid #000",
+                    borderRadius: "4px",
+                    height: "12px",
+                    overflow: "hidden",
+                    marginBottom: "8px",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${estimatedScore}%`,
+                      height: "100%",
+                      background: getTrustLevelColor(estimatedScore >= 86 ? "VERIFIED" : estimatedScore >= 61 ? "TRUSTED" : estimatedScore >= 31 ? "MEMBER" : "NEWCOMER"),
+                      transition: "width 0.5s ease",
+                    }}
+                  />
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span
+                    style={{
+                      background: getTrustLevelColor(estimatedScore >= 86 ? "VERIFIED" : estimatedScore >= 61 ? "TRUSTED" : estimatedScore >= 31 ? "MEMBER" : "NEWCOMER"),
+                      border: "1.5px solid #000",
+                      borderRadius: "4px",
+                      padding: "2px 10px",
+                      fontFamily: "Space Grotesk, sans-serif",
+                      fontWeight: 700,
+                      fontSize: "12px",
+                    }}
+                  >
+                    {getTrustLevelEmoji(estimatedScore >= 86 ? "VERIFIED" : estimatedScore >= 61 ? "TRUSTED" : estimatedScore >= 31 ? "MEMBER" : "NEWCOMER")} {getTrustLevelLabel(estimatedScore >= 86 ? "VERIFIED" : estimatedScore >= 61 ? "TRUSTED" : estimatedScore >= 31 ? "MEMBER" : "NEWCOMER")}
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>

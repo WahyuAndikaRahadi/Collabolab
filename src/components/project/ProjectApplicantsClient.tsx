@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/Modal";
-import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
+import { getTrustLevelEmoji, getTrustLevelColor, getTrustLevelLabel } from "@/lib/trust-score";
 import type { CommitmentLevel, TrustLevel } from "@prisma/client";
 import { COMMITMENT_META } from "@/types";
 import Link from "next/link";
@@ -90,7 +90,30 @@ export function ProjectApplicantsClient({ projectId }: { projectId: string }) {
                     <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px", marginBottom: "4px" }}>
                       {app.applicant.name}
                     </div>
-                    <TrustScoreBadge score={app.applicant.trustScore} level={app.applicant.trustLevel} variant="compact" />
+                    <div 
+                      title={`${getTrustLevelLabel(app.applicant.trustLevel)}: ${app.applicant.trustScore} points`}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        background: "#fff",
+                        border: "1.5px solid #000",
+                        borderRadius: "4px",
+                        padding: "2px 8px",
+                        boxShadow: "1.5px 1.5px 0px #000",
+                        cursor: "help"
+                      }}
+                    >
+                      <span style={{ fontSize: "12px" }}>{getTrustLevelEmoji(app.applicant.trustLevel)}</span>
+                      <span style={{ 
+                        fontFamily: "Space Grotesk, sans-serif", 
+                        fontWeight: 800, 
+                        fontSize: "12px",
+                        color: "#000"
+                      }}>
+                        {app.applicant.trustScore}
+                      </span>
+                    </div>
                     
                     {app.applicant.externalLinks?.length > 0 && (
                       <div style={{ marginTop: "8px", display: "flex", gap: "6px", flexWrap: "wrap" }}>

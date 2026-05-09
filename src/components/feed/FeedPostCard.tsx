@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import { id } from "date-fns/locale";
-import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
+import { getTrustLevelEmoji, getTrustLevelLabel } from "@/lib/trust-score";
 import { FeedCommentSection } from "./FeedComment";
 import { FeedBookmarkButton } from "./FeedBookmarkButton";
 
@@ -59,145 +59,268 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      whileHover={{ y: -4, boxShadow: "8px 8px 0px #000000" }}
+      whileHover={{ y: -8, scale: 1.01 }}
       style={{
         background: "#FFFFFF",
-        border: "3px solid #000000",
-        boxShadow: "5px 5px 0px #000000",
-        borderRadius: "8px",
-        marginBottom: "28px",
+        border: "3px solid #222",
+        boxShadow: "8px 8px 0px #222",
+        borderRadius: "16px",
+        marginBottom: "32px",
         overflow: "hidden",
-        transition: "box-shadow 0.2s, transform 0.2s",
+        transition: "box-shadow 0.2s, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        position: "relative"
       }}
     >
+      {/* Type Ribbon/Tag */}
+      <div style={{
+        position: "absolute",
+        top: "0",
+        right: "0",
+        padding: "6px 16px",
+        background: isContribution ? "#0047FF" : "#FFE500",
+        color: isContribution ? "#fff" : "#000",
+        borderLeft: "3px solid #222",
+        borderBottom: "3px solid #222",
+        borderBottomLeftRadius: "12px",
+        fontSize: "11px",
+        fontWeight: 900,
+        fontFamily: "Space Grotesk, sans-serif",
+        textTransform: "uppercase",
+        letterSpacing: "1px",
+        zIndex: 2
+      }}>
+        {isContribution ? (post.project ? "📢 Progress" : "📢 Update") : `🏆 ${post.eventCategory}`}
+      </div>
+
       {/* Header */}
-      <div style={{ padding: "16px", display: "flex", alignItems: "center", gap: "12px", borderBottom: "2px solid #000" }}>
-        <div style={{ width: "40px", height: "40px", borderRadius: "50%", border: "2px solid #000", background: "#F5F0E8", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "16px" }}>
+      <div style={{ 
+        padding: "20px", 
+        display: "flex", 
+        alignItems: "center", 
+        gap: "14px", 
+        borderBottom: "2px solid #f0f0f0",
+        background: "linear-gradient(135deg, #fff 0%, #fafafa 100%)"
+      }}>
+        <div style={{ 
+          width: "48px", 
+          height: "48px", 
+          borderRadius: "12px", 
+          border: "2px solid #222", 
+          background: "#FFE500", 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "center", 
+          fontWeight: 900, 
+          fontSize: "20px",
+          boxShadow: "3px 3px 0px #222",
+          flexShrink: 0
+        }}>
           {post.author.name[0]}
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "15px" }}>{post.author.name}</span>
-            <TrustScoreBadge score={post.author.trustScore} level={post.author.trustLevel} variant="compact" />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+            <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px" }}>{post.author.name}</span>
+            
+            {/* Improved Trust Badge */}
+            <motion.div 
+              whileHover={{ scale: 1.1, rotate: -2 }}
+              title={`${getTrustLevelLabel(post.author.trustLevel)}: ${post.author.trustScore} pts`}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "4px",
+                background: "#1A1A2E",
+                color: "#FFE500",
+                border: "1.5px solid #222",
+                borderRadius: "6px",
+                padding: "2px 8px",
+                boxShadow: "2px 2px 0px rgba(0,0,0,0.15)",
+                cursor: "help"
+              }}
+            >
+              <span style={{ fontSize: "12px" }}>{getTrustLevelEmoji(post.author.trustLevel)}</span>
+              <span style={{ 
+                fontFamily: "JetBrains Mono, monospace", 
+                fontWeight: 700, 
+                fontSize: "11px"
+              }}>
+                {post.author.trustScore}
+              </span>
+            </motion.div>
           </div>
-          <div style={{ fontSize: "12px", color: "#666", fontWeight: 600 }}>
+          <div style={{ fontSize: "12px", color: "#888", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px", marginTop: "2px" }}>
+            <span>🕒</span>
             {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true, locale: id })}
           </div>
-        </div>
-        <div style={{
-          padding: "4px 10px",
-          background: isContribution ? "#0047FF" : "#FFE500",
-          color: isContribution ? "#fff" : "#000",
-          border: "2px solid #000",
-          borderRadius: "4px",
-          fontSize: "10px",
-          fontWeight: 900,
-          fontFamily: "Space Grotesk, sans-serif",
-          textTransform: "uppercase"
-        }}>
-          {isContribution ? "Contribution" : post.eventCategory}
         </div>
       </div>
 
       {/* Body */}
-      <div style={{ padding: "16px" }}>
+      <div style={{ padding: "20px" }}>
         {isContribution ? (
           <>
-            <p style={{ fontSize: "15px", lineHeight: 1.6, marginBottom: "12px", whiteSpace: "pre-wrap" }}>
+            <p style={{ fontSize: "16px", lineHeight: 1.7, marginBottom: "16px", whiteSpace: "pre-wrap", color: "#1a1a1a" }}>
               {renderContent(post.content)}
             </p>
             {post.mediaUrl && (
-              <div style={{ border: "2px solid #000", borderRadius: "4px", overflow: "hidden", marginBottom: "12px" }}>
+              <motion.div 
+                whileHover={{ scale: 1.02 }}
+                style={{ border: "3px solid #000", borderRadius: "12px", overflow: "hidden", marginBottom: "16px", boxShadow: "4px 4px 0px #000" }}
+              >
                 <img src={post.mediaUrl} alt="Contribution" style={{ width: "100%", height: "auto", display: "block" }} />
-              </div>
+              </motion.div>
             )}
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
               {post.project && (
-                <Link href={`/project/${post.project.id}`} style={{ display: "flex", alignItems: "center", gap: "6px", background: "#F5F0E8", border: "2px solid #000", padding: "4px 10px", borderRadius: "4px", fontSize: "12px", fontWeight: 700, color: "#000", textDecoration: "none" }}>
-                  📁 {post.project.title}
+                <Link href={`/project/${post.project.id}`} style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  gap: "8px", 
+                  background: "#F5F0E8", 
+                  border: "2px solid #000", 
+                  padding: "6px 12px", 
+                  borderRadius: "8px", 
+                  fontSize: "13px", 
+                  fontWeight: 700, 
+                  color: "#000", 
+                  textDecoration: "none",
+                  boxShadow: "2px 2px 0px #000",
+                  transition: "all 0.1s"
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = "translate(-1px, -1px)"; e.currentTarget.style.boxShadow = "3px 3px 0px #000"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "2px 2px 0px #000"; }}
+                >
+                  <span style={{ fontSize: "16px" }}>📁</span> {post.project.title}
                 </Link>
               )}
               {post.projectTopic && (
-                <span style={{ background: "#000", color: "#FFE500", padding: "4px 10px", borderRadius: "4px", fontSize: "11px", fontWeight: 800 }}>
-                  {post.projectTopic}
+                <span style={{ 
+                  background: "#FFE500", 
+                  color: "#000", 
+                  padding: "6px 12px", 
+                  borderRadius: "8px", 
+                  fontSize: "12px", 
+                  fontWeight: 800, 
+                  border: "2px solid #000",
+                  boxShadow: "2px 2px 0px #000"
+                }}>
+                  #{post.projectTopic}
                 </span>
               )}
             </div>
           </>
         ) : (
           <>
-            <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "18px", marginBottom: "8px" }}>{post.eventName}</h3>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", marginBottom: "12px" }}>
+              <div style={{ background: "#FF4D4D", color: "#fff", width: "40px", height: "40px", borderRadius: "8px", border: "2px solid #000", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px", flexShrink: 0, boxShadow: "2px 2px 0px #000" }}>
+                🏆
+              </div>
+              <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "20px", lineHeight: "1.2" }}>{post.eventName}</h3>
+            </div>
+            
             {post.content && (
-              <p style={{ fontSize: "14px", color: "#444", marginBottom: "12px", whiteSpace: "pre-wrap" }}>
+              <p style={{ fontSize: "15px", color: "#444", marginBottom: "20px", whiteSpace: "pre-wrap", borderLeft: "4px solid #FFE500", paddingLeft: "12px" }}>
                 {renderContent(post.content)}
               </p>
             )}
             
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
-              <div style={{ background: "#F5F0E8", border: "2px solid #000", padding: "10px", borderRadius: "4px" }}>
-                <div style={{ fontSize: "10px", fontWeight: 800, color: "#666", textTransform: "uppercase" }}>Deadline</div>
-                <div style={{ fontSize: "14px", fontWeight: 800, color: getDeadlineColor(post.eventDeadline) }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
+              <div style={{ background: "#F5F0E8", border: "2px solid #000", padding: "12px", borderRadius: "12px", boxShadow: "3px 3px 0px #000" }}>
+                <div style={{ fontSize: "10px", fontWeight: 900, color: "#000", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px" }}>BATAS WAKTU</div>
+                <div style={{ fontSize: "15px", fontWeight: 900, color: getDeadlineColor(post.eventDeadline), display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "18px" }}>📅</span>
                   {new Date(post.eventDeadline).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
                 </div>
               </div>
-              <a href={post.eventLink} target="_blank" rel="noopener noreferrer" style={{ background: "#FFE500", border: "2px solid #000", padding: "10px", borderRadius: "4px", textAlign: "center", textDecoration: "none", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                <div style={{ fontSize: "14px", fontWeight: 900, color: "#000" }}>Daftar / Info 🔗</div>
-              </a>
+              <motion.a 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                href={post.eventLink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={{ 
+                  background: "#FFE500", 
+                  border: "2px solid #000", 
+                  padding: "12px", 
+                  borderRadius: "12px", 
+                  textAlign: "center", 
+                  textDecoration: "none", 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  justifyContent: "center",
+                  boxShadow: "3px 3px 0px #000"
+                }}
+              >
+                <div style={{ fontSize: "15px", fontWeight: 900, color: "#000" }}>Daftar Sekarang 🔗</div>
+              </motion.a>
             </div>
 
-            <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               {post.eventSkills.map((s: string) => (
-                <span key={s} style={{ background: "#F5F0E8", border: "1px solid #000", padding: "2px 8px", borderRadius: "4px", fontSize: "11px", fontWeight: 700 }}>#{s}</span>
+                <span key={s} style={{ 
+                  background: "#fff", 
+                  border: "2px solid #000", 
+                  padding: "4px 10px", 
+                  borderRadius: "20px", 
+                  fontSize: "12px", 
+                  fontWeight: 800,
+                  boxShadow: "2px 2px 0px #000"
+                }}>#{s}</span>
               ))}
-              {post.projectTopic && <span style={{ background: "#000", color: "#FFE500", padding: "2px 8px", borderRadius: "4px", fontSize: "11px", fontWeight: 800 }}>{post.projectTopic}</span>}
             </div>
           </>
         )}
       </div>
 
       {/* Footer */}
-      <div style={{ padding: "12px 16px", borderTop: "2px solid #000", display: "flex", alignItems: "center", gap: "16px", background: "#F5F0E8" }}>
-        <button 
+      <div style={{ 
+        padding: "14px 20px", 
+        borderTop: "3px solid #000", 
+        display: "flex", 
+        alignItems: "center", 
+        gap: "16px", 
+        background: "#FFFFFF" 
+      }}>
+        <motion.button 
+          whileHover={{ scale: 1.1, rotate: 2 }}
+          whileTap={{ scale: 0.9 }}
           onClick={handleLike}
           style={{ 
-            background: isLiked ? "#FF4D4D" : "transparent", 
+            background: isLiked ? "#FF4D4D" : "#fff", 
             border: "2px solid #000", 
-            borderRadius: "4px", 
-            padding: "6px 12px", 
+            borderRadius: "10px", 
+            padding: "8px 16px", 
             display: "flex", 
             alignItems: "center", 
-            gap: "6px", 
+            gap: "8px", 
             cursor: "pointer",
-            boxShadow: "2px 2px 0px #000",
-            transition: "all 0.1s"
+            boxShadow: "3px 3px 0px #000",
+            transition: "background 0.2s"
           }}
-          onMouseDown={(e) => { e.currentTarget.style.transform = "translate(1px, 1px)"; e.currentTarget.style.boxShadow = "1px 1px 0px #000"; }}
-          onMouseUp={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "2px 2px 0px #000"; }}
         >
-          <span style={{ fontSize: "16px" }}>{isLiked ? "❤️" : "🤍"}</span>
-          <span style={{ fontWeight: 800, fontSize: "14px" }}>{likes}</span>
-        </button>
+          <span style={{ fontSize: "18px" }}>{isLiked ? "❤️" : "🤍"}</span>
+          <span style={{ fontWeight: 900, fontSize: "15px", color: isLiked ? "#fff" : "#000" }}>{likes}</span>
+        </motion.button>
 
-        <button 
+        <motion.button 
+          whileHover={{ scale: 1.1, rotate: -2 }}
+          whileTap={{ scale: 0.9 }}
           onClick={() => setShowComments(!showComments)}
           style={{ 
-            background: "transparent", 
+            background: showComments ? "#00D37F" : "#fff", 
             border: "2px solid #000", 
-            borderRadius: "4px", 
-            padding: "6px 12px", 
+            borderRadius: "10px", 
+            padding: "8px 16px", 
             display: "flex", 
             alignItems: "center", 
-            gap: "6px", 
+            gap: "8px", 
             cursor: "pointer",
-            boxShadow: "2px 2px 0px #000"
+            boxShadow: "3px 3px 0px #000"
           }}
         >
-          <span style={{ fontSize: "16px" }}>💬</span>
-          <span style={{ fontWeight: 800, fontSize: "14px" }}>{post._count.comments}</span>
-        </button>
+          <span style={{ fontSize: "18px" }}>💬</span>
+          <span style={{ fontWeight: 900, fontSize: "15px", color: showComments ? "#000" : "#000" }}>{post._count.comments}</span>
+        </motion.button>
 
         <div style={{ marginLeft: "auto" }}>
           <FeedBookmarkButton postId={post.id} initialBookmarked={false} />
@@ -210,7 +333,7 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            style={{ overflow: "hidden" }}
+            style={{ overflow: "hidden", borderTop: "2px solid #000", background: "#fafafa" }}
           >
             <FeedCommentSection postId={post.id} currentUserId={currentUserId} />
           </motion.div>

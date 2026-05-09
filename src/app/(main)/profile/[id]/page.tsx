@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
+import { getTrustLevelEmoji, getTrustLevelColor, getTrustLevelLabel } from "@/lib/trust-score";
 import { ExternalLinksSection } from "@/components/profile/ExternalLinksSection";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -47,110 +47,388 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
   }, {} as Record<string, number>);
 
   return (
-    <div style={{ background: "#F5F0E8", minHeight: "calc(100vh - 64px)", padding: "32px 24px" }}>
-      <div style={{ maxWidth: "800px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "24px" }}>
+    <div style={{ 
+      background: "#F5F0E8", 
+      minHeight: "calc(100vh - 64px)", 
+      padding: "48px 24px",
+      position: "relative",
+      overflow: "hidden"
+    }}>
+      <style>{`
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+          0% { transform: translate(0, 0); }
+          50% { transform: translate(10px, -20px); }
+          100% { transform: translate(0, 0); }
+        }
+        .animate-slide-up {
+          animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .nb-card {
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nb-card:hover {
+          transform: translate(-4px, -4px);
+          box-shadow: 16px 16px 0px #000 !important;
+        }
+        .profile-btn {
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .profile-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 6px 6px 0px #000 !important;
+          filter: brightness(1.05);
+        }
+        .profile-btn:active {
+          transform: translateY(0);
+          box-shadow: 2px 2px 0px #000 !important;
+        }
+        .logout-btn {
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .logout-btn:hover {
+          background: #FF4D4D !important;
+          color: #fff !important;
+          transform: translateY(-2px);
+          box-shadow: 8px 8px 0px #000 !important;
+        }
+        .skill-chip-nb {
+          transition: all 0.15s ease;
+        }
+        .skill-chip-nb:hover {
+          transform: translate(2px, 2px) rotate(2deg);
+          box-shadow: 2px 2px 0px #000 !important;
+        }
+        .project-card-nb {
+          transition: all 0.2s ease;
+        }
+        .project-card-nb:hover {
+          transform: translateX(8px);
+          background: #fff !important;
+        }
+        @media (max-width: 640px) {
+          .profile-header-container {
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center;
+          }
+          .profile-info-content {
+            align-items: center !important;
+            text-align: center;
+          }
+          .profile-badges {
+            justify-content: center !important;
+          }
+          .profile-btn {
+            width: 100%;
+          }
+        }
+      `}</style>
+
+      {/* Decorative Background Elements */}
+      <div style={{
+        position: "absolute",
+        top: "5%",
+        left: "-2%",
+        width: "350px",
+        height: "350px",
+        background: "#FFE500",
+        opacity: 0.15,
+        borderRadius: "50%",
+        zIndex: 0,
+        filter: "blur(100px)",
+        animation: "float 10s ease-in-out infinite"
+      }} />
+      <div style={{
+        position: "absolute",
+        bottom: "5%",
+        right: "-2%",
+        width: "450px",
+        height: "450px",
+        background: "#0047FF",
+        opacity: 0.1,
+        borderRadius: "50%",
+        zIndex: 0,
+        filter: "blur(120px)",
+        animation: "float 12s ease-in-out infinite reverse"
+      }} />
+
+      <div className="animate-slide-up" style={{ maxWidth: "900px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "32px", position: "relative", zIndex: 1 }}>
         
         {/* Profile Card */}
-        <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "8px", boxShadow: "6px 6px 0px #000", padding: "32px", display: "flex", gap: "24px", flexWrap: "wrap" }}>
-          <div style={{ width: "100px", height: "100px", borderRadius: "50%", border: "3px solid #000", background: "#FFE500", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "40px", fontWeight: 900, flexShrink: 0 }}>
-            {user.name[0]}
-          </div>
-          <div style={{ flex: 1, minWidth: "250px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <h1 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", margin: "0 0 8px" }}>
-                {user.name}
-              </h1>
-              {isOwner && (
-                <Link
-                  href="/settings/profile"
-                  style={{
-                    background: "#F5F0E8",
-                    border: "2px solid #000",
-                    borderRadius: "4px",
-                    padding: "6px 12px",
-                    fontWeight: 800,
-                    fontSize: "13px",
-                    textDecoration: "none",
-                    color: "#000",
-                    boxShadow: "2px 2px 0px #000",
-                  }}
-                >
-                  Edit Profil
-                </Link>
-              )}
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-              <TrustScoreBadge score={user.trustScore} level={user.trustLevel} variant="full" />
-              {isIdentityLinked && (
-                <div style={{ 
+        <div 
+          className="nb-card"
+          style={{ 
+            background: "#fff", 
+            border: "4px solid #000", 
+            borderRadius: "20px", 
+            boxShadow: "12px 12px 0px #000", 
+            padding: "clamp(24px, 5vw, 48px)", 
+            display: "flex", 
+            gap: "32px", 
+            flexWrap: "wrap",
+            position: "relative",
+            alignItems: "flex-start"
+          }}
+        >
+          {/* Avatar Area */}
+          <div className="profile-header-container" style={{ display: "flex", gap: "32px", alignItems: "flex-start", width: "100%" }}>
+            <div style={{ position: "relative", width: "160px", height: "160px", flexShrink: 0 }}>
+              <div style={{
+                position: "absolute",
+                top: "-12px",
+                left: "-12px",
+                right: "-12px",
+                bottom: "-12px",
+                border: "3px dashed #000",
+                borderRadius: "36px",
+                zIndex: 1,
+                opacity: 0.4
+              }} />
+              <div 
+                style={{ 
+                  width: "100%", 
+                  height: "100%", 
+                  borderRadius: "24px", 
+                  border: "4px solid #000", 
+                  background: "#FFE500", 
                   display: "flex", 
                   alignItems: "center", 
-                  gap: "4px", 
-                  background: "#0047FF", 
-                  color: "#fff", 
-                  padding: "4px 10px", 
-                  borderRadius: "4px", 
-                  fontSize: "12px", 
-                  fontWeight: 800,
-                  border: "2px solid #000",
-                  boxShadow: "2px 2px 0px #000"
-                }}>
-                  👤 Identity Linked
-                </div>
-              )}
+                  justifyContent: "center", 
+                  fontSize: "72px", 
+                  fontWeight: 900, 
+                  boxShadow: "6px 6px 0px #000",
+                  zIndex: 2,
+                  position: "relative",
+                  overflow: "hidden"
+                }}
+              >
+                {user.image ? (
+                  <img src={user.image} alt={user.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  user.name[0]
+                )}
+              </div>
             </div>
-            {user.bio && (
-              <p style={{ color: "#3D3D3D", fontSize: "15px", lineHeight: 1.6, margin: "0 0 16px" }}>
-                {user.bio}
-              </p>
-            )}
-            
-            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-              <ExternalLinksSection username={user.name} />
-            </div>
-          </div>
-        </div>
 
-        {/* Skills & Endorsements */}
-        <div style={{ background: "#fff", border: "2px solid #000", borderRadius: "8px", boxShadow: "4px 4px 0px #000", padding: "24px" }}>
-          <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", marginBottom: "16px" }}>
-            💡 Skills & Endorsements
-          </h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
-            {user.skills.map(s => (
-              <div key={s.id} style={{ display: "flex", alignItems: "stretch", border: "2px solid #000", borderRadius: "6px", overflow: "hidden" }}>
-                <div style={{ background: "#F5F0E8", padding: "6px 12px", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px" }}>
-                  {s.skillName}
+            <div className="profile-info-content" style={{ flex: 1 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", flexWrap: "wrap", gap: "16px" }}>
+                <div>
+                  <h1 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "clamp(32px, 5vw, 44px)", margin: "0 0 4px", lineHeight: 1 }}>
+                    {user.name}
+                  </h1>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", opacity: 0.7, fontFamily: "Space Grotesk, sans-serif", fontWeight: 600, fontSize: "14px" }}>
+                    <span>@collabolab</span>
+                    <span>•</span>
+                    <span>Member since {new Date(user.createdAt).getFullYear()}</span>
+                  </div>
                 </div>
-                {endorsementsCount[s.skillName] > 0 && (
-                  <div style={{ background: "#FFE500", padding: "6px 10px", fontWeight: 800, fontSize: "14px", borderLeft: "2px solid #000" }}>
-                    ×{endorsementsCount[s.skillName]}
+                
+                {isOwner && (
+                  <Link
+                    href="/settings/profile"
+                    className="profile-btn"
+                    style={{
+                      background: "#FFE500",
+                      border: "3px solid #000",
+                      borderRadius: "8px",
+                      padding: "10px 20px",
+                      fontWeight: 900,
+                      fontSize: "14px",
+                      textDecoration: "none",
+                      color: "#000",
+                      boxShadow: "4px 4px 0px #000",
+                      textAlign: "center"
+                    }}
+                  >
+                    ⚙️ Edit Profil
+                  </Link>
+                )}
+              </div>
+
+              <div className="profile-badges" style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px", flexWrap: "wrap" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    background: "#F5F0E8",
+                    border: "3px solid #000",
+                    borderRadius: "12px",
+                    padding: "8px 16px",
+                    boxShadow: "3px 3px 0px #000",
+                    cursor: "default"
+                  }}
+                >
+                  <span style={{ fontSize: "28px" }}>{getTrustLevelEmoji(user.trustLevel)}</span>
+                  <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+                    <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "12px", color: "#3D3D3D", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                      {getTrustLevelLabel(user.trustLevel)}
+                    </span>
+                    <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "20px" }}>
+                      Score: {user.trustScore}
+                    </span>
+                  </div>
+                </div>
+                
+                {isIdentityLinked && (
+                  <div style={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: "6px", 
+                    background: "#0047FF", 
+                    color: "#fff", 
+                    padding: "8px 16px", 
+                    borderRadius: "12px", 
+                    fontSize: "13px", 
+                    fontWeight: 900,
+                    border: "3px solid #000",
+                    boxShadow: "3px 3px 0px #000",
+                    fontFamily: "Space Grotesk, sans-serif"
+                  }}>
+                    👤 Identity Linked
                   </div>
                 )}
               </div>
-            ))}
+
+              {user.bio ? (
+                <p style={{ 
+                  color: "#3D3D3D", 
+                  fontSize: "17px", 
+                  lineHeight: 1.6, 
+                  margin: "0 0 24px", 
+                  padding: "16px", 
+                  background: "#F5F0E8", 
+                  borderRadius: "12px",
+                  border: "2px solid #000",
+                  position: "relative"
+                }}>
+                  <span style={{ position: "absolute", top: "-12px", left: "16px", background: "#fff", padding: "0 8px", fontSize: "12px", fontWeight: 800, border: "2px solid #000", borderRadius: "4px" }}>BIO</span>
+                  {user.bio}
+                </p>
+              ) : (
+                <p style={{ color: "#999", fontStyle: "italic", marginBottom: "24px" }}>Belum ada bio...</p>
+              )}
+              
+              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                <ExternalLinksSection username={user.name} />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Completed Projects */}
-        <div style={{ background: "#fff", border: "2px solid #000", borderRadius: "8px", boxShadow: "4px 4px 0px #000", padding: "24px" }}>
-          <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", marginBottom: "16px" }}>
-            🏆 Project Selesai ({user.memberships.length})
-          </h2>
-          {user.memberships.length === 0 ? (
-            <p style={{ color: "#3D3D3D", fontSize: "14px" }}>Belum ada project yang diselesaikan.</p>
-          ) : (
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
-              {user.memberships.map(m => (
-                <li key={m.id} style={{ padding: "12px", background: "#F5F0E8", border: "1.5px solid #000", borderRadius: "6px" }}>
-                  <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px" }}>{m.project.title}</div>
-                  <div style={{ fontSize: "12px", color: "#555" }}>Kategori: {m.project.category}</div>
-                </li>
-              ))}
-            </ul>
-          )}
+        {/* Two Column Layout */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "32px" }}>
+          
+          {/* Skills */}
+          <div className="nb-card" style={{ background: "#fff", border: "4px solid #000", borderRadius: "16px", boxShadow: "8px 8px 0px #000", padding: "32px", animationDelay: "0.1s" }}>
+            <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "24px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
+              <span style={{ background: "#FFE500", padding: "4px", borderRadius: "6px", border: "2px solid #000" }}>💡</span> Skills
+            </h2>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "14px" }}>
+              {user.skills.length > 0 ? user.skills.map((s, idx) => (
+                <div 
+                  key={s.id}
+                  className="skill-chip-nb"
+                  style={{ display: "flex", alignItems: "stretch", border: "3px solid #000", borderRadius: "10px", overflow: "hidden", boxShadow: "3px 3px 0px #000" }}
+                >
+                  <div style={{ background: "#F5F0E8", padding: "8px 14px", fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "14px" }}>
+                    {s.skillName}
+                  </div>
+                  {endorsementsCount[s.skillName] > 0 && (
+                    <div style={{ background: "#FFE500", padding: "8px 12px", fontWeight: 900, fontSize: "14px", borderLeft: "3px solid #000", color: "#000" }}>
+                      +{endorsementsCount[s.skillName]}
+                    </div>
+                  )}
+                </div>
+              )) : (
+                <p style={{ color: "#999", fontSize: "14px" }}>Belum ada skill yang ditambahkan.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Projects */}
+          <div className="nb-card" style={{ background: "#fff", border: "4px solid #000", borderRadius: "16px", boxShadow: "8px 8px 0px #000", padding: "32px", animationDelay: "0.2s" }}>
+            <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "24px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
+              <span style={{ background: "#00D37F", padding: "4px", borderRadius: "6px", border: "2px solid #000" }}>🏆</span> Project Selesai
+            </h2>
+            {user.memberships.length === 0 ? (
+              <div style={{ padding: "32px", textAlign: "center", border: "2px dashed #ccc", borderRadius: "12px" }}>
+                <p style={{ color: "#999", fontSize: "14px" }}>Belum ada project yang diselesaikan.</p>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                {user.memberships.map((m, idx) => (
+                  <div 
+                    key={m.id}
+                    className="project-card-nb"
+                    style={{ 
+                      padding: "16px", 
+                      background: "#F5F0E8", 
+                      border: "3px solid #000", 
+                      borderRadius: "12px",
+                      boxShadow: "4px 4px 0px #000",
+                      position: "relative",
+                      overflow: "hidden"
+                    }}
+                  >
+                    <div style={{ 
+                      position: "absolute", 
+                      top: 0, 
+                      left: 0, 
+                      width: "6px", 
+                      height: "100%", 
+                      background: idx % 3 === 0 ? "#FFE500" : idx % 3 === 1 ? "#0047FF" : "#00D37F" 
+                    }} />
+                    <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "16px", marginBottom: "4px" }}>{m.project.title}</div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                       <span style={{ fontSize: "12px", color: "#3D3D3D", fontWeight: 700, fontFamily: "Space Grotesk, sans-serif", textTransform: "uppercase" }}>
+                          {m.project.category}
+                       </span>
+                       <Link href={`/project/${m.project.id}`} style={{ fontSize: "12px", color: "#0047FF", fontWeight: 800, textDecoration: "none" }}>
+                          Detail →
+                       </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
+        {/* Logout Button at the bottom (Owner only) */}
+        {isOwner && (
+          <div style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
+            <form action="/api/auth/signout" method="POST" style={{ width: "100%"}}>
+              <button
+                type="submit"
+                className="logout-btn"
+                style={{
+                  width: "100%",
+                  background: "#FF4D4D",
+                  border: "3px solid #000",
+                  borderRadius: "12px",
+                  padding: "14px 24px",
+                  fontFamily: "Space Grotesk, sans-serif",
+                  fontWeight: 900,
+                  fontSize: "16px",
+                  color: "#fff",
+                  boxShadow: "6px 6px 0px #000",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px"
+                }}
+              >
+                Keluar Akun
+              </button>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );

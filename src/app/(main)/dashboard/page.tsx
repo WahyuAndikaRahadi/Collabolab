@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
+import { getTrustLevelEmoji, getTrustLevelColor, getTrustLevelLabel } from "@/lib/trust-score";
 import { CATEGORY_META, AVAIL_META } from "@/types";
 import type { ProjectCategory } from "@prisma/client";
 
@@ -253,7 +253,93 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <TrustScoreBadge score={user.trustScore} level={user.trustLevel} variant="full" />
+          <div
+            style={{
+              background: "#F5F0E8",
+              border: "3px solid #000",
+              borderRadius: "12px",
+              padding: "24px",
+              boxShadow: "6px 6px 0px #000",
+              minWidth: "280px",
+              position: "relative",
+              overflow: "hidden"
+            }}
+          >
+            {/* Decorative background shape */}
+            <div 
+              style={{
+                position: "absolute",
+                top: "-10px",
+                right: "-10px",
+                width: "60px",
+                height: "60px",
+                background: getTrustLevelColor(user.trustLevel),
+                opacity: 0.1,
+                borderRadius: "50%",
+                zIndex: 0
+              }}
+            />
+
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "14px", color: "#3D3D3D", textTransform: "uppercase", letterSpacing: "1px" }}>
+                    Trust Score
+                  </span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "4px" }}>
+                    <span 
+                      style={{ 
+                        background: getTrustLevelColor(user.trustLevel), 
+                        border: "2px solid #000",
+                        borderRadius: "4px",
+                        padding: "2px 8px",
+                        fontFamily: "Space Grotesk, sans-serif",
+                        fontWeight: 700,
+                        fontSize: "12px",
+                        color: user.trustLevel === "MEMBER" ? "#000" : user.trustLevel === "NEWCOMER" ? "#fff" : "#000"
+                      }}
+                    >
+                      {getTrustLevelEmoji(user.trustLevel)} {getTrustLevelLabel(user.trustLevel)}
+                    </span>
+                  </div>
+                </div>
+                <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "42px", lineHeight: 1 }}>
+                  {user.trustScore}
+                </span>
+              </div>
+
+              {/* Progress bar */}
+              <div
+                style={{
+                  background: "#fff",
+                  border: "2px solid #000",
+                  borderRadius: "6px",
+                  height: "16px",
+                  overflow: "hidden",
+                  marginBottom: "12px",
+                  boxShadow: "inset 2px 2px 0px rgba(0,0,0,0.1)"
+                }}
+              >
+                <div
+                  style={{
+                    width: `${user.trustScore}%`,
+                    height: "100%",
+                    background: getTrustLevelColor(user.trustLevel),
+                    transition: "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: "12px", color: "#3D3D3D", fontFamily: "Inter, sans-serif", fontWeight: 500 }}>
+                  {user.trustScore < 31 ? `${31 - user.trustScore} poin lagi ke Member` : 
+                   user.trustScore < 61 ? `${61 - user.trustScore} poin lagi ke Trusted` : 
+                   user.trustScore < 86 ? `${86 - user.trustScore} poin lagi ke Verified` : 
+                   "Level Maksimal! 🎉"}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

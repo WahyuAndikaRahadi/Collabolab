@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { CATEGORY_META, COMMITMENT_META, TOPIC_META } from "@/types";
-import { TrustScoreBadge } from "@/components/ui/TrustScoreBadge";
+import { getTrustLevelEmoji, getTrustLevelLabel } from "@/lib/trust-score";
 import { ProjectDetailClient } from "@/components/project/ProjectDetailClient";
 import { ProjectMembersList } from "@/components/project/ProjectMembersList";
 
@@ -147,7 +147,30 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 </div>
                 <div>
                   <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px" }}>{project.owner.name}</div>
-                  <TrustScoreBadge score={project.owner.trustScore} level={project.owner.trustLevel} variant="compact" />
+                  <div 
+                    title={`${getTrustLevelLabel(project.owner.trustLevel)}: ${project.owner.trustScore} pts`}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      background: "#F5F0E8",
+                      border: "1.5px solid #000",
+                      borderRadius: "4px",
+                      padding: "1px 6px",
+                      boxShadow: "1.5px 1.5px 0px #000",
+                      cursor: "help"
+                    }}
+                  >
+                    <span style={{ fontSize: "11px" }}>{getTrustLevelEmoji(project.owner.trustLevel)}</span>
+                    <span style={{ 
+                      fontFamily: "Space Grotesk, sans-serif", 
+                      fontWeight: 800, 
+                      fontSize: "11px",
+                      color: "#000"
+                    }}>
+                      {project.owner.trustScore}
+                    </span>
+                  </div>
                 </div>
               </div>
               {project.owner.bio && (

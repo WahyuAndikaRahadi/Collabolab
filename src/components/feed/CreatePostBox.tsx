@@ -239,7 +239,7 @@ export function CreatePostBox({ user, onSuccess }: Props) {
           </div>
 
           <div style={{ flex: 1, position: "relative" }}>
-            <div style={{ position: "relative", border: "3px solid #222", borderRadius: "12px", background: isExpanded ? "#fff" : "#F5F0E8", transition: "all 0.2s", overflow: "hidden" }}>
+            <div style={{ position: "relative", border: "3px solid #222", borderRadius: "12px", background: "#F5F0E8", transition: "all 0.2s", overflow: "hidden" }}>
               <div style={{ position: "absolute", inset: 0, padding: "14px 18px", pointerEvents: "none", fontSize: "16px", lineHeight: "1.6", whiteSpace: "pre-wrap", color: "transparent", zIndex: 2 }}>
                 {content ? highlightText(content) : <span style={{ color: "#888", opacity: 0.6, fontStyle: "italic" }}>Apa yang sedang kamu pelajari? Gunakan # atau @...</span>}
               </div>

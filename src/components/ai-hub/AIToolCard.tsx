@@ -1,9 +1,8 @@
-
 "use client";
 
 import { motion } from "framer-motion";
 import { Lock, Clock, CheckCircle2 } from "lucide-react";
-import { getTrustLevelColor } from "@/lib/trust-score";
+import { itemVariants } from "../ui/DecorativeElements";
 
 interface Props {
   title: string;
@@ -15,20 +14,23 @@ interface Props {
   isLocked: boolean;
   onSelect: () => void;
   cooldownRemaining?: string; // ISO string
+  accentColor: string;
+  lightColor: string;
 }
 
 export function AIToolCard({ 
-  title, description, icon, minScore, userScore, cooldownHours, isLocked, onSelect, cooldownRemaining 
+  title, description, icon, minScore, userScore, cooldownHours, isLocked, onSelect, cooldownRemaining, accentColor, lightColor
 }: Props) {
   const isCooldown = cooldownRemaining ? new Date(cooldownRemaining) > new Date() : false;
   const progress = Math.min((userScore / minScore) * 100, 100);
 
   return (
     <motion.div
-      whileHover={!isLocked && !isCooldown ? { y: -8, x: -8, boxShadow: "12px 12px 0px #000" } : {}}
+      variants={itemVariants}
+      whileHover={!isLocked && !isCooldown ? { y: -8, x: -8, boxShadow: `12px 12px 0px #000` } : {}}
       onClick={() => !isLocked && !isCooldown && onSelect()}
       style={{
-        background: isLocked ? "#EAEAEA" : "#fff",
+        background: isLocked ? "#EAEAEA" : lightColor,
         border: "4px solid #000",
         borderRadius: "0px", // Sharp corners for more "brutalism"
         boxShadow: "6px 6px 0px #000",
@@ -38,7 +40,7 @@ export function AIToolCard({
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        transition: "all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        transition: "box-shadow 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
       }}
     >
       {/* Badge Corner */}
@@ -58,20 +60,24 @@ export function AIToolCard({
         )}
       </div>
 
-      <div style={{ 
-        width: "64px", 
-        height: "64px", 
-        background: isLocked ? "#CCC" : "#FFE500", 
-        border: "3px solid #000", 
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "center", 
-        fontSize: "32px",
-        marginBottom: "24px",
-        boxShadow: "4px 4px 0px #000"
-      }}>
+      <motion.div 
+        whileHover={{ rotate: 10 }}
+        style={{ 
+          width: "64px", 
+          height: "64px", 
+          background: isLocked ? "#CCC" : accentColor, 
+          color: accentColor === "#0047FF" || accentColor === "#FF4D4D" ? "#fff" : "#000",
+          border: "3px solid #000", 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "center", 
+          fontSize: "32px",
+          marginBottom: "24px",
+          boxShadow: "4px 4px 0px #000"
+        }}
+      >
         {icon}
-      </div>
+      </motion.div>
 
       <h3 style={{ 
         fontFamily: "Space Grotesk, sans-serif", 
@@ -91,27 +97,33 @@ export function AIToolCard({
         lineHeight: 1.5, 
         marginBottom: "32px", 
         flex: 1,
-        fontWeight: 500 
+        fontWeight: 600 
       }}>
         {description}
       </p>
 
-      <div style={{ background: "#F5F0E8", border: "3px solid #000", padding: "16px", marginBottom: "20px" }}>
+      <div style={{ background: "#fff", border: "3px solid #000", padding: "16px", marginBottom: "20px", boxShadow: "4px 4px 0px #000" }}>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", fontWeight: 900, marginBottom: "8px", textTransform: "uppercase" }}>
           <span>Trust Gate</span>
           <span style={{ color: userScore >= minScore ? "#00D37F" : "#FF4D4D" }}>
             {userScore} / {minScore}
           </span>
         </div>
-        <div style={{ width: "100%", height: "14px", background: "#fff", border: "3px solid #000", overflow: "hidden" }}>
-          <div style={{ width: `${progress}%`, height: "100%", background: progress === 100 ? "#00D37F" : "#FFE500" }} />
+        <div style={{ width: "100%", height: "14px", background: "#F5F0E8", border: "3px solid #000", overflow: "hidden" }}>
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+            style={{ height: "100%", background: progress === 100 ? "#00D37F" : accentColor }} 
+          />
         </div>
       </div>
 
       <button
         style={{
           width: "100%",
-          background: isLocked || isCooldown ? "#CCC" : "#FFE500",
+          background: isLocked || isCooldown ? "#CCC" : accentColor,
+          color: (isLocked || isCooldown) ? "#000" : (accentColor === "#0047FF" || accentColor === "#FF4D4D" ? "#fff" : "#000"),
           border: "3px solid #000",
           padding: "14px",
           fontWeight: 900,
@@ -131,3 +143,4 @@ export function AIToolCard({
     </motion.div>
   );
 }
+

@@ -23,7 +23,7 @@ export default async function Page() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <main className="min-h-screen">
       <AIHubPage 
         trustScore={user.trustScore} 
         trustLevel={user.trustLevel} 
@@ -32,6 +32,6 @@ export default async function Page() {
           expiresAt: u.expiresAt.toISOString()
         }))} 
       />
-    </div>
+    </main>
   );
 }

@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { ProjectCard } from "@/components/explore/ExploreClient";
 import { LinkButton } from "@/components/ui/Button";
 import { redirect } from "next/navigation";
+import { GridPattern, FloatingShape, NoiseTexture, SectionLabel, containerVariants, itemVariants } from "@/components/ui/DecorativeElements";
+import * as motion from "framer-motion/client";
 
 export const metadata: Metadata = {
   title: "My Projects",
@@ -72,62 +74,125 @@ export default async function MyProjectsPage() {
   const userSkills = userWithSkills?.skills.map((s) => s.skillName) ?? [];
 
   return (
-    <div style={{ background: "#F5F0E8", minHeight: "calc(100vh - 64px)" }}>
+    <div style={{ background: "#F5F0E8", minHeight: "calc(100vh - 64px)", position: "relative", overflow: "hidden" }}>
+      <NoiseTexture />
+      
       {/* Header */}
-      <div style={{ background: "#fff", borderBottom: "3px solid #000", padding: "48px 24px" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "24px" }}>
-          <div>
-            <span className="section-label">🚀 MY PROJECTS</span>
-            <h1 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "clamp(32px, 5vw, 48px)", margin: "12px 0 8px", lineHeight: 1 }}>
-              Project-mu
-            </h1>
-            <p style={{ color: "#3D3D3D", fontSize: "18px", margin: 0, fontWeight: 500 }}>
-              {projects.length > 0 
-                ? `Kamu tergabung dalam ${projects.length} project aktif.`
-                : "Kamu belum bergabung dalam project apapun."}
-            </p>
+      <div style={{ 
+        background: "#fff", 
+        borderBottom: "4px solid #000", 
+        padding: "80px 24px", 
+        position: "relative", 
+        overflow: "hidden",
+        boxShadow: "0 8px 0px rgba(0,0,0,0.05)"
+      }}>
+        <GridPattern />
+        
+        {/* Decorative Shapes */}
+        <FloatingShape type="square" color="#0047FF" size={140} top="-30px" left="5%" delay={0} />
+        <FloatingShape type="circle" color="#FFE500" size={100} bottom="-20px" right="8%" delay={0.4} />
+        <FloatingShape type="triangle" color="#FF4D4D" size={70} top="50px" right="15%" delay={0.8} />
+        <FloatingShape type="circle" color="#00D37F" size={50} bottom="40px" left="15%" delay={1.2} />
+        
+        <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "32px" }}>
+            <div style={{ flex: "1", minWidth: "300px" }}>
+              <SectionLabel>🚀 MISSION CONTROL</SectionLabel>
+              <h1 style={{ 
+                fontFamily: "Space Grotesk, sans-serif", 
+                fontWeight: 900, 
+                fontSize: "clamp(48px, 8vw, 72px)", 
+                margin: "16px 0 12px", 
+                lineHeight: 0.9,
+                letterSpacing: "-2px"
+              }}>
+                Project <br />
+                <span style={{ color: "#0047FF", WebkitTextStroke: "2px black" }}>Kamu</span>
+              </h1>
+              <p style={{ 
+                color: "#3D3D3D", 
+                fontSize: "20px", 
+                margin: 0, 
+                fontWeight: 600,
+                maxWidth: "500px",
+                lineHeight: 1.4
+              }}>
+                {projects.length > 0 
+                  ? `Kamu sedang berkolaborasi di ${projects.length} project hebat.`
+                  : "Siap untuk mulai perjalanan kolaborasimu?"}
+              </p>
+            </div>
+            
+            <div style={{ paddingBottom: "10px" }}>
+              <LinkButton href="/project/create" variant="primary" size="lg" id="my-projects-create-btn" style={{ fontSize: "20px", padding: "16px 32px" }}>
+                + Buat Project Baru
+              </LinkButton>
+            </div>
           </div>
-          <LinkButton href="/project/create" variant="primary" size="lg" id="my-projects-create-btn">
-            + Buat Project
-          </LinkButton>
         </div>
       </div>
 
       {/* Content */}
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 24px" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "64px 24px", position: "relative", zIndex: 1 }}>
         {projects.length === 0 ? (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "80px 32px",
-              background: "#fff",
-              border: "3px dashed #000",
-              borderRadius: "12px",
-              boxShadow: "8px 8px 0px #000",
-            }}
-          >
-            <div style={{ fontSize: "64px", marginBottom: "20px" }}>🌵</div>
-            <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "24px", marginBottom: "12px" }}>
-              Wah, masih sepi nih!
-            </h2>
-            <p style={{ color: "#3D3D3D", fontSize: "16px", maxWidth: "500px", margin: "0 auto 32px", lineHeight: 1.6 }}>
-              Sepertinya kamu belum memulai atau bergabung dalam project apapun. Ayo mulai kolaborasi sekarang!
-            </p>
-            <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
-              <LinkButton href="/explore" variant="secondary">
-                🔍 Jelajahi Project
-              </LinkButton>
-              <LinkButton href="/project/create" variant="primary">
-                🚀 Buat Project Baru
-              </LinkButton>
-            </div>
+          <div style={{ position: "relative" }}>
+             {/* Background shapes for empty state */}
+             <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "120%", height: "120%", zIndex: -1, opacity: 0.5, pointerEvents: "none" }}>
+                <FloatingShape type="circle" color="#FFE500" size={300} top="0" left="0" delay={0.1} />
+                <FloatingShape type="square" color="#00D37F" size={200} bottom="0" right="0" delay={0.5} />
+             </div>
+
+            <motion.div
+                initial={{ scale: 0.9, opacity: 0, y: 40 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                style={{
+                textAlign: "center",
+                padding: "100px 48px",
+                background: "#fff",
+                border: "4px solid #000",
+                borderRadius: "24px",
+                boxShadow: "20px 20px 0px #000",
+                }}
+            >
+                <motion.div 
+                animate={{ 
+                    rotate: [0, 10, -10, 0],
+                    y: [0, -20, 0],
+                    scale: [1, 1.1, 1]
+                }}
+                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                style={{ fontSize: "120px", marginBottom: "40px", display: "inline-block", filter: "drop-shadow(8px 8px 0px rgba(0,0,0,0.1))" }}
+                >
+                🌵
+                </motion.div>
+                <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "42px", marginBottom: "20px", letterSpacing: "-1px" }}>
+                Hening Sekali di Sini...
+                </h2>
+                <p style={{ color: "#3D3D3D", fontSize: "22px", maxWidth: "600px", margin: "0 auto 48px", lineHeight: 1.5, fontWeight: 600 }}>
+                Kamu belum memulai atau bergabung dalam project apapun. Jangan biarkan skill hebatmu menganggur!
+                </p>
+                <div style={{ display: "flex", gap: "24px", justifyContent: "center", flexWrap: "wrap" }}>
+                <LinkButton href="/explore" variant="secondary" size="lg" style={{ minWidth: "240px", fontSize: "18px" }}>
+                    🔍 Jelajahi Project
+                </LinkButton>
+                <LinkButton href="/project/create" variant="primary" size="lg" style={{ minWidth: "240px", fontSize: "18px" }}>
+                    🚀 Mulai Project Pertama
+                </LinkButton>
+                </div>
+            </motion.div>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "32px" }}>
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "32px" }}
+          >
             {projects.map((project: any) => (
               <ProjectCard key={project.id} project={project} userSkills={userSkills} />
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

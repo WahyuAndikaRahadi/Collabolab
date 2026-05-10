@@ -2,8 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { CATEGORY_META, COMMITMENT_META } from "@/types";
 import { calculateSkillMatch } from "@/lib/skill-match";
+import { containerVariants, itemVariants } from "../ui/DecorativeElements";
 import type { ProjectCategory, CommitmentLevel, TrustLevel } from "@prisma/client";
 
 type Project = {
@@ -46,29 +48,33 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
       : null;
 
   return (
-    <div
+    <motion.div
+      variants={itemVariants}
+      whileHover={{ 
+        y: -10, 
+        x: -4,
+        boxShadow: "12px 12px 0px #000",
+        rotate: 0.5,
+        transition: { type: "spring", stiffness: 300, damping: 10 } 
+      }}
       id={`project-card-${project.id}`}
       style={{
         background: "#fff",
-        border: "2px solid #000",
-        borderRadius: "8px",
-        boxShadow: "4px 4px 0px #000",
-        padding: "24px",
+        border: "3px solid #000",
+        borderRadius: "12px",
+        boxShadow: "6px 6px 0px #000",
+        padding: "28px",
         display: "flex",
         flexDirection: "column",
-        gap: "14px",
-        transition: "all 0.15s ease",
+        gap: "18px",
+        transition: "all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
         height: "100%",
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLDivElement).style.boxShadow = "2px 2px 0px #000";
-        (e.currentTarget as HTMLDivElement).style.transform = "translate(2px, 2px)";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLDivElement).style.boxShadow = "4px 4px 0px #000";
-        (e.currentTarget as HTMLDivElement).style.transform = "translate(0, 0)";
+        position: "relative",
+        overflow: "hidden"
       }}
     >
+      <div style={{ position: "absolute", top: 0, right: 0, width: "100%", height: "6px", background: cat.color }} />
+
       {/* Top row */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
         <span style={{ background: cat.color, border: "1.5px solid #000", borderRadius: "4px", padding: "3px 10px", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px" }}>
@@ -99,27 +105,28 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
 
       {/* Skill match bar */}
       {matchPct !== null && (
-        <div style={{ background: "#F5F0E8", border: "1.5px solid #000", borderRadius: "6px", padding: "8px 12px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px" }}>Skill Match</span>
+        <div style={{ background: "#F5F0E8", border: "2px solid #000", borderRadius: "8px", padding: "10px 14px", boxShadow: "2px 2px 0px #000" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+            <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.5px" }}>🔥 Match Power</span>
             <span
               style={{
                 fontFamily: "Space Grotesk, sans-serif",
-                fontWeight: 800,
-                fontSize: "14px",
+                fontWeight: 900,
+                fontSize: "16px",
                 color: matchPct >= 80 ? "#00D37F" : matchPct >= 60 ? "#FF8C00" : "#FF4D4D",
               }}
             >
               {matchPct}%
             </span>
           </div>
-          <div style={{ height: "6px", background: "#fff", border: "1px solid #000", borderRadius: "3px", overflow: "hidden" }}>
-            <div
+          <div style={{ height: "10px", background: "#fff", border: "2px solid #000", borderRadius: "5px", overflow: "hidden" }}>
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${matchPct}%` }}
+              transition={{ duration: 1, ease: "circOut", delay: 0.2 }}
               style={{
-                width: `${matchPct}%`,
                 height: "100%",
                 background: matchPct >= 80 ? "#00D37F" : matchPct >= 60 ? "#FFE500" : "#FF4D4D",
-                transition: "width 0.5s ease",
               }}
             />
           </div>
@@ -127,7 +134,7 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
       )}
 
       {/* Title */}
-      <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "17px", margin: 0, lineHeight: 1.3 }}>
+      <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", margin: 0, lineHeight: 1.3 }}>
         {project.title}
       </h3>
 
@@ -135,14 +142,15 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
       <p
         style={{
           color: "#3D3D3D",
-          fontSize: "14px",
+          fontSize: "15px",
           lineHeight: 1.5,
           margin: 0,
           display: "-webkit-box",
-          WebkitLineClamp: 2,
+          WebkitLineClamp: 3,
           WebkitBoxOrient: "vertical",
           overflow: "hidden",
           flex: 1,
+          fontWeight: 500
         }}
       >
         {project.description}
@@ -177,25 +185,18 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
       </div>
 
       {/* Footer */}
-      <div style={{ borderTop: "1.5px solid #e0e0e0", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          <span style={{ fontSize: "13px" }}>{TRUST_EMOJI[project.owner.trustLevel]}</span>
-          <span style={{ fontSize: "13px", fontWeight: 600 }}>{project.owner.name}</span>
-          <div style={{ display: "flex", gap: "4px", marginLeft: "4px" }}>
-            {project.owner.externalLinks?.map((l) => (
-              <a
-                key={l.platform}
-                href={l.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={l.platform}
-                style={{ textDecoration: "none", fontSize: "12px" }}
-              >
-                {l.platform === "LINKEDIN" ? "🔵" : "⚫"}
-              </a>
-            ))}
-          </div>
-          <span style={{ background: "#F5F0E8", border: "1.5px solid #000", borderRadius: "4px", padding: "1px 6px", fontSize: "11px", fontWeight: 700, fontFamily: "Space Grotesk, sans-serif", marginLeft: "4px" }}>
+      <div style={{ borderTop: "2px solid #f0f0f0", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ position: "relative" }}>
+                <img 
+                    src={project.owner.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${project.owner.name}`} 
+                    alt={project.owner.name}
+                    style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1.5px solid #000" }}
+                />
+                <div style={{ position: "absolute", bottom: -2, right: -2, width: "10px", height: "10px", background: "#00D37F", border: "1.5px solid #000", borderRadius: "50%" }} />
+            </div>
+          <span style={{ fontSize: "13px", fontWeight: 700 }}>{project.owner.name}</span>
+          <span style={{ background: "#F5F0E8", border: "1.5px solid #000", borderRadius: "4px", padding: "1px 6px", fontSize: "11px", fontWeight: 800, fontFamily: "Space Grotesk, sans-serif" }}>
             {project.owner.trustScore}
           </span>
         </div>
@@ -222,13 +223,14 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
         href={`/project/${project.id}`}
         className="btn-primary btn-sm"
         id={`project-card-link-${project.id}`}
-        style={{ textAlign: "center", width: "100%" }}
+        style={{ textAlign: "center", width: "100%", marginTop: "4px" }}
       >
         Lihat Detail →
       </Link>
-    </div>
+    </motion.div>
   );
 }
+
 
 // ─── Filter Bar ───────────────────────────────────────────────────────────────
 
@@ -242,66 +244,75 @@ export function FilterBar({ filters, onChange }: { filters: Filters; onChange: (
   return (
     <div
       style={{
-        background: "#F5F0E8",
-        border: "2px solid #000",
-        borderRadius: "8px",
-        padding: "16px 20px",
+        background: "#fff",
+        border: "3px solid #000",
+        borderRadius: "12px",
+        padding: "24px",
         display: "flex",
-        gap: "12px",
+        gap: "16px",
         flexWrap: "wrap",
         alignItems: "center",
-        marginBottom: "24px",
+        marginBottom: "40px",
+        boxShadow: "8px 8px 0px #000",
+        position: "relative",
+        zIndex: 5
       }}
     >
-      <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", whiteSpace: "nowrap" }}>
-        🔍 Filter:
-      </span>
+      <div style={{ background: "#000", color: "#FFE500", padding: "6px 12px", borderRadius: "4px", display: "flex", alignItems: "center", gap: "8px" }}>
+        <span style={{ fontSize: "18px" }}>🔍</span>
+        <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "14px", textTransform: "uppercase", letterSpacing: "1px" }}>
+            Filter Area
+        </span>
+      </div>
 
-      <select
-        id="filter-category"
-        className="nb-select"
-        value={filters.category}
-        onChange={(e) => onChange({ ...filters, category: e.target.value })}
-        style={{ width: "auto", minWidth: "140px" }}
-      >
-        <option value="ALL">Semua Kategori</option>
-        {Object.entries(CATEGORY_META).map(([key, val]) => (
-          <option key={key} value={key}>
-            {val.emoji} {val.label}
-          </option>
-        ))}
-      </select>
+      <div style={{ flex: 1, display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <select
+            id="filter-category"
+            className="nb-select"
+            value={filters.category}
+            onChange={(e) => onChange({ ...filters, category: e.target.value })}
+            style={{ width: "auto", minWidth: "160px", boxShadow: "4px 4px 0px #000" }}
+          >
+            <option value="ALL">Semua Kategori</option>
+            {Object.entries(CATEGORY_META).map(([key, val]) => (
+              <option key={key} value={key}>
+                {val.emoji} {val.label}
+              </option>
+            ))}
+          </select>
 
-      <select
-        id="filter-commitment"
-        className="nb-select"
-        value={filters.commitment}
-        onChange={(e) => onChange({ ...filters, commitment: e.target.value })}
-        style={{ width: "auto", minWidth: "140px" }}
-      >
-        <option value="ALL">Semua Komitmen</option>
-        {Object.entries(COMMITMENT_META).map(([key, val]) => (
-          <option key={key} value={key}>
-            {val.label}
-          </option>
-        ))}
-      </select>
+          <select
+            id="filter-commitment"
+            className="nb-select"
+            value={filters.commitment}
+            onChange={(e) => onChange({ ...filters, commitment: e.target.value })}
+            style={{ width: "auto", minWidth: "160px", boxShadow: "4px 4px 0px #000" }}
+          >
+            <option value="ALL">Semua Komitmen</option>
+            {Object.entries(COMMITMENT_META).map(([key, val]) => (
+              <option key={key} value={key}>
+                {val.label}
+              </option>
+            ))}
+          </select>
 
-      <input
-        id="filter-skill"
-        type="text"
-        className="nb-input"
-        placeholder="Cari skill..."
-        value={filters.skill}
-        onChange={(e) => onChange({ ...filters, skill: e.target.value })}
-        style={{ width: "auto", minWidth: "160px" }}
-      />
+          <input
+            id="filter-skill"
+            type="text"
+            className="nb-input"
+            placeholder="Cari skill spesifik..."
+            value={filters.skill}
+            onChange={(e) => onChange({ ...filters, skill: e.target.value })}
+            style={{ width: "auto", minWidth: "200px", boxShadow: "4px 4px 0px #000" }}
+          />
+      </div>
 
       {(filters.category !== "ALL" || filters.commitment !== "ALL" || filters.skill) && (
         <button
           onClick={() => onChange({ category: "ALL", commitment: "ALL", skill: "" })}
           id="filter-reset-btn"
-          className="btn-secondary btn-sm"
+          className="btn-danger btn-sm"
+          style={{ padding: "12px 20px" }}
         >
           Reset ✕
         </button>
@@ -543,11 +554,16 @@ export function ExploreClient({
             {activeTab === "untuk-kamu" && " yang cocok dengan skill kamu"}
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "24px" }}>
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "24px" }}
+          >
             {displayedProjects.map((project) => (
               <ProjectCard key={project.id} project={project} userSkills={userSkills} />
             ))}
-          </div>
+          </motion.div>
         </>
       )}
     </>

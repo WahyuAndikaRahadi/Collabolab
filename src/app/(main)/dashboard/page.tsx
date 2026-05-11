@@ -16,6 +16,11 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
+  // If Admin, redirect to Admin Dashboard
+  if (session.user.role === "ADMIN") {
+    redirect("/admin");
+  }
+
   // ── 7-day activity window ────────────────────────────────────────────────────
   const now = new Date();
   const sevenDaysAgo = new Date(now);

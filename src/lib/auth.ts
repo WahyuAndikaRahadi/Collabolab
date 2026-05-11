@@ -46,4 +46,43 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = (user as any).role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token.id && session.user) {
+        try {
+          // Use raw query to bypass stale Prisma client validation (Next.js/Turbopack cache issues)
+          // We use queryRawUnsafe to ensure we get the latest fields directly from DB
+          const results = await prisma.$queryRawUnsafe<any[]>(
+            `SELECT id, role, "trustScore", "trustLevel", "availStatus", "onboardingDone", "isBlocked" FROM "User" WHERE id = $1`,
+            token.id
+          );
+
+          const dbUser = results && results[0];
+
+          if (dbUser) {
+            session.user.id = dbUser.id;
+            session.user.role = dbUser.role;
+            session.user.trustScore = dbUser.trustScore;
+            session.user.trustLevel = dbUser.trustLevel;
+            session.user.availStatus = dbUser.availStatus;
+            session.user.onboardingDone = dbUser.onboardingDone;
+            session.user.isBlocked = dbUser.isBlocked;
+          }
+        } catch (error) {
+          console.error("Session sync error (falling back to token):", error);
+          // Fallback to token data if DB fetch fails
+          session.user.id = token.id as string;
+          session.user.role = token.role as any;
+        }
+      }
+      return session;
+    },
+  },
 });

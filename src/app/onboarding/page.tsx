@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { SKILL_SUGGESTIONS, SKILL_GROUPS } from "@/types";
@@ -17,7 +17,14 @@ const AVAIL_OPTIONS = [
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { update } = useSession();
+  const { data: session, status, update } = useSession();
+
+  // Redirect ADMINs away from onboarding
+  useEffect(() => {
+    if (status === "authenticated" && (session?.user as any)?.role === "ADMIN") {
+      router.replace("/admin");
+    }
+  }, [session, status, router]);
 
   const [step, setStep] = useState<Step>(1);
   const [isLoading, setIsLoading] = useState(false);

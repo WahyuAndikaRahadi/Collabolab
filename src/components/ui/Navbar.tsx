@@ -19,12 +19,12 @@ export function Navbar() {
   const [activeHash, setActiveHash] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  // Hide navbar on auth pages
-  if (pathname === "/login" || pathname === "/register") return null;
+  // Hide navbar on auth pages and admin area
+  if (pathname === "/login" || pathname === "/register" || pathname.startsWith("/admin")) return null;
 
   const navLinks = session?.user 
     ? [
-        { href: "/dashboard", label: "Dashboard" },
+        { href: session.user.role === "ADMIN" ? "/admin" : "/dashboard", label: "Dashboard" },
         { href: "/explore", label: "Explore" },
         { href: "/feed", label: "Feed" },
         { href: "/ai-hub", label: "AI Hub" },

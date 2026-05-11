@@ -27,7 +27,12 @@ export function AdminUsersClient() {
     try {
       const res = await fetch('/api/admin/users');
       const data = await res.json();
-      setUsers(data);
+      if (Array.isArray(data)) {
+        setUsers(data);
+      } else {
+        toast.error("Error", data.error || "Gagal mengambil data user");
+        setUsers([]);
+      }
     } catch (err) {
       toast.error("Error", "Gagal mengambil data user");
     } finally {
@@ -68,80 +73,136 @@ export function AdminUsersClient() {
     }
   }
 
-  if (loading) return <div>Memuat data user...</div>;
+  if (loading) return (
+    <div style={{ padding: "40px", textAlign: "center", color: "#000", fontFamily: "JetBrains Mono, monospace", fontWeight: 800 }}>
+      {">"} INITIALIZING_USER_DATABASE...
+    </div>
+  );
 
   return (
-    <div style={{ background: "#fff", border: "4px solid #000", borderRadius: "12px", boxShadow: "8px 8px 0px #000", overflow: "hidden" }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
-        <thead>
-          <tr style={{ background: "#000", color: "#fff", fontFamily: "Space Grotesk, sans-serif", fontWeight: 800 }}>
-            <th style={{ padding: "16px" }}>User</th>
-            <th style={{ padding: "16px" }}>Trust Score</th>
-            <th style={{ padding: "16px" }}>Status</th>
-            <th style={{ padding: "16px" }}>Role</th>
-            <th style={{ padding: "16px" }}>Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id} style={{ borderBottom: "2px solid #000", transition: "background 0.15s ease" }}>
-              <td style={{ padding: "16px" }}>
-                <div style={{ fontWeight: 800 }}>{user.name}</div>
-                <div style={{ fontSize: "12px", color: "#666" }}>{user.email}</div>
-              </td>
-              <td style={{ padding: "16px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <input 
-                    type="number" 
-                    defaultValue={user.trustScore}
-                    onBlur={(e) => updateTrustScore(user.id, e.target.value)}
-                    style={{ 
-                      width: "60px", 
-                      padding: "4px 8px", 
-                      border: "2px solid #000", 
-                      borderRadius: "4px", 
-                      fontFamily: "JetBrains Mono, monospace",
-                      fontWeight: 700 
-                    }}
-                  />
-                  <span style={{ fontSize: "12px", fontWeight: 700 }}>({user.trustLevel})</span>
-                </div>
-              </td>
-              <td style={{ padding: "16px" }}>
-                <span style={{ 
-                  padding: "4px 10px", 
-                  borderRadius: "4px", 
-                  border: "2px solid #000",
-                  background: user.isBlocked ? "#FF4D4D" : "#00D37F",
-                  color: user.isBlocked ? "#fff" : "#000",
-                  fontSize: "12px",
-                  fontWeight: 800
-                }}>
-                  {user.isBlocked ? "BLOCKED" : "ACTIVE"}
-                </span>
-              </td>
-              <td style={{ padding: "16px", fontWeight: 700 }}>{user.role}</td>
-              <td style={{ padding: "16px" }}>
-                <button
-                  onClick={() => updateStatus(user.id, !user.isBlocked)}
-                  style={{
-                    padding: "8px 16px",
-                    background: user.isBlocked ? "#00D37F" : "#FF4D4D",
-                    color: user.isBlocked ? "#000" : "#fff",
-                    border: "2px solid #000",
-                    borderRadius: "4px",
-                    fontWeight: 800,
-                    cursor: "pointer",
-                    boxShadow: "2px 2px 0px #000"
-                  }}
-                >
-                  {user.isBlocked ? "Unblock" : "Block"}
-                </button>
-              </td>
+    <div style={{ 
+      background: "#FFFFFF", 
+      border: "3px solid #000", 
+      borderRadius: "12px", 
+      boxShadow: "10px 10px 0px #000", 
+      overflow: "hidden",
+      color: "#000" 
+    }}>
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+          <thead>
+            <tr style={{ background: "#000", borderBottom: "3px solid #000", color: "#FFE500", fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, textTransform: "uppercase", fontSize: "12px", letterSpacing: "1px" }}>
+              <th style={{ padding: "20px" }}>Identification</th>
+              <th style={{ padding: "20px" }}>Trust Parameters</th>
+              <th style={{ padding: "20px" }}>System Status</th>
+              <th style={{ padding: "20px" }}>Access Level</th>
+              <th style={{ padding: "20px" }}>Directives</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id} style={{ borderBottom: "2px solid #f0f0f0", transition: "background 0.1s ease" }}>
+                <td style={{ padding: "20px" }}>
+                  <div style={{ fontWeight: 800, color: "#000", fontSize: "16px" }}>{user.name}</div>
+                  <div style={{ fontSize: "12px", color: "#666", fontFamily: "JetBrains Mono, monospace" }}>{user.email}</div>
+                </td>
+                <td style={{ padding: "20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div style={{ position: "relative" }}>
+                      <input 
+                        type="number" 
+                        defaultValue={user.trustScore}
+                        onBlur={(e) => updateTrustScore(user.id, e.target.value)}
+                        style={{ 
+                          width: "70px", 
+                          padding: "6px 10px", 
+                          background: "#fff",
+                          color: "#000",
+                          border: "2px solid #000", 
+                          borderRadius: "4px", 
+                          fontFamily: "JetBrains Mono, monospace",
+                          fontWeight: 800,
+                          outline: "none",
+                          boxShadow: "2px 2px 0px #000"
+                        }}
+                      />
+                    </div>
+                    <span style={{ 
+                      fontSize: "11px", 
+                      fontWeight: 800, 
+                      color: "#000",
+                      background: "#f0f0f0",
+                      padding: "2px 8px",
+                      borderRadius: "2px",
+                      border: "1px solid #000"
+                    }}>
+                      {user.trustLevel}
+                    </span>
+                  </div>
+                </td>
+                <td style={{ padding: "20px" }}>
+                  <span style={{ 
+                    padding: "4px 12px", 
+                    borderRadius: "2px", 
+                    border: "2px solid #000",
+                    background: user.isBlocked ? "#FF4D4D" : "#00D37F",
+                    color: user.isBlocked ? "#fff" : "#000",
+                    fontSize: "11px",
+                    fontWeight: 900,
+                    letterSpacing: "0.5px",
+                    boxShadow: "2px 2px 0px #000"
+                  }}>
+                    {user.isBlocked ? "BLOCKED" : "OPERATIONAL"}
+                  </span>
+                </td>
+                <td style={{ padding: "20px" }}>
+                   <div style={{ 
+                     display: "inline-block",
+                     padding: "4px 10px",
+                     background: user.role === "ADMIN" ? "#FFE500" : "#fff",
+                     color: "#000",
+                     borderRadius: "2px",
+                     border: "2px solid #000",
+                     fontSize: "11px",
+                     fontWeight: 900,
+                     boxShadow: "2px 2px 0px #000"
+                   }}>
+                     {user.role}
+                   </div>
+                </td>
+                <td style={{ padding: "20px" }}>
+                  <button
+                    onClick={() => updateStatus(user.id, !user.isBlocked)}
+                    style={{
+                      padding: "8px 16px",
+                      background: user.isBlocked ? "#00D37F" : "#FF4D4D",
+                      color: user.isBlocked ? "#000" : "#fff",
+                      border: "2px solid #000",
+                      borderRadius: "4px",
+                      fontWeight: 900,
+                      fontSize: "12px",
+                      cursor: "pointer",
+                      transition: "all 0.1s ease",
+                      textTransform: "uppercase",
+                      boxShadow: "4px 4px 0px #000"
+                    }}
+                    onMouseDown={(e) => {
+                      (e.currentTarget as any).style.transform = "translate(2px, 2px)";
+                      (e.currentTarget as any).style.boxShadow = "2px 2px 0px #000";
+                    }}
+                    onMouseUp={(e) => {
+                      (e.currentTarget as any).style.transform = "none";
+                      (e.currentTarget as any).style.boxShadow = "4px 4px 0px #000";
+                    }}
+                  >
+                    {user.isBlocked ? "Activate" : "Terminate"}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

@@ -35,9 +35,22 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  // Redirect to onboarding if not completed
+  // --- ADMIN ISOLATION ---
+  // If user is ADMIN, they should NOT access user-facing features (dashboard, explore, etc.)
   if (
     session?.user &&
+    (session.user as any).role === "ADMIN" &&
+    !pathname.startsWith("/admin") &&
+    !pathname.startsWith("/api") &&
+    pathname !== "/"
+  ) {
+    return NextResponse.redirect(new URL("/admin", req.url));
+  }
+
+  // Redirect to onboarding if not completed (Skip for ADMINs)
+  if (
+    session?.user &&
+    (session.user as any).role !== "ADMIN" &&
     !session.user.onboardingDone &&
     !pathname.startsWith("/onboarding") &&
     !pathname.startsWith("/api")

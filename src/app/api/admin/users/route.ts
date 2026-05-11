@@ -12,21 +12,15 @@ export async function GET() {
   if (!await isAdmin()) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   try {
-    const users = await prisma.user.findMany({
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        trustScore: true,
-        trustLevel: true,
-        role: true,
-        isBlocked: true,
-        createdAt: true,
-      }
-    });
-    return NextResponse.json(users);
+    // Using raw query to bypass any stale Prisma client issues
+    const users = await prisma.$queryRawUnsafe<any[]>(
+      `SELECT id, name, email, "trustScore", "trustLevel", role, "isBlocked", "createdAt" 
+       FROM "User" 
+       ORDER BY "createdAt" DESC`
+    );
+    return NextResponse.json(users || []);
   } catch (err) {
+    console.error("Admin user list fetch error:", err);
     return NextResponse.json({ error: "Gagal mengambil data user" }, { status: 500 });
   }
 }

@@ -40,6 +40,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           trustLevel: user.trustLevel,
           availStatus: user.availStatus,
           onboardingDone: user.onboardingDone,
+          role: user.role,
+          isBlocked: user.isBlocked,
         };
       },
     }),

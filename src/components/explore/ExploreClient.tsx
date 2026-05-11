@@ -457,6 +457,7 @@ export function ExploreClient({
   const [allProjects, setAllProjects] = useState<Project[]>(initialProjects);
   const [filters, setFilters] = useState<Filters>({ category: "ALL", commitment: "ALL", skill: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("semua");
 
   const userSkillsLower = userSkills.map((s) => s.toLowerCase());
@@ -464,14 +465,23 @@ export function ExploreClient({
 
   const fetchProjects = useCallback(async (f: Filters) => {
     setIsLoading(true);
+    setError(null);
     try {
       const params = new URLSearchParams();
       if (f.category !== "ALL") params.set("category", f.category);
       if (f.commitment !== "ALL") params.set("commitment", f.commitment);
       if (f.skill) params.set("skill", f.skill);
       const res = await fetch(`/api/projects?${params}`);
+      
+      if (!res.ok) {
+        throw new Error("Gagal memuat data dari server.");
+      }
+      
       const data = await res.json();
       setAllProjects(data.projects || []);
+    } catch (err: any) {
+      console.error("Fetch projects error:", err);
+      setError("Terjadi kesalahan saat memuat project. Silakan coba lagi nanti.");
     } finally {
       setIsLoading(false);
     }
@@ -504,6 +514,32 @@ export function ExploreClient({
         <div style={{ textAlign: "center", padding: "60px", color: "#3D3D3D" }}>
           <div style={{ fontSize: "32px", marginBottom: "12px" }}>⏳</div>
           <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700 }}>Memuat project...</p>
+        </div>
+      ) : error ? (
+        <div
+          style={{
+            textAlign: "center",
+            padding: "64px 32px",
+            background: "#FFF5F5",
+            border: "2px solid #FF4D4D",
+            borderRadius: "12px",
+            boxShadow: "6px 6px 0px #000",
+          }}
+        >
+          <div style={{ fontSize: "48px", marginBottom: "12px" }}>⚠️</div>
+          <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "20px", color: "#FF4D4D", marginBottom: "8px" }}>
+            Ups! Terjadi Masalah
+          </p>
+          <p style={{ color: "#3D3D3D", fontSize: "16px", marginBottom: "20px" }}>
+            {error}
+          </p>
+          <button
+            onClick={() => fetchProjects(filters)}
+            className="btn-primary"
+            style={{ padding: "12px 24px" }}
+          >
+            Coba Lagi 🔄
+          </button>
         </div>
       ) : displayedProjects.length === 0 ? (
         <div

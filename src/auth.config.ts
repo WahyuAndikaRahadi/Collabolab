@@ -28,6 +28,8 @@ export default {
         token.trustLevel = (user as any).trustLevel ?? "NEWCOMER";
         token.availStatus = (user as any).availStatus ?? "OPEN";
         token.onboardingDone = (user as any).onboardingDone ?? false;
+        token.role = (user as any).role ?? "USER";
+        token.isBlocked = (user as any).isBlocked ?? false;
       }
       // When session.update() is called from the client, refresh token fields
       if (trigger === "update") {
@@ -50,6 +52,8 @@ export default {
         session.user.trustLevel = token.trustLevel as any;
         session.user.availStatus = token.availStatus as any;
         session.user.onboardingDone = token.onboardingDone as boolean;
+        session.user.role = token.role as any;
+        session.user.isBlocked = token.isBlocked as boolean;
       }
       return session;
     },

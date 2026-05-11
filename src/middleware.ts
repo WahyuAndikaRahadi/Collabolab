@@ -6,6 +6,7 @@ import type { NextRequest } from "next/server";
 const { auth } = NextAuth(authConfig);
 
 const PROTECTED_PATHS = [
+  "/explore",
   "/dashboard",
   "/project",
   "/profile",
@@ -51,6 +52,7 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
 
 export const config = {
   matcher: [
+    "/explore/:path*",
     "/dashboard/:path*",
     "/project/:path*",
     "/profile/:path*",

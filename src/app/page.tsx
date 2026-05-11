@@ -14,6 +14,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { Noise } from "@/components/ui/Noise";
+import GuestGuard from "@/components/auth/GuestGuard";
 
 export const metadata: Metadata = {
   title: "CollaboLab — Find Your People. Build Together.",
@@ -55,7 +56,7 @@ export default async function HomePage() {
   });
 
   return (
-    <>
+    <GuestGuard>
       <CustomCursor />
       <Noise />
       <Navbar />
@@ -78,6 +79,6 @@ export default async function HomePage() {
         <CtaFooterSection />
       </main>
       <AIAssistantWidget />
-    </>
+    </GuestGuard>
   );
 }

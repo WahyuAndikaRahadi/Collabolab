@@ -1,4 +1,4 @@
-import type { TrustLevel, AvailStatus, ProjectCategory, CommitmentLevel, ProjectTopic, ProjectStatus, TaskStatus, Priority, MemberRole } from "@prisma/client";
+import type { TrustLevel, AvailStatus, ProjectCategory, CommitmentLevel, ProjectTopic, ProjectStatus, TaskStatus, Priority, MemberRole, UserRole } from "@prisma/client";
 import "next-auth/jwt";
 
 // ─── NextAuth type augmentation ──────────────────────────────────────────────
@@ -9,6 +9,8 @@ declare module "next-auth" {
     trustLevel: TrustLevel;
     availStatus: AvailStatus;
     onboardingDone: boolean;
+    role: UserRole;
+    isBlocked: boolean;
   }
 
   interface Session {
@@ -18,6 +20,8 @@ declare module "next-auth" {
       trustLevel: TrustLevel;
       availStatus: AvailStatus;
       onboardingDone: boolean;
+      role: UserRole;
+      isBlocked: boolean;
     };
   }
 }
@@ -29,6 +33,8 @@ declare module "next-auth/jwt" {
     trustLevel: TrustLevel;
     availStatus: AvailStatus;
     onboardingDone: boolean;
+    role: UserRole;
+    isBlocked: boolean;
   }
 }
 

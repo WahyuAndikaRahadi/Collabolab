@@ -22,47 +22,87 @@ export async function GET(req: NextRequest) {
     const commitment = searchParams.get("commitment");
     const status = searchParams.get("status") || "OPEN";
     const skill = searchParams.get("skill");
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "12");
+    
+    let page = parseInt(searchParams.get("page") || "1");
+    let limit = parseInt(searchParams.get("limit") || "12");
+    
+    if (isNaN(page) || page < 1) page = 1;
+    if (isNaN(limit) || limit < 1) limit = 12;
+    if (limit > 50) limit = 50; // Cap limit for safety
+
     const skip = (page - 1) * limit;
 
-    const where: Record<string, unknown> = {};
+    const where: any = {};
 
-    if (category && category !== "ALL") where.category = category;
-    if (commitment && commitment !== "ALL") where.commitmentLevel = commitment;
-    if (status !== "ALL") where.status = status;
-    if (skill) {
-      where.requiredSkills = { some: { skillName: { contains: skill, mode: "insensitive" } } };
+    // Only add to where if they are not "ALL" and exist
+    if (category && category !== "ALL") {
+      where.category = category;
+    }
+    
+    if (commitment && commitment !== "ALL") {
+      where.commitmentLevel = commitment;
+    }
+    
+    if (status && status !== "ALL") {
+      where.status = status;
     }
 
-    const [projects, total] = await Promise.all([
-      prisma.project.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { createdAt: "desc" },
-        include: {
-          requiredSkills: { select: { skillName: true } },
-          members: { select: { id: true } },
-          owner: {
-            select: { 
-              id: true, 
-              name: true, 
-              image: true, 
-              trustScore: true, 
-              trustLevel: true,
-              linkedinUrl: true,
-              githubUrl: true
+    if (skill && skill.trim() !== "") {
+      where.requiredSkills = {
+        some: {
+          skillName: {
+            contains: skill,
+            mode: "insensitive"
+          }
+        }
+      };
+    }
+
+    // Use try-catch specifically for the database query to isolate connection issues
+    try {
+      const [projects, total] = await Promise.all([
+        prisma.project.findMany({
+          where,
+          skip,
+          take: limit,
+          orderBy: { createdAt: "desc" },
+          include: {
+            requiredSkills: { select: { skillName: true } },
+            members: { select: { id: true } },
+            owner: {
+              select: { 
+                id: true, 
+                name: true, 
+                image: true, 
+                trustScore: true, 
+                trustLevel: true,
+                linkedinUrl: true,
+                githubUrl: true
+              },
             },
           },
-        },
-      }),
-      prisma.project.count({ where }),
-    ]);
+        }),
+        prisma.project.count({ where }),
+      ]);
 
-    return NextResponse.json({ projects, total, page, limit, totalPages: Math.ceil(total / limit) });
-  } catch (err) {
-    console.error("[projects GET]", err);
+      return NextResponse.json({ 
+        projects: projects || [], 
+        total: total || 0, 
+        page, 
+        limit, 
+        totalPages: Math.ceil((total || 0) / limit) 
+      });
+    } catch (dbErr: any) {
+      console.error("[projects GET DB Error]:", {
+        message: dbErr.message,
+        stack: dbErr.stack,
+        code: dbErr.code,
+        name: dbErr.name
+      });
+      return NextResponse.json({ error: "Database connection error." }, { status: 500 });
+    }
+  } catch (err: any) {
+    console.error("[projects GET General Error]:", err);
     return NextResponse.json({ error: "Gagal memuat project." }, { status: 500 });
   }
 }

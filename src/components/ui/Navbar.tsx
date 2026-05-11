@@ -5,13 +5,15 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LinkButton } from "@/components/ui/Button";
+import { Button, LinkButton } from "@/components/ui/Button";
 import { getTrustLevelEmoji, getTrustLevelColor } from "@/lib/trust-score";
 import { NotificationBell } from "@/components/ui/NotificationBell";
+import { useToast } from "@/lib/toast";
 
 export function Navbar() {
   const { data: session } = useSession();
   const pathname = usePathname();
+  const toast = useToast();
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
 
@@ -229,6 +231,17 @@ export function Navbar() {
                   session.user.name?.[0]?.toUpperCase() ?? "U"
                 )}
               </Link>
+              <Button 
+                variant="danger" 
+                size="sm" 
+                onClick={async () => {
+                  toast.info("Sedang keluar...", "Menghapus sesi kolaborasi...");
+                  await signOut({ callbackUrl: "/" });
+                }}
+                style={{ height: "36px", padding: "0 12px" }}
+              >
+                Keluar
+              </Button>
             </div>
           ) : (
             <div className="hidden lg:flex items-center gap-3">
@@ -309,23 +322,17 @@ export function Navbar() {
                 </div>
               ) : (
                 <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "2px solid #000" }}>
-                  <button
-                    onClick={() => signOut({ callbackUrl: "/" })}
-                    style={{
-                      width: "100%",
-                      background: "#FF4D4D",
-                      color: "#fff",
-                      border: "2px solid #000",
-                      borderRadius: "6px",
-                      padding: "12px",
-                      fontFamily: "Space Grotesk, sans-serif",
-                      fontWeight: 800,
-                      cursor: "pointer",
-                      boxShadow: "3px 3px 0px #000",
+                  <Button
+                    variant="danger"
+                    fullWidth
+                    onClick={async () => {
+                      setMenuOpen(false);
+                      toast.info("Sedang keluar...", "Menghapus sesi kolaborasi...");
+                      await signOut({ callbackUrl: "/" });
                     }}
                   >
                     Keluar Akun
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>

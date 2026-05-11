@@ -25,6 +25,12 @@ enum AvailStatus {
   BUSY
 }
 
+enum UserRole {
+  USER
+  ADMIN
+  MODERATOR
+}
+
 enum ProjectCategory {
   LOMBA
   STARTUP
@@ -129,6 +135,8 @@ model User {
   otpCode           String?
   otpExpiry         DateTime?
   onboardingDone    Boolean   @default(false)
+  role              UserRole  @default(USER)
+  isBlocked         Boolean   @default(false)
 
   skills            UserSkill[]
   projectsOwned     Project[]  @relation("owner")
@@ -140,6 +148,7 @@ model User {
   bookmarks         Bookmark[]
   sessions          Session[]
   accounts          Account[]
+  reportsSent       Report[]   @relation("reportsSent")
   hubMessages       HubMessage[]
   externalLinks     ExternalLink[]
   notifications     Notification[]
@@ -612,4 +621,17 @@ model AIToolResult {
 
   user      User         @relation(fields: [userId], references: [id])
   usage     AIToolUsage  @relation(fields: [usageId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  reporterId  String
+  targetId    String   // Could be project ID or user ID
+  targetType  String   // "PROJECT" or "USER"
+  reason      String
+  description String?
+  status      String   @default("PENDING") // PENDING, RESOLVED, DISMISSED
+  createdAt   DateTime @default(now())
+
+  reporter    User     @relation("reportsSent", fields: [reporterId], references: [id])
 }

@@ -294,6 +294,7 @@ model Task {
 
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  completedAt DateTime?
 }
 
 model ChatMessage {
@@ -433,6 +434,7 @@ model HubTask {
 
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  completedAt DateTime?
 }
 
 model Notification {

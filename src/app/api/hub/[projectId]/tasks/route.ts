@@ -105,6 +105,7 @@ export async function POST(req: NextRequest, { params }: Params) {
       roomId: resolvedRoomId ?? null,
       deadline: deadline ? new Date(deadline) : null,
       position: (lastTask?.position ?? -1) + 1,
+      completedAt: rest.status === "DONE" ? new Date() : null,
     },
   });
 
@@ -189,7 +190,19 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       }
   }
 
-  const task = await prisma.hubTask.update({ where: { id }, data: updates });
+  let completedAtUpdate = {};
+  if (updates.status !== undefined) {
+    if (updates.status === "DONE" && existingTask.status !== "DONE") {
+      completedAtUpdate = { completedAt: new Date() };
+    } else if (updates.status !== "DONE" && existingTask.status === "DONE") {
+      completedAtUpdate = { completedAt: null };
+    }
+  }
+
+  const task = await prisma.hubTask.update({ 
+    where: { id }, 
+    data: { ...updates, ...completedAtUpdate } 
+  });
 
   try {
     await pusherServer.trigger(CHANNELS.hub(projectId), EVENTS.HUB_TASK_UPDATED, task);

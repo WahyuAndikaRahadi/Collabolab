@@ -26,7 +26,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       members: {
         include: { user: { select: { id: true, name: true, image: true, trustScore: true, trustLevel: true } } },
       },
-      tasks: { select: { id: true, status: true } },
+      hubTasks: { where: { isGlobal: true }, select: { id: true, status: true } },
     },
   });
 
@@ -38,8 +38,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const commit = COMMITMENT_META[project.commitmentLevel];
   const topic = TOPIC_META[project.projectTopic];
 
-  const totalTasks = project.tasks.length;
-  const doneTasks = project.tasks.filter((t) => t.status === "DONE").length;
+  const totalTasks = project.hubTasks.length;
+  const doneTasks = project.hubTasks.filter((t) => t.status === "DONE").length;
   const progressPct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
   const spotsLeft = project.maxMembers - project.members.length;
 

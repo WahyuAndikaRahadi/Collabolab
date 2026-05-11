@@ -39,7 +39,7 @@ export default async function DashboardPage() {
                 requiredSkills: { select: { skillName: true } },
                 members: { select: { id: true } },
                 owner: { select: { id: true, name: true, trustScore: true, trustLevel: true } },
-                tasks: { select: { id: true, status: true } },
+                hubTasks: { where: { isGlobal: true }, select: { id: true, status: true } },
               },
             },
           },
@@ -63,9 +63,9 @@ export default async function DashboardPage() {
       where: { senderId: session.user.id, createdAt: { gte: sevenDaysAgo } },
       select: { createdAt: true },
     }),
-    prisma.task.findMany({
-      where: { assigneeId: session.user.id, updatedAt: { gte: sevenDaysAgo } },
-      select: { updatedAt: true },
+    prisma.hubTask.findMany({
+      where: { assigneeId: session.user.id, status: "DONE", completedAt: { gte: sevenDaysAgo } },
+      select: { completedAt: true },
     }),
   ]);
 
@@ -89,8 +89,10 @@ export default async function DashboardPage() {
     if (k in activityMap) activityMap[k]++;
   });
   recentTasks.forEach((task) => {
-    const k = task.updatedAt.toISOString().slice(0, 10);
-    if (k in activityMap) activityMap[k]++;
+    if (task.completedAt) {
+      const k = task.completedAt.toISOString().slice(0, 10);
+      if (k in activityMap) activityMap[k]++;
+    }
   });
   const activityData = dayKeys.map((k) => activityMap[k]);
   const maxActivity = Math.max(...activityData, 1);
@@ -106,7 +108,7 @@ export default async function DashboardPage() {
   // Stats
   const totalProjects = allMemberships.length;
   const totalContributions = allMemberships.reduce((sum, m) => {
-    const doneTasks = m.project.tasks.filter((t) => t.status === "DONE").length;
+    const doneTasks = m.project.hubTasks.filter((t) => t.status === "DONE").length;
     return sum + doneTasks;
   }, 0);
   const ownedCount = myProjects.length;
@@ -616,8 +618,8 @@ export default async function DashboardPage() {
             >
               {recentActivity.map((m, idx) => {
                 const cat = CATEGORY_META[m.project.category as ProjectCategory];
-                const totalTasks = m.project.tasks.length;
-                const doneTasks = m.project.tasks.filter((t) => t.status === "DONE").length;
+                const totalTasks = m.project.hubTasks.length;
+                const doneTasks = m.project.hubTasks.filter((t) => t.status === "DONE").length;
                 const progressPct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
                 const isOwner = m.role === "OWNER";
 

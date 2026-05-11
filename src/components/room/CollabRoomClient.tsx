@@ -94,6 +94,16 @@ export function CollabRoomClient({
       channel.bind(EVENTS.TASK_CREATED, (task: Task) => {
         setTasks((prev) => [...prev, task]);
       });
+
+      channel.bind(EVENTS.MESSAGE_DELETED, ({ messageId }: { messageId: string }) => {
+        setMessages((prev) => prev.filter((m) => m.id !== messageId));
+      });
+
+      channel.bind(EVENTS.MEMBER_KICKED, ({ userId }: { userId: string }) => {
+        if (userId === currentUserId) {
+          window.location.href = "/dashboard?reason=kicked";
+        }
+      });
     } catch {
       // Pusher not configured
     }
@@ -128,23 +138,41 @@ export function CollabRoomClient({
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           {initialProject.members.map((m) => {
             const displayName = m.isAnonymous && !m.revealedAt ? `Anon#${m.anonymousTag || "0000"}` : m.user.name;
+            const isMe = m.userId === currentUserId;
+
             return (
-              <div key={m.id} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <div style={{
-                  width: "28px", height: "28px", borderRadius: "50%",
-                  background: m.role === "OWNER" ? "#FFE500" : "#333",
-                  border: "2px solid #555",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: "12px", fontWeight: 700,
-                  color: m.role === "OWNER" ? "#000" : "#fff",
-                  flexShrink: 0,
-                }}>
-                  {m.isAnonymous && !m.revealedAt ? "👤" : displayName[0]}
+              <div key={m.id} style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <div style={{
+                    width: "28px", height: "28px", borderRadius: "50%",
+                    background: m.role === "OWNER" ? "#FFE500" : "#333",
+                    border: "2px solid #555",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: "12px", fontWeight: 700,
+                    color: m.role === "OWNER" ? "#000" : "#fff",
+                    flexShrink: 0,
+                  }}>
+                    {m.isAnonymous && !m.revealedAt ? "👤" : displayName[0]}
+                  </div>
+                  <span style={{ color: "#fff", fontSize: "13px", fontWeight: isMe ? 700 : 400 }}>
+                    {displayName}
+                    {m.role === "OWNER" && <span style={{ marginLeft: "4px", fontSize: "10px", color: "#FFE500" }}>👑</span>}
+                  </span>
                 </div>
-                <span style={{ color: "#fff", fontSize: "13px", fontWeight: m.userId === currentUserId ? 700 : 400 }}>
-                  {displayName}
-                  {m.role === "OWNER" && <span style={{ marginLeft: "4px", fontSize: "10px", color: "#FFE500" }}>👑</span>}
-                </span>
+
+                {isOwner && !isMe && (
+                  <button
+                    onClick={async () => {
+                      if (confirm(`Kick ${displayName}?`)) {
+                        await fetch(`/api/projects/${initialProject.id}/members/${m.id}`, { method: "DELETE" });
+                      }
+                    }}
+                    style={{ background: "transparent", border: "none", color: "#FF4D4D", cursor: "pointer", padding: "4px", fontSize: "12px" }}
+                    title="Kick dari project"
+                  >
+                    ✕
+                  </button>
+                )}
               </div>
             );
           })}
@@ -346,6 +374,8 @@ function ChatTab({ messages, projectId, currentUserId, chatEndRef, currentMember
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
 
+  const canModerate = currentMember.role === "OWNER" || currentMember.role === "ADMIN";
+
   async function sendMessage(e: React.FormEvent) {
     e.preventDefault();
     if (!input.trim() || isSending) return;
@@ -362,6 +392,13 @@ function ChatTab({ messages, projectId, currentUserId, chatEndRef, currentMember
     }
   }
 
+  async function deleteMessage(messageId: string) {
+    if (!confirm("Hapus pesan ini?")) return;
+    await fetch(`/api/chat/${projectId}?messageId=${messageId}`, {
+      method: "DELETE",
+    });
+  }
+
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#111", overflow: "hidden" }}>
       {/* Messages */}
@@ -376,7 +413,7 @@ function ChatTab({ messages, projectId, currentUserId, chatEndRef, currentMember
           const isMe = msg.sender.id === currentUserId;
           return (
             <div key={msg.id} style={{ display: "flex", justifyContent: isMe ? "flex-end" : "flex-start" }}>
-              <div style={{ maxWidth: "70%" }}>
+              <div style={{ maxWidth: "70%", position: "relative" }} className="group">
                 <div style={{ fontSize: "11px", color: "#888", marginBottom: "3px", textAlign: isMe ? "right" : "left" }}>
                   {msg.sender.name}
                 </div>
@@ -388,9 +425,30 @@ function ChatTab({ messages, projectId, currentUserId, chatEndRef, currentMember
                   padding: "10px 14px",
                   fontSize: "14px",
                   wordBreak: "break-word",
+                  position: "relative"
                 }}>
                   {msg.content}
                 </div>
+                {(isMe || canModerate) && (
+                  <button 
+                    onClick={() => deleteMessage(msg.id)}
+                    style={{
+                      position: "absolute",
+                      top: "22px",
+                      [isMe ? "left" : "right"]: "-28px",
+                      background: "transparent",
+                      border: "none",
+                      color: "#555",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                      padding: "4px",
+                    }}
+                    className="hidden group-hover:block"
+                    title="Hapus pesan"
+                  >
+                    🗑️
+                  </button>
+                )}
               </div>
             </div>
           );

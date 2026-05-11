@@ -167,7 +167,7 @@ export function AIAssistantWidget() {
                   gap: '8px'
                 }}>
                   <Loader2 size={14} className="animate-spin" />
-                  <span style={{ fontSize: '12px', fontWeight: 800 }}>Ngetik...</span>
+                  <span style={{ fontSize: '12px', fontWeight: 800 }}>Bot Mengetik...</span>
                 </div>
               )}
             </div>

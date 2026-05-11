@@ -43,7 +43,7 @@ async function getStats() {
   }
 }
 
-export default async function AdminDashboard() {
+export default async function AdminCommandCenterPage() {
   const stats = await getStats();
 
   return (

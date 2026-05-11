@@ -34,7 +34,7 @@ export default function OnboardingPage() {
   const [customSkill, setCustomSkill] = useState("");
   const [bio, setBio] = useState("");
   const [availStatus, setAvailStatus] = useState("OPEN");
-  const [links, setLinks] = useState({ linkedin: "", github: "", portfolio: "" });
+  const [links, setLinks] = useState({ linkedin: "", portfolio: "" });
 
   function toggleSkill(skill: string) {
     setSelectedSkills((prev) =>
@@ -47,7 +47,7 @@ export default function OnboardingPage() {
     if (trimmed && !selectedSkills.includes(trimmed)) {
       setSelectedSkills((prev) => [...prev, trimmed]);
     }
-    setCustomSkill("");
+    customSkill && setCustomSkill("");
   }
 
   const [showSuccess, setShowSuccess] = useState(false);
@@ -57,6 +57,13 @@ export default function OnboardingPage() {
       setError("Pilih minimal 3 skill.");
       return;
     }
+    if (step === 3 && links.linkedin) {
+       if (!links.linkedin.startsWith("https://id.linkedin.com/in/")) {
+         setError("Link LinkedIn harus dimulai dengan https://id.linkedin.com/in/");
+         return;
+       }
+    }
+
     if (step < 3) {
       setError("");
       setStep((s) => (s + 1) as Step);
@@ -75,12 +82,13 @@ export default function OnboardingPage() {
           bio,
           availStatus,
           linkedinUrl: links.linkedin || null,
-          githubUrl: links.github || null,
           portfolioUrl: links.portfolio || null,
         }),
       });
 
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal menyimpan.");
+
       const newScore: number = data.trustScore ?? 20;
       const newLevel = newScore >= 86 ? "VERIFIED" : newScore >= 61 ? "TRUSTED" : newScore >= 31 ? "MEMBER" : "NEWCOMER";
 
@@ -90,7 +98,7 @@ export default function OnboardingPage() {
       
       // Delay for success animation feel
       setTimeout(() => {
-        window.location.href = "/dashboard";
+        window.location.replace("/dashboard");
       }, 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
@@ -99,11 +107,9 @@ export default function OnboardingPage() {
   }
 
   // Estimated trust score preview matching real trust-score.ts logic
-  // Base 20 + LinkedIn(4) + GitHub(4) + Portfolio(4), profile complete bonus(+10 if bio)
   const estimatedScore = 20
-    + (links.linkedin ? 4 : 0)
-    + (links.github ? 4 : 0)
-    + (links.portfolio ? 4 : 0)
+    + (links.linkedin.startsWith("https://id.linkedin.com/in/") ? 8 : 0)
+    + (links.portfolio ? 6 : 0)
     + (bio.length > 20 ? 10 : 0);
 
   return (
@@ -371,29 +377,15 @@ export default function OnboardingPage() {
               <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 <div>
                   <label style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", display: "block", marginBottom: "6px" }}>
-                    LinkedIn <span style={{ background: "#00D37F", color: "#000", border: "1px solid #000", borderRadius: "3px", fontSize: "10px", padding: "1px 6px", fontWeight: 700 }}>+8 pts</span>
+                    LinkedIn <span style={{ background: "#FFE500", color: "#000", border: "1px solid #000", borderRadius: "3px", fontSize: "10px", padding: "1px 6px", fontWeight: 700 }}>+8 pts</span>
                   </label>
                   <input
                     id="onboarding-linkedin"
                     type="url"
                     className="nb-input"
-                    placeholder="https://linkedin.com/in/username"
+                    placeholder="https://id.linkedin.com/in/username"
                     value={links.linkedin}
                     onChange={(e) => setLinks({ ...links, linkedin: e.target.value })}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px", display: "block", marginBottom: "6px" }}>
-                    GitHub <span style={{ background: "#00D37F", color: "#000", border: "1px solid #000", borderRadius: "3px", fontSize: "10px", padding: "1px 6px", fontWeight: 700 }}>+8 pts</span>
-                  </label>
-                  <input
-                    id="onboarding-github"
-                    type="url"
-                    className="nb-input"
-                    placeholder="https://github.com/username"
-                    value={links.github}
-                    onChange={(e) => setLinks({ ...links, github: e.target.value })}
                   />
                 </div>
 

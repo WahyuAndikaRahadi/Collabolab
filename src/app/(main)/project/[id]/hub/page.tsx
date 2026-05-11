@@ -71,6 +71,7 @@ export default async function CollabHubPage({
   const projectPayload = {
     id: project.id,
     title: project.title,
+    description: project.description,
     members: JSON.parse(JSON.stringify(project.members)),
     hubRooms,
   };
@@ -81,14 +82,15 @@ export default async function CollabHubPage({
       <div style={{
         background: "#FFFFFF",
         borderBottom: "3px solid #000000",
-        padding: "10px 20px",
+        padding: "12px 20px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         flexShrink: 0,
         zIndex: 10,
+        gap: "16px", // Added gap
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0, flex: 1 }}>
           <Link
             href={`/project/${id}`}
             style={{
@@ -96,14 +98,18 @@ export default async function CollabHubPage({
               textDecoration: "none",
               fontFamily: "Space Grotesk, sans-serif",
               fontWeight: 800,
-              fontSize: "14px",
+              fontSize: "13px",
               display: "flex",
               alignItems: "center",
               gap: "6px",
               background: "#F5F0E8",
-              padding: "4px 12px",
+              padding: "6px 12px",
               borderRadius: "6px",
               border: "2px solid #000000",
+              whiteSpace: "nowrap", // Prevent wrap
+              overflow: "hidden", // Truncate
+              textOverflow: "ellipsis",
+              maxWidth: "180px", // Limit width
             }}
           >
             ← {project.title}
@@ -113,19 +119,23 @@ export default async function CollabHubPage({
             color: "#000",
             border: "2px solid #000000",
             borderRadius: "6px",
-            padding: "4px 10px",
+            padding: "6px 12px",
             fontFamily: "Space Grotesk, sans-serif",
             fontWeight: 800,
             fontSize: "12px",
             boxShadow: "2px 2px 0px #000",
+            whiteSpace: "nowrap", // Prevent wrap
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "4px"
           }}>
-            🤝 Collab Hub
+            🤝 <span className="hidden sm:inline">Collab Hub</span>
           </span>
         </div>
 
-        {/* Member avatars */}
-        <div style={{ display: "flex", alignItems: "center", gap: "-4px" }}>
-          {project.members.slice(0, 6).map((m, i) => (
+        {/* Member avatars - hidden on very small screens to save space */}
+        <div className="hidden md:flex" style={{ alignItems: "center", gap: "-4px" }}>
+          {project.members.slice(0, 4).map((m, i) => (
             <div
               key={m.id}
               title={m.isAnonymous && !m.revealedAt ? `Anon#${m.anonymousTag || "0000"}` : m.user.name}
@@ -160,7 +170,7 @@ export default async function CollabHubPage({
               )}
             </div>
           ))}
-          {project.members.length > 6 && (
+          {project.members.length > 4 && (
             <div style={{
               width: "32px", height: "32px", borderRadius: "50%",
               border: "2px solid #000000", background: "#FFFFFF",
@@ -168,7 +178,7 @@ export default async function CollabHubPage({
               fontSize: "11px", fontWeight: 800, color: "#000000",
               marginLeft: "-8px",
             }}>
-              +{project.members.length - 6}
+              +{project.members.length - 4}
             </div>
           )}
         </div>

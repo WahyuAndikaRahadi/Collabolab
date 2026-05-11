@@ -8,6 +8,7 @@ import { HubKanban } from "./HubKanban";
 import { PresencePanel } from "./PresencePanel";
 import { CreateRoomModal } from "./CreateRoomModal";
 import { PasswordModal } from "./PasswordModal";
+import { ProjectSettingsModal } from "./ProjectSettingsModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -33,6 +34,7 @@ type Member = {
 type Project = {
   id: string;
   title: string;
+  description: string;
   members: Member[];
   hubRooms: HubRoom[];
 };
@@ -53,13 +55,30 @@ export function CollabHubClient({
   initialRoomId?: string;
 }) {
   const [rooms, setRooms] = useState<HubRoom[]>(initialProject.hubRooms);
+  const [projectInfo, setProjectInfo] = useState({ title: initialProject.title, description: initialProject.description });
   const [activeRoom, setActiveRoom] = useState<HubRoom | null>(null);
   const [customTab, setCustomTab] = useState<"chat" | "kanban">("chat");
   const [unlockedRooms, setUnlockedRooms] = useState<Set<string>>(new Set());
   const [showCreateRoom, setShowCreateRoom] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [passwordRoom, setPasswordRoom] = useState<HubRoom | null>(null);
   const [onlineStatus, setOnlineStatus] = useState<{ [userId: string]: "online" | "away" | "offline" }>({});
   const [unreadStatus, setUnreadStatus] = useState<Record<string, "message" | "mention" | null>>({});
+
+  // Mobile responsiveness states
+  const [mobileSidebar, setMobileSidebar] = useState<"left" | "right" | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check for mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const isAdmin = currentMember.role === "ADMIN";
+  const canManageProject = isOwner || isAdmin;
 
   // Select initial room
   useEffect(() => {
@@ -123,6 +142,8 @@ export function CollabHubClient({
     setCustomTab("chat");
     // Clear unread status when entering a room
     setUnreadStatus((prev) => ({ ...prev, [room.id]: null }));
+    // Close sidebar on mobile after selecting
+    if (isMobile) setMobileSidebar(null);
   }
 
   function handlePasswordSuccess() {
@@ -145,18 +166,100 @@ export function CollabHubClient({
   const showChat = !isKanbanRoom && (!isCustomRoom || customTab === "chat");
 
   return (
-    <div style={{ display: "flex", flex: 1, overflow: "hidden", height: "100%" }}>
-      {/* ─── Left: Room Sidebar ─── */}
-      <RoomSidebar
-        rooms={rooms}
-        activeRoomId={activeRoom?.id ?? null}
-        onSelectRoom={handleSelectRoom}
-        onCreateRoom={() => setShowCreateRoom(true)}
-        isOwner={isOwner}
-        projectTitle={initialProject.title}
-        unlockedRooms={unlockedRooms}
-        unreadStatus={unreadStatus}
-      />
+    <div style={{ 
+      display: "flex", 
+      flexDirection: "column", 
+      flex: 1, 
+      overflow: "hidden", 
+      height: "100%",
+      position: "relative" 
+    }}>
+      {/* ─── Mobile Header ─── */}
+      {isMobile && (
+        <div style={{
+          height: "56px",
+          background: "#FFFFFF",
+          borderBottom: "3px solid #000000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "0 16px",
+          flexShrink: 0,
+          zIndex: 40
+        }}>
+          <button 
+            onClick={() => setMobileSidebar(mobileSidebar === "left" ? null : "left")}
+            style={{
+              background: "#FFE500",
+              border: "2px solid #000000",
+              borderRadius: "4px",
+              padding: "4px 8px",
+              fontWeight: 900,
+              boxShadow: "2px 2px 0px #000"
+            }}
+          >
+            ☰
+          </button>
+          
+          <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "14px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, textAlign: "center", margin: "0 12px" }}>
+            {activeRoom ? `# ${activeRoom.name}` : projectInfo.title}
+          </div>
+
+          <button 
+            onClick={() => setMobileSidebar(mobileSidebar === "right" ? null : "right")}
+            style={{
+              background: "#00D37F",
+              border: "2px solid #000000",
+              borderRadius: "4px",
+              padding: "4px 8px",
+              fontWeight: 900,
+              boxShadow: "2px 2px 0px #000"
+            }}
+          >
+            👥
+          </button>
+        </div>
+      )}
+
+      <div style={{ display: "flex", flex: 1, overflow: "hidden", position: "relative" }}>
+        {/* ─── Left: Room Sidebar ─── */}
+        <div style={{
+          position: isMobile ? "absolute" : "relative",
+          top: 0,
+          left: 0,
+          bottom: 0,
+          zIndex: 50,
+          transform: isMobile ? (mobileSidebar === "left" ? "translateX(0)" : "translateX(-100%)") : "none",
+          transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          display: "flex"
+        }}>
+          <RoomSidebar
+            rooms={rooms}
+            activeRoomId={activeRoom?.id ?? null}
+            onSelectRoom={handleSelectRoom}
+            onCreateRoom={() => setShowCreateRoom(true)}
+            isOwner={isOwner}
+            isAdmin={isAdmin}
+            projectTitle={projectInfo.title}
+            unlockedRooms={unlockedRooms}
+            unreadStatus={unreadStatus}
+            onOpenSettings={() => setShowSettings(true)}
+          />
+        </div>
+
+        {/* Backdrop for mobile */}
+        {isMobile && mobileSidebar && (
+          <div 
+            onClick={() => setMobileSidebar(null)}
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "rgba(0,0,0,0.4)",
+              zIndex: 45,
+              backdropFilter: "blur(2px)"
+            }}
+          />
+        )}
 
       {/* ─── Center: Main Content ─── */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
@@ -230,12 +333,24 @@ export function CollabHubClient({
       </div>
 
       {/* ─── Right: Presence Panel ─── */}
-      <PresencePanel
-        projectId={initialProject.id}
-        members={initialProject.members}
-        currentUserId={currentUserId}
-        onStatusChange={setOnlineStatus}
-      />
+      <div style={{
+        position: isMobile ? "absolute" : "relative",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 50,
+        transform: isMobile ? (mobileSidebar === "right" ? "translateX(0)" : "translateX(100%)") : "none",
+        transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        display: "flex"
+      }}>
+        <PresencePanel
+          projectId={initialProject.id}
+          members={initialProject.members}
+          currentUserId={currentUserId}
+          onStatusChange={setOnlineStatus}
+        />
+      </div>
+    </div>
 
       {/* ─── Modals ─── */}
       {showCreateRoom && (
@@ -252,6 +367,15 @@ export function CollabHubClient({
           roomName={passwordRoom.name}
           onSuccess={handlePasswordSuccess}
           onClose={() => setPasswordRoom(null)}
+        />
+      )}
+      {showSettings && (
+        <ProjectSettingsModal
+          projectId={initialProject.id}
+          initialTitle={projectInfo.title}
+          initialDescription={projectInfo.description}
+          onClose={() => setShowSettings(false)}
+          onUpdated={(title, description) => setProjectInfo({ title, description })}
         />
       )}
     </div>

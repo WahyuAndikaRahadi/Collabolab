@@ -47,25 +47,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.role = (user as any).role;
+        token.onboardingDone = (user as any).onboardingDone;
+        token.trustScore = (user as any).trustScore;
+        token.trustLevel = (user as any).trustLevel;
       }
+
+      // Handle session update from client
+      if (trigger === "update" && session) {
+        if (session.onboardingDone !== undefined) token.onboardingDone = session.onboardingDone;
+        if (session.role !== undefined) token.role = session.role;
+        if (session.trustScore !== undefined) token.trustScore = session.trustScore;
+        if (session.trustLevel !== undefined) token.trustLevel = session.trustLevel;
+      }
+      
       return token;
     },
     async session({ session, token }) {
       if (token.id && session.user) {
         try {
-          // Use raw query to bypass stale Prisma client validation (Next.js/Turbopack cache issues)
-          // We use queryRawUnsafe to ensure we get the latest fields directly from DB
+          // Keep DB sync here for client-side fresh data (Node.js runtime)
           const results = await prisma.$queryRawUnsafe<any[]>(
             `SELECT id, role, "trustScore", "trustLevel", "availStatus", "onboardingDone", "isBlocked" FROM "User" WHERE id = $1`,
             token.id
           );
-
           const dbUser = results && results[0];
-
           if (dbUser) {
             session.user.id = dbUser.id;
             session.user.role = dbUser.role;
@@ -76,10 +85,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             session.user.isBlocked = dbUser.isBlocked;
           }
         } catch (error) {
-          console.error("Session sync error (falling back to token):", error);
-          // Fallback to token data if DB fetch fails
+          console.error("Session sync error:", error);
+          // Fallback to token
           session.user.id = token.id as string;
           session.user.role = token.role as any;
+          session.user.onboardingDone = token.onboardingDone as boolean;
         }
       }
       return session;

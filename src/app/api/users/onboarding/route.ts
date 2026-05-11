@@ -11,7 +11,6 @@ const onboardingSchema = z.object({
   bio: z.string().max(300).optional().nullable(),
   availStatus: z.enum(["OPEN", "FOCUS", "BUSY"]),
   linkedinUrl: z.string().nullable().optional(),
-  githubUrl: z.string().nullable().optional(),
   portfolioUrl: z.string().nullable().optional(),
 });
 
@@ -32,7 +31,7 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
-    const { skills, bio, availStatus, linkedinUrl, githubUrl, portfolioUrl } = parsed.data;
+    const { skills, bio, availStatus, linkedinUrl, portfolioUrl } = parsed.data;
 
     // Helper to normalize URLs
     const normalizeUrl = (url: string | null | undefined) => {
@@ -44,13 +43,11 @@ export async function POST(req: NextRequest) {
     };
 
     const cleanLinkedin = normalizeUrl(linkedinUrl);
-    const cleanGithub = normalizeUrl(githubUrl);
     const cleanPortfolio = normalizeUrl(portfolioUrl);
 
     // Process external links with verification
     const linkUrls = [
       { url: cleanLinkedin, platform: "LINKEDIN" as ExternalPlatform },
-      { url: cleanGithub, platform: "GITHUB" as ExternalPlatform },
       { url: cleanPortfolio, platform: "PORTFOLIO" as ExternalPlatform },
     ].filter(l => l.url);
 

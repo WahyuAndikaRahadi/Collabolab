@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "Dashboard CollaboLab — lihat project aktif, statistik, dan aktivitas terbarumu.",
 };
 
-export default async function DashboardPage() {
+export default async function DashboardHub() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
@@ -59,14 +59,17 @@ export default async function DashboardPage() {
         },
       },
     }),
-    prisma.chatMessage.findMany({
-      where: { senderId: session.user.id, createdAt: { gte: sevenDaysAgo } },
-      select: { createdAt: true },
-    }),
-    prisma.hubTask.findMany({
-      where: { assigneeId: session.user.id, status: "DONE", completedAt: { gte: sevenDaysAgo } },
-      select: { completedAt: true },
-    }),
+    // Using raw query to bypass any potential stale Prisma client issues
+    prisma.$queryRawUnsafe<any[]>(
+      `SELECT "createdAt" FROM "ChatMessage" WHERE "senderId" = $1 AND "createdAt" >= $2`,
+      session.user.id,
+      sevenDaysAgo
+    ),
+    prisma.$queryRawUnsafe<any[]>(
+      `SELECT "completedAt" FROM "HubTask" WHERE "assigneeId" = $1 AND "status" = 'DONE' AND "completedAt" >= $2`,
+      session.user.id,
+      sevenDaysAgo
+    ),
   ]);
 
   if (!user) redirect("/login");

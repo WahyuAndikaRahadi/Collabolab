@@ -63,14 +63,31 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
       style={{
         background: "#FFFFFF",
         border: "3px solid #222",
-        boxShadow: "8px 8px 0px #222",
         borderRadius: "16px",
         marginBottom: "32px",
         overflow: "hidden",
         transition: "box-shadow 0.2s, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-        position: "relative"
+        position: "relative",
+        boxShadow: "var(--card-shadow, 8px 8px 0px #222)",
       }}
+      className="feed-card"
     >
+      <style jsx>{`
+        .feed-card {
+          --card-shadow: 8px 8px 0px #222;
+          --event-grid: 1fr 1fr;
+        }
+        @media (max-width: 600px) {
+          .feed-card {
+            --card-shadow: 4px 4px 0px #222;
+            --event-grid: 1fr;
+            margin-bottom: 24px !important;
+          }
+          .card-padding {
+            padding: 16px !important;
+          }
+        }
+      `}</style>
       {/* Type Ribbon/Tag */}
       <div style={{
         position: "absolute",
@@ -93,13 +110,14 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
       </div>
 
       {/* Header */}
-      <div style={{ 
+      <div className="card-padding" style={{ 
         padding: "20px", 
         display: "flex", 
         alignItems: "center", 
         gap: "14px", 
         borderBottom: "2px solid #f0f0f0",
-        background: "linear-gradient(135deg, #fff 0%, #fafafa 100%)"
+        background: "linear-gradient(135deg, #fff 0%, #fafafa 100%)",
+        minWidth: 0 // Prevent overflow
       }}>
         <div style={{ 
           width: "48px", 
@@ -117,9 +135,17 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
         }}>
           {post.author.name[0]}
         </div>
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-            <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px" }}>{post.author.name}</span>
+            <span style={{ 
+              fontFamily: "Space Grotesk, sans-serif", 
+              fontWeight: 800, 
+              fontSize: "16px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "100%"
+            }}>{post.author.name}</span>
             
             {/* Improved Trust Badge */}
             <motion.div 
@@ -156,7 +182,7 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
       </div>
 
       {/* Body */}
-      <div style={{ padding: "20px" }}>
+      <div className="card-padding" style={{ padding: "20px", minWidth: 0 }}>
         {isContribution ? (
           <>
             <p style={{ fontSize: "16px", lineHeight: 1.7, marginBottom: "16px", whiteSpace: "pre-wrap", color: "#1a1a1a" }}>
@@ -224,7 +250,7 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
               </p>
             )}
             
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "var(--event-grid)", gap: "16px", marginBottom: "20px" }}>
               <div style={{ background: "#F5F0E8", border: "2px solid #000", padding: "12px", borderRadius: "12px", boxShadow: "3px 3px 0px #000" }}>
                 <div style={{ fontSize: "10px", fontWeight: 900, color: "#000", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px" }}>BATAS WAKTU</div>
                 <div style={{ fontSize: "15px", fontWeight: 900, color: getDeadlineColor(post.eventDeadline), display: "flex", alignItems: "center", gap: "6px" }}>
@@ -273,13 +299,14 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
       </div>
 
       {/* Footer */}
-      <div style={{ 
+      <div className="card-padding" style={{ 
         padding: "14px 20px", 
         borderTop: "3px solid #000", 
         display: "flex", 
         alignItems: "center", 
-        gap: "16px", 
-        background: "#FFFFFF" 
+        gap: "12px", // Slightly reduced gap for mobile
+        background: "#FFFFFF",
+        flexWrap: "wrap"
       }}>
         <motion.button 
           whileHover={{ scale: 1.1, rotate: 2 }}
@@ -289,17 +316,17 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
             background: isLiked ? "#FF4D4D" : "#fff", 
             border: "2px solid #000", 
             borderRadius: "10px", 
-            padding: "8px 16px", 
+            padding: "8px 12px", 
             display: "flex", 
             alignItems: "center", 
             gap: "8px", 
             cursor: "pointer",
-            boxShadow: "3px 3px 0px #000",
+            boxShadow: "var(--card-shadow)",
             transition: "background 0.2s"
           }}
         >
           <span style={{ fontSize: "18px" }}>{isLiked ? "❤️" : "🤍"}</span>
-          <span style={{ fontWeight: 900, fontSize: "15px", color: isLiked ? "#fff" : "#000" }}>{likes}</span>
+          <span style={{ fontWeight: 900, fontSize: "14px", color: isLiked ? "#fff" : "#000" }}>{likes}</span>
         </motion.button>
 
         <motion.button 
@@ -310,16 +337,16 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
             background: showComments ? "#00D37F" : "#fff", 
             border: "2px solid #000", 
             borderRadius: "10px", 
-            padding: "8px 16px", 
+            padding: "8px 12px", 
             display: "flex", 
             alignItems: "center", 
             gap: "8px", 
             cursor: "pointer",
-            boxShadow: "3px 3px 0px #000"
+            boxShadow: "var(--card-shadow)"
           }}
         >
           <span style={{ fontSize: "18px" }}>💬</span>
-          <span style={{ fontWeight: 900, fontSize: "15px", color: showComments ? "#000" : "#000" }}>{post._count.comments}</span>
+          <span style={{ fontWeight: 900, fontSize: "14px", color: showComments ? "#000" : "#000" }}>{post._count.comments}</span>
         </motion.button>
 
         <div style={{ marginLeft: "auto" }}>

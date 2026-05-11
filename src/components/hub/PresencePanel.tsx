@@ -131,13 +131,14 @@ export function PresencePanel({ projectId, members, currentUserId, onStatusChang
 
   return (
     <div style={{
-      width: "200px",
+      width: "240px", // Increased for better mobile feel
       background: "#F5F0E8",
       borderLeft: "3px solid #000000",
       display: "flex",
       flexDirection: "column",
       flexShrink: 0,
       overflow: "hidden",
+      height: "100%", // Full height for mobile drawer
     }}>
       <div style={{ padding: "14px 12px 10px", borderBottom: "3px solid #000000", background: "#FFE500" }}>
         <div style={{

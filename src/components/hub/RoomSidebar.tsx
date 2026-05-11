@@ -15,9 +15,11 @@ type Props = {
   onSelectRoom: (room: HubRoomDef) => void;
   onCreateRoom: () => void;
   isOwner: boolean;
+  isAdmin: boolean;
   projectTitle: string;
   unlockedRooms: Set<string>;
   unreadStatus: Record<string, "message" | "mention" | null>;
+  onOpenSettings?: () => void;
 };
 
 const ROOM_ICON: Record<HubRoomDef["type"], string> = {
@@ -27,7 +29,7 @@ const ROOM_ICON: Record<HubRoomDef["type"], string> = {
   CUSTOM: "#",
 };
 
-export function RoomSidebar({ rooms, activeRoomId, onSelectRoom, onCreateRoom, isOwner, projectTitle, unlockedRooms, unreadStatus }: Props) {
+export function RoomSidebar({ rooms, activeRoomId, onSelectRoom, onCreateRoom, isOwner, isAdmin, projectTitle, unlockedRooms, unreadStatus, onOpenSettings }: Props) {
   const defaultRooms = rooms.filter((r) => r.type !== "CUSTOM");
   const customRooms = rooms.filter((r) => r.type === "CUSTOM");
 
@@ -105,13 +107,14 @@ export function RoomSidebar({ rooms, activeRoomId, onSelectRoom, onCreateRoom, i
 
   return (
     <div style={{
-      width: "240px",
+      width: "280px", // Increased slightly for better mobile feel
       background: "#F5F0E8",
       borderRight: "3px solid #000000",
       display: "flex",
       flexDirection: "column",
       flexShrink: 0,
       overflow: "hidden",
+      height: "100%", // Ensure full height in mobile drawer
     }}>
       {/* Project title header */}
       <div style={{
@@ -119,6 +122,7 @@ export function RoomSidebar({ rooms, activeRoomId, onSelectRoom, onCreateRoom, i
         borderBottom: "3px solid #000000",
         flexShrink: 0,
         background: "#00D37F",
+        position: "relative"
       }}>
         <div style={{
           fontFamily: "Space Grotesk, sans-serif",
@@ -129,12 +133,41 @@ export function RoomSidebar({ rooms, activeRoomId, onSelectRoom, onCreateRoom, i
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           marginBottom: "4px",
+          paddingRight: (isOwner || isAdmin) ? "24px" : "0"
         }}>
           {projectTitle}
         </div>
         <div style={{ fontSize: "11px", color: "#000000", fontWeight: 800, letterSpacing: "0.5px" }}>
           🤝 COLLAB HUB
         </div>
+
+        {(isOwner || isAdmin) && (
+          <button
+            onClick={onOpenSettings}
+            title="Pengaturan Project"
+            style={{
+              position: "absolute",
+              top: "14px",
+              right: "12px",
+              background: "#000000",
+              color: "#00D37F",
+              border: "none",
+              borderRadius: "4px",
+              width: "20px",
+              height: "20px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              fontSize: "12px",
+              boxShadow: "1px 1px 0px #000000"
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#333")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "#000")}
+          >
+            ⚙️
+          </button>
+        )}
       </div>
 
       {/* Rooms list */}

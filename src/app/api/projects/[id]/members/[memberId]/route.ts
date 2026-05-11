@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { z } from "zod";
+import { pusherServer, CHANNELS, EVENTS } from "@/lib/pusher";
 
 const updateMemberSchema = z.object({
   role: z.enum(["OWNER", "ADMIN", "MEMBER"]).optional(),
@@ -94,6 +95,11 @@ export async function DELETE(req: NextRequest, { params }: Params) {
         where: { id: memberId },
       });
   
+      await pusherServer.trigger(CHANNELS.project(projectId), EVENTS.MEMBER_KICKED, {
+        memberId,
+        userId: targetMember.userId,
+      });
+
       return NextResponse.json({ message: "Member removed" });
     } catch (error) {
       console.error("[MEMBER_DELETE]", error);

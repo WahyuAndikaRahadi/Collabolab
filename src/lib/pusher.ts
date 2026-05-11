@@ -56,4 +56,6 @@ export const EVENTS = {
   HUB_ROOM_CREATED: "hub-room-created",
   MENTION: "mention",
   NEW_NOTIFICATION: "new-notification",
+  MESSAGE_DELETED: "message-deleted",
+  MEMBER_KICKED: "member-kicked",
 } as const;

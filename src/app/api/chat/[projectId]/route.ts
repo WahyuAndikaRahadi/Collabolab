@@ -66,3 +66,38 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pro
     return NextResponse.json({ error: "Gagal mengirim pesan." }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ projectId: string }> }) {
+  const { projectId } = await params;
+  const session = await auth();
+  if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  try {
+    const { searchParams } = new URL(req.url);
+    const messageId = searchParams.get("messageId");
+    if (!messageId) return NextResponse.json({ error: "ID pesan diperlukan." }, { status: 400 });
+
+    const message = await prisma.chatMessage.findUnique({ where: { id: messageId } });
+    if (!message) return NextResponse.json({ error: "Pesan tidak ditemukan." }, { status: 404 });
+
+    // Check if user is sender or project owner/admin
+    const member = await prisma.projectMember.findFirst({ where: { projectId, userId: session.user.id } });
+    if (!member) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+    const isSender = message.senderId === session.user.id;
+    const canModerate = member.role === "OWNER" || member.role === "ADMIN";
+
+    if (!isSender && !canModerate) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    await prisma.chatMessage.delete({ where: { id: messageId } });
+
+    await pusherServer.trigger(CHANNELS.project(projectId), EVENTS.MESSAGE_DELETED, { messageId });
+
+    return NextResponse.json({ message: "Pesan berhasil dihapus." });
+  } catch (err) {
+    console.error("[chat DELETE]", err);
+    return NextResponse.json({ error: "Gagal menghapus pesan." }, { status: 500 });
+  }
+}

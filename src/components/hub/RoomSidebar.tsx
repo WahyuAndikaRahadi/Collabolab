@@ -137,8 +137,8 @@ export function RoomSidebar({ rooms, activeRoomId, onSelectRoom, onCreateRoom, i
         }}>
           {projectTitle}
         </div>
-        <div style={{ fontSize: "11px", color: "#000000", fontWeight: 800, letterSpacing: "0.5px" }}>
-          🤝 COLLAB HUB
+        <div style={{ fontSize: "11px", color: "#000000", fontWeight: 800, letterSpacing: "0.5px", display: "flex", alignItems: "center", gap: "6px" }}>
+          <img src="/images/logo.png" alt="" style={{ width: "14px", height: "14px", objectFit: "contain" }} /> COLLAB HUB
         </div>
 
         {(isOwner || isAdmin) && (

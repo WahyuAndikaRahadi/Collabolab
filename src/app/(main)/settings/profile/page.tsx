@@ -1,17 +1,26 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { ExternalLinksManager } from "@/components/settings/ExternalLinksManager";
+import { ProfileEditor } from "@/components/settings/ProfileEditor";
+import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Pengaturan Profil | Collabolab",
-  description: "Kelola link eksternal dan verifikasi identitasmu untuk meningkatkan Trust Score.",
+  description: "Kelola informasi dasar dan link eksternalmu untuk meningkatkan Trust Score.",
 };
 
 export default async function SettingsProfilePage() {
   const session = await auth();
-  if (!session?.user) redirect("/login");
+  if (!session?.user?.id) redirect("/login");
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { name: true, bio: true, image: true }
+  });
+
+  if (!user) redirect("/login");
 
   return (
     <div style={{ background: "#F5F0E8", minHeight: "calc(100vh - 64px)", padding: "48px 24px" }}>
@@ -52,6 +61,25 @@ export default async function SettingsProfilePage() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+          
+          {/* Basic Info Editor */}
+          <div
+            className="nb-card"
+            style={{
+              background: "#fff",
+              border: "4px solid #000",
+              borderRadius: "16px",
+              boxShadow: "8px 8px 0px #000",
+              padding: "clamp(24px, 5vw, 32px)"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
+              <span style={{ background: "#FFE500", color: "#000", padding: "6px", borderRadius: "8px", border: "2px solid #000", fontSize: "20px" }}>👤</span>
+              <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "22px", margin: 0 }}>Info Dasar</h2>
+            </div>
+            
+            <ProfileEditor initialData={user} />
+          </div>
 
           {/* External Links Section */}
           <div
@@ -61,7 +89,8 @@ export default async function SettingsProfilePage() {
               border: "4px solid #000",
               borderRadius: "16px",
               boxShadow: "8px 8px 0px #000",
-              padding: "clamp(24px, 5vw, 32px)"
+              padding: "clamp(24px, 5vw, 32px)",
+              animationDelay: "0.1s"
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
@@ -85,7 +114,7 @@ export default async function SettingsProfilePage() {
               borderRadius: "16px",
               padding: "24px",
               boxShadow: "4px 4px 0px #000",
-              animationDelay: "0.1s"
+              animationDelay: "0.2s"
             }}
           >
             <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "18px", marginBottom: "12px" }}>💡 Tips Trust Score</h3>

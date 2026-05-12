@@ -38,7 +38,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         }}>
           <div>
             <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "10px", marginBottom: "40px" }}>
-              <span style={{ background: "#FFE500", border: "2px solid #000", padding: "4px", borderRadius: "4px", fontWeight: 900, boxShadow: "2px 2px 0px #000" }}>🛡️</span>
+              <img src="/images/logo.png" alt="Logo" style={{ width: "28px", height: "28px", objectFit: "contain" }} />
               <span style={{ fontWeight: 900, fontSize: "22px", color: "#000", letterSpacing: "-0.5px" }}>CollaboLab</span>
             </Link>
             <div style={{ fontSize: "10px", fontWeight: 800, color: "#666", letterSpacing: "1px", marginBottom: "16px" }}>ADMIN CONTROL PANEL</div>
@@ -122,7 +122,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                  {pathname.substring(1).split('/').join(' / ').toUpperCase() || 'DASHBOARD'}
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                 <div style={{ background: "#FFE500", border: "2px solid #000", padding: "6px 12px", borderRadius: "4px", fontSize: "12px", fontWeight: 900, boxShadow: "2px 2px 0px #000" }}>
+                 <div style={{ background: "#FFFFFF", border: "2px solid #000", padding: "6px 12px", borderRadius: "4px", fontSize: "12px", fontWeight: 900, boxShadow: "2px 2px 0px #000" }}>
                     Collabolab
                  </div>
               </div>

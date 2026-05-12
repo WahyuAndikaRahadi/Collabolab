@@ -323,7 +323,9 @@ export function CollabHubClient({
         ) : (
           <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "#FFFFFF" }}>
             <div style={{ textAlign: "center", color: "#3D3D3D" }}>
-              <div style={{ fontSize: "48px", marginBottom: "12px" }}>🤝</div>
+              <div style={{ marginBottom: "20px", display: "flex", justifyContent: "center" }}>
+                <img src="/images/logo.png" alt="Logo" style={{ width: "80px", height: "80px", objectFit: "contain" }} />
+              </div>
               <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", color: "#000000" }}>
                 Pilih room dari sidebar
               </div>

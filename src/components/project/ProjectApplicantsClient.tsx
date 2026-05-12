@@ -6,6 +6,7 @@ import { getTrustLevelEmoji, getTrustLevelColor, getTrustLevelLabel } from "@/li
 import type { CommitmentLevel, TrustLevel } from "@prisma/client";
 import { COMMITMENT_META } from "@/types";
 import Link from "next/link";
+import { User } from "lucide-react";
 
 type Applicant = {
   id: string;
@@ -83,8 +84,12 @@ export function ProjectApplicantsClient({ projectId }: { projectId: string }) {
             {applicants.map((app) => (
               <div key={app.id} style={{ border: "2px solid #000", borderRadius: "8px", padding: "16px", background: "#F5F0E8", boxShadow: "3px 3px 0px #000" }}>
                 <div style={{ display: "flex", gap: "12px", marginBottom: "12px", alignItems: "flex-start" }}>
-                  <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "#fff", border: "2px solid #000", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px", fontWeight: 800, flexShrink: 0 }}>
-                    {app.applicant.name[0]}
+                  <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "#fff", border: "2px solid #000", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px", fontWeight: 800, flexShrink: 0, overflow: "hidden" }}>
+                    {app.applicant.image ? (
+                      <img src={app.applicant.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    ) : (
+                      <User size={24} strokeWidth={2.5} />
+                    )}
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px", marginBottom: "4px" }}>

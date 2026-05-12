@@ -4,13 +4,16 @@
 import { useState, useEffect } from "react";
 import { ExternalPlatform, LinkVisibility } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import { useAlert } from "@/lib/alert";
 
 export function ExternalLinksManager() {
   const { update } = useSession();
+  const alert = useAlert();
   const [links, setLinks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
   const [newUrl, setNewUrl] = useState("");
+  const [newLabel, setNewLabel] = useState("");
   const [error, setError] = useState("");
 
   const fetchLinks = async () => {
@@ -42,12 +45,13 @@ export function ExternalLinksManager() {
       const res = await fetch("/api/settings/links", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: newUrl }),
+        body: JSON.stringify({ url: newUrl, label: newLabel }),
       });
       
       if (res.ok) {
         const data = await res.json();
         setNewUrl("");
+        setNewLabel("");
         if (data.trustScore !== undefined) {
           await update({ trustScore: data.trustScore, trustLevel: data.trustLevel });
         }
@@ -75,7 +79,15 @@ export function ExternalLinksManager() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Hapus link ini?")) return;
+    const confirmed = await alert.danger({
+      title: "Hapus Link?",
+      description: "Tautan ini akan dihapus permanen dari profil kamu. Kamu bisa menambahkannya kembali nanti.",
+      confirmLabel: "Ya, Hapus",
+      cancelLabel: "Batal"
+    });
+
+    if (!confirmed) return;
+    
     try {
       const res = await fetch(`/api/settings/links/${id}`, {
         method: "DELETE",
@@ -98,7 +110,6 @@ export function ExternalLinksManager() {
     return acc + (points[l.platform] || 0);
   }, 0);
 
-  // Following the new no-cap policy to match user rules
   const finalPoints = totalPoints;
 
   return (
@@ -114,36 +125,67 @@ export function ExternalLinksManager() {
         </div>
       )}
 
-      <form onSubmit={handleAdd} style={{ display: "flex", gap: "10px", marginBottom: "32px" }}>
-        <input
-          type="url"
-          value={newUrl}
-          onChange={(e) => setNewUrl(e.target.value)}
-          placeholder="https://linkedin.com/in/username"
-          style={{ 
-            flex: 1, 
-            padding: "12px", 
-            border: "2px solid #000", 
-            borderRadius: "4px", 
-            background: "#F5F0E8",
-            fontFamily: "inherit"
-          }}
-          disabled={adding}
-        />
+      <form onSubmit={handleAdd} style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "32px" }}>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <div style={{ flex: 2, display: "flex", flexDirection: "column", gap: "4px" }}>
+            <label style={{ fontSize: "12px", fontWeight: 800 }}>URL Profil / Website</label>
+            <input
+              type="url"
+              value={newUrl}
+              onChange={(e) => setNewUrl(e.target.value)}
+              placeholder="https://linkedin.com/in/username"
+              style={{ 
+                width: "100%",
+                padding: "12px", 
+                border: "2px solid #000", 
+                borderRadius: "8px", 
+                background: "#F5F0E8",
+                fontFamily: "inherit",
+                fontSize: "14px",
+                fontWeight: 600
+              }}
+              disabled={adding}
+            />
+          </div>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "4px" }}>
+            <label style={{ fontSize: "12px", fontWeight: 800 }}>Nama Link (Opsional)</label>
+            <input
+              type="text"
+              value={newLabel}
+              onChange={(e) => setNewLabel(e.target.value)}
+              placeholder="Contoh: My Portfolio"
+              style={{ 
+                width: "100%",
+                padding: "12px", 
+                border: "2px solid #000", 
+                borderRadius: "8px", 
+                background: "#fff",
+                fontFamily: "inherit",
+                fontSize: "14px",
+                fontWeight: 600
+              }}
+              disabled={adding}
+            />
+          </div>
+        </div>
         <button
           type="submit"
           disabled={adding || !newUrl}
           style={{
             background: "#FFE500",
-            border: "2px solid #000",
-            borderRadius: "4px",
-            padding: "0 24px",
-            fontWeight: 800,
+            border: "3px solid #000",
+            borderRadius: "8px",
+            padding: "12px 24px",
+            fontWeight: 900,
             cursor: "pointer",
-            boxShadow: "2px 2px 0px #000"
+            boxShadow: "4px 4px 0px #000",
+            fontSize: "14px",
+            transition: "all 0.15s ease"
           }}
+          onMouseEnter={(e) => { e.currentTarget.style.transform = "translate(1px, 1px)"; e.currentTarget.style.boxShadow = "2px 2px 0px #000"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "4px 4px 0px #000"; }}
         >
-          {adding ? "..." : "+ Tambah"}
+          {adding ? "Sedang Menambahkan..." : "+ Tambah Link Baru"}
         </button>
       </form>
 
@@ -170,7 +212,12 @@ export function ExternalLinksManager() {
                   <span style={{ fontSize: "18px" }}>
                     {link.platform === "LINKEDIN" ? "🔵" : link.platform === "GITHUB" ? "⚫" : "🔗"}
                   </span>
-                  {link.platform}
+                  <span style={{ textTransform: "uppercase", fontSize: "14px" }}>{link.platform}</span>
+                  {link.label && (
+                    <span style={{ background: "#FFE500", padding: "2px 8px", borderRadius: "4px", border: "1.5px solid #000", fontSize: "12px" }}>
+                      {link.label}
+                    </span>
+                  )}
                   {link.status === "VERIFIED" ? (
                     <span style={{ color: "#00D37F", fontSize: "12px" }}>✅ Verified</span>
                   ) : (
@@ -185,7 +232,7 @@ export function ExternalLinksManager() {
                 </button>
               </div>
 
-              <div style={{ fontSize: "13px", color: "#666", wordBreak: "break-all" }}>{link.url}</div>
+              <div style={{ fontSize: "13px", color: "#666", wordBreak: "break-all", fontWeight: 500 }}>{link.url}</div>
 
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                 <label style={{ fontSize: "12px", fontWeight: 800 }}>Visibility:</label>

@@ -17,7 +17,7 @@ export function LinkedInPreviewCard({ url, previewTitle, previewImage, status }:
         borderRadius: "8px",
         boxShadow: "4px 4px 0px #000",
         padding: "16px",
-        width: "320px",
+        width: "100%",
         fontFamily: "Space Grotesk, sans-serif",
       }}
     >

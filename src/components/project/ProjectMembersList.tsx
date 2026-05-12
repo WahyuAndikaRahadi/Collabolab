@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MemberRoleModal } from "./MemberRoleModal";
 import { getTrustLevelEmoji, getTrustLevelLabel } from "@/lib/trust-score";
+import { User } from "lucide-react";
 
 type Member = {
   id: string;
@@ -49,7 +50,7 @@ export function ProjectMembersList({ initialMembers, projectId, currentUserId, i
         return (
           <div key={m.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px", background: "#F5F0E8", border: "1.5px solid #000", borderRadius: "6px" }}>
             <div style={{ width: "40px", height: "40px", borderRadius: "50%", border: "2px solid #000", background: m.role === "OWNER" ? "#FFE500" : "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "16px", overflow: "hidden" }}>
-              {isAnon ? "👤" : m.user.image ? <img src={m.user.image} alt="" style={{width:'100%', height:'100%', objectFit:'cover'}} /> : displayName[0]}
+              {isAnon ? <User size={24} /> : m.user.image ? <img src={m.user.image} alt="" style={{width:'100%', height:'100%', objectFit:'cover'}} /> : <User size={24} strokeWidth={2.5} />}
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px" }}>

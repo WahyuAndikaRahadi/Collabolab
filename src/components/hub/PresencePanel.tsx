@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getPusherClient, CHANNELS } from "@/lib/pusher";
+import { User } from "lucide-react";
 
 type Member = {
   userId: string;
@@ -100,11 +101,11 @@ export function PresencePanel({ projectId, members, currentUserId, onStatusChang
             color: "#000000",
           }}>
             {m.isAnonymous && !m.revealedAt ? (
-              "👤"
+              <User size={16} />
             ) : m.user.image ? (
               <img src={m.user.image} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              name[0]
+              <User size={16} strokeWidth={3} />
             )}
           </div>
           <div style={{

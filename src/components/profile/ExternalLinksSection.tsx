@@ -44,52 +44,21 @@ export function ExternalLinksSection({ username }: Props) {
   if (loading) return <div style={{ fontSize: "14px", color: "#666" }}>Memuat profil eksternal...</div>;
   if (links.length === 0) return null;
 
-  const linkedInLink = links.find(l => l.platform === "LINKEDIN");
-  const otherLinks = links.filter(l => l.platform !== "LINKEDIN");
-
   return (
-    <div style={{ marginTop: "24px" }}>
-      <h3 style={{ 
-        fontFamily: "Space Grotesk, sans-serif", 
-        fontWeight: 900, 
-        fontSize: "14px", 
-        textTransform: "uppercase",
-        letterSpacing: "1px",
-        marginBottom: "16px",
-        display: "flex",
-        alignItems: "center",
-        gap: "8px"
-      }}>
-        External Profiles
-      </h3>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-        {linkedInLink && (
-          <LinkedInPreviewCard 
-            url={linkedInLink.url} 
-            previewTitle={linkedInLink.previewTitle}
-            previewImage={linkedInLink.previewImage}
-            status={linkedInLink.status}
-          />
-        )}
-
-        {otherLinks.length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            {otherLinks.map(link => (
-              <ExternalLinkChip 
-                key={link.id}
-                platform={link.platform}
-                url={link.url}
-                username={link.username}
-                label={link.label}
-                status={link.status}
-                previewTitle={link.previewTitle}
-                previewImage={link.previewImage}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", width: "100%" }}>
+      {links.map(link => (
+        <ExternalLinkChip 
+          key={link.id}
+          platform={link.platform}
+          url={link.url}
+          username={link.username}
+          label={link.label}
+          status={link.status}
+          previewTitle={link.previewTitle}
+          previewImage={link.previewImage}
+          description={link.platform === "LINKEDIN" ? "Lihat riwayat profesional dan pendidikan di LinkedIn." : undefined}
+        />
+      ))}
     </div>
   );
 }

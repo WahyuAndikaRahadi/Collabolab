@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { getPusherClient, CHANNELS, EVENTS } from "@/lib/pusher";
 import { MentionInput } from "./MentionInput";
+import { User } from "lucide-react";
 
 type Member = {
   id: string;
@@ -227,11 +228,11 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
                         overflow: "hidden", flexShrink: 0,
                       }}>
                         {msg.sender.isAnonymous ? (
-                          <span style={{ fontSize: "13px", fontWeight: 800 }}>👤</span>
+                          <User size={18} />
                         ) : msg.sender.image ? (
                           <img src={msg.sender.image} alt={msg.sender.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                         ) : (
-                          <span style={{ fontSize: "13px", fontWeight: 800 }}>{msg.sender.name[0]}</span>
+                          <User size={18} strokeWidth={2.5} />
                         )}
                       </div>
                     )}

@@ -106,7 +106,7 @@ export function CtaFooterSection() {
             boxShadow: "3px 3px 0px #FFE500",
           }}
         >
-          🤝 BERGABUNG SEKARANG
+          <img src="/images/logo.png" alt="" style={{ width: "16px", height: "16px", verticalAlign: "middle", marginRight: "8px", marginTop: "-2px" }} /> BERGABUNG SEKARANG
         </span>
 
         <h2

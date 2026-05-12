@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { getPusherClient, CHANNELS, EVENTS } from "@/lib/pusher";
 import { useToast } from "@/lib/toast";
+import { User } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -163,9 +164,16 @@ export function CollabRoomClient({
                       fontSize: "12px", fontWeight: 700,
                       color: isAnonymous ? "#888" : "#000",
                       flexShrink: 0,
-                      boxShadow: "2px 2px 0px #000"
+                      boxShadow: "2px 2px 0px #000",
+                      overflow: "hidden"
                     }}>
-                      {isAnonymous ? "🕵️" : displayName[0]}
+                      {isAnonymous ? (
+                        <User size={16} />
+                      ) : m.user.image ? (
+                        <img src={m.user.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      ) : (
+                        <User size={16} strokeWidth={2.5} />
+                      )}
                     </div>
                     <span style={{ color: "#fff", fontSize: "13px", fontWeight: isMe ? 700 : 400 }}>
                       {displayName}

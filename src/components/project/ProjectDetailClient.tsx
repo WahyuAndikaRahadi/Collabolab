@@ -53,8 +53,8 @@ export function ProjectDetailClient({ projectId, isLoggedIn, isMember, isOwner, 
         <div style={{ background: "#00D37F", border: "2px solid #000", borderRadius: "6px", padding: "12px", marginBottom: "16px", textAlign: "center", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px" }}>
           ✅ {isOwner ? "Kamu Owner project ini" : "Kamu sudah bergabung"}
         </div>
-        <Link href={`/project/${projectId}/hub`} className="btn-primary" id="project-enter-room-btn" style={{ display: "block", textAlign: "center", fontSize: "16px", padding: "14px" }}>
-          🤝 Masuk Collab Hub
+        <Link href={`/project/${projectId}/hub`} className="btn-primary" id="project-enter-room-btn" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", fontSize: "16px", padding: "14px" }}>
+          <img src="/images/logo.png" alt="" style={{ width: "20px", height: "20px", objectFit: "contain" }} /> Masuk Collab Hub
         </Link>
         {isOwner && <ProjectApplicantsClient projectId={projectId} />}
       </div>

@@ -10,6 +10,7 @@ import { getTrustLevelEmoji, getTrustLevelColor } from "@/lib/trust-score";
 import { NotificationBell } from "@/components/ui/NotificationBell";
 import { useToast } from "@/lib/toast";
 import { Modal } from "@/components/ui/Modal";
+import { User } from "lucide-react";
 
 export function Navbar() {
   const { data: session } = useSession();
@@ -129,23 +130,7 @@ export function Navbar() {
             gap: "8px",
           }}
         >
-          <span
-            style={{
-              background: "#FFE500",
-              border: "2px solid #000",
-              borderRadius: "6px",
-              width: "32px",
-              height: "32px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "18px",
-              fontWeight: 900,
-              boxShadow: "2px 2px 0px #000",
-            }}
-          >
-            🤝
-          </span>
+          <img src="/images/logo.png" alt="Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
           <span
             style={{
               fontFamily: "Space Grotesk, sans-serif",
@@ -154,7 +139,7 @@ export function Navbar() {
               color: "#000",
             }}
           >
-            CollaboLab
+            <span style={{ color: "#FFE500" }}>Collabo</span>Lab
           </span>
         </Link>
 
@@ -231,7 +216,7 @@ export function Navbar() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={session.user.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 ) : (
-                  session.user.name?.[0]?.toUpperCase() ?? "U"
+                  <User size={20} strokeWidth={3} />
                 )}
               </Link>
               <div className="hidden lg:block">

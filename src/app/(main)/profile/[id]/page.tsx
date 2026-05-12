@@ -5,6 +5,8 @@ import { getTrustLevelEmoji, getTrustLevelColor, getTrustLevelLabel } from "@/li
 import { ExternalLinksSection } from "@/components/profile/ExternalLinksSection";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ProfileLogoutButton } from "@/components/profile/ProfileLogoutButton";
+import { User } from "lucide-react";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -67,6 +69,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
         .animate-slide-up {
           animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+        .profile-root {
+          padding: 48px 24px !important;
+        }
         .nb-card {
           transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -110,20 +115,62 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
           background: #fff !important;
         }
         @media (max-width: 640px) {
+          .profile-root {
+            padding: 24px 16px !important;
+          }
+          .profile-main-container {
+            gap: 20px !important;
+          }
           .profile-header-container {
             flex-direction: column !important;
             align-items: center !important;
             text-align: center;
           }
           .profile-info-content {
+            display: flex !important;
+            flex-direction: column !important;
             align-items: center !important;
             text-align: center;
+            width: 100% !important;
+          }
+          .info-header-row {
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 16px !important;
+            width: 100% !important;
           }
           .profile-badges {
             justify-content: center !important;
+            gap: 10px !important;
+            margin-bottom: 16px !important;
+          }
+          .profile-sidebar {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
+            margin-bottom: 12px !important;
           }
           .profile-btn {
-            width: 100%;
+            width: 100% !important;
+            max-width: 280px;
+          }
+          .profile-card-nb {
+            padding: 20px !important;
+          }
+          .bio-section {
+             padding: 16px !important;
+             text-align: center !important;
+          }
+          .bio-label {
+             left: 50% !important;
+             transform: translateX(-50%) !important;
+          }
+          .card-header-nb {
+             justify-content: center !important;
+          }
+          .skills-container-nb {
+             justify-content: center !important;
           }
         }
       `}</style>
@@ -156,11 +203,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
         animation: "float 12s ease-in-out infinite reverse"
       }} />
 
-      <div className="animate-slide-up" style={{ maxWidth: "900px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "32px", position: "relative", zIndex: 1 }}>
+      <div className="animate-slide-up profile-main-container" style={{ maxWidth: "900px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "32px", position: "relative", zIndex: 1 }}>
         
         {/* Profile Card */}
         <div 
-          className="nb-card"
+          className="nb-card profile-card-nb"
           style={{ 
             background: "#fff", 
             border: "4px solid #000", 
@@ -168,54 +215,55 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
             boxShadow: "12px 12px 0px #000", 
             padding: "clamp(24px, 5vw, 48px)", 
             display: "flex", 
-            gap: "32px", 
-            flexWrap: "wrap",
-            position: "relative",
-            alignItems: "flex-start"
+            flexDirection: "column",
+            gap: "24px", 
+            position: "relative"
           }}
         >
-          {/* Avatar Area */}
+          {/* Header Section (Photo + Info) */}
           <div className="profile-header-container" style={{ display: "flex", gap: "32px", alignItems: "flex-start", width: "100%" }}>
-            <div style={{ position: "relative", width: "160px", height: "160px", flexShrink: 0 }}>
-              <div style={{
-                position: "absolute",
-                top: "-12px",
-                left: "-12px",
-                right: "-12px",
-                bottom: "-12px",
-                border: "3px dashed #000",
-                borderRadius: "36px",
-                zIndex: 1,
-                opacity: 0.4
-              }} />
-              <div 
-                style={{ 
-                  width: "100%", 
-                  height: "100%", 
-                  borderRadius: "24px", 
-                  border: "4px solid #000", 
-                  background: "#FFE500", 
-                  display: "flex", 
-                  alignItems: "center", 
-                  justifyContent: "center", 
-                  fontSize: "72px", 
-                  fontWeight: 900, 
-                  boxShadow: "6px 6px 0px #000",
-                  zIndex: 2,
-                  position: "relative",
-                  overflow: "hidden"
-                }}
-              >
-                {user.image ? (
-                  <img src={user.image} alt={user.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                ) : (
-                  user.name[0]
-                )}
+            <div className="profile-sidebar" style={{ width: "160px", flexShrink: 0 }}>
+              <div style={{ position: "relative", width: "160px", height: "160px" }}>
+                <div style={{
+                  position: "absolute",
+                  top: "-12px",
+                  left: "-12px",
+                  right: "-12px",
+                  bottom: "-12px",
+                  border: "3px dashed #000",
+                  borderRadius: "36px",
+                  zIndex: 1,
+                  opacity: 0.4
+                }} />
+                <div 
+                  style={{ 
+                    width: "100%", 
+                    height: "100%", 
+                    borderRadius: "24px", 
+                    border: "4px solid #000", 
+                    background: "#FFE500", 
+                    display: "flex", 
+                    alignItems: "center", 
+                    justifyContent: "center", 
+                    fontSize: "72px", 
+                    fontWeight: 900, 
+                    boxShadow: "6px 6px 0px #000",
+                    zIndex: 2,
+                    position: "relative",
+                    overflow: "hidden"
+                  }}
+                >
+                  {user.image ? (
+                    <img src={user.image} alt={user.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <User size={80} strokeWidth={2.5} />
+                  )}
+                </div>
               </div>
             </div>
 
             <div className="profile-info-content" style={{ flex: 1 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", flexWrap: "wrap", gap: "16px" }}>
+              <div className="info-header-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", flexWrap: "wrap", gap: "16px" }}>
                 <div>
                   <h1 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "clamp(32px, 5vw, 44px)", margin: "0 0 4px", lineHeight: 1 }}>
                     {user.name}
@@ -293,30 +341,35 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
                   </div>
                 )}
               </div>
-
-              {user.bio ? (
-                <p style={{ 
-                  color: "#3D3D3D", 
-                  fontSize: "17px", 
-                  lineHeight: 1.6, 
-                  margin: "0 0 24px", 
-                  padding: "16px", 
-                  background: "#F5F0E8", 
-                  borderRadius: "12px",
-                  border: "2px solid #000",
-                  position: "relative"
-                }}>
-                  <span style={{ position: "absolute", top: "-12px", left: "16px", background: "#fff", padding: "0 8px", fontSize: "12px", fontWeight: 800, border: "2px solid #000", borderRadius: "4px" }}>BIO</span>
-                  {user.bio}
-                </p>
-              ) : (
-                <p style={{ color: "#999", fontStyle: "italic", marginBottom: "24px" }}>Belum ada bio...</p>
-              )}
-              
-              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                <ExternalLinksSection username={user.name} />
-              </div>
             </div>
+          </div>
+
+          {/* External Links Full Width */}
+          <div style={{ width: "100%", marginTop: "8px" }}>
+            <ExternalLinksSection username={user.name} />
+          </div>
+
+          {/* Bio Full Width */}
+          <div style={{ width: "100%", marginTop: "8px" }}>
+            {user.bio ? (
+              <p style={{ 
+                color: "#3D3D3D", 
+                fontSize: "17px", 
+                lineHeight: 1.6, 
+                margin: 0, 
+                padding: "20px 24px", 
+                background: "#F5F0E8", 
+                borderRadius: "16px",
+                border: "3px solid #000",
+                position: "relative",
+                boxShadow: "inner 2px 2px 0px rgba(0,0,0,0.1)"
+              }}>
+                <span style={{ position: "absolute", top: "-14px", left: "24px", background: "#fff", padding: "2px 12px", fontSize: "12px", fontWeight: 900, border: "3px solid #000", borderRadius: "6px" }}>BIOGRAFI</span>
+                {user.bio}
+              </p>
+            ) : (
+              <p style={{ color: "#999", fontStyle: "italic", margin: 0, padding: "20px", border: "2px dashed #ccc", borderRadius: "12px", textAlign: "center" }}>Belum ada bio...</p>
+            )}
           </div>
         </div>
 
@@ -325,11 +378,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
           
           {/* Skills */}
           <div className="nb-card" style={{ background: "#fff", border: "4px solid #000", borderRadius: "16px", boxShadow: "8px 8px 0px #000", padding: "32px", animationDelay: "0.1s" }}>
-            <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "24px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
+            <h2 className="card-header-nb" style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "24px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
               <span style={{ background: "#FFE500", padding: "4px", borderRadius: "6px", border: "2px solid #000" }}>💡</span> Skills
             </h2>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "14px" }}>
-              {user.skills.length > 0 ? user.skills.map((s, idx) => (
+            <div className="skills-container-nb" style={{ display: "flex", flexWrap: "wrap", gap: "14px" }}>
+              {user.skills.length > 0 ? user.skills.map((s) => (
                 <div 
                   key={s.id}
                   className="skill-chip-nb"
@@ -352,7 +405,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
 
           {/* Projects */}
           <div className="nb-card" style={{ background: "#fff", border: "4px solid #000", borderRadius: "16px", boxShadow: "8px 8px 0px #000", padding: "32px", animationDelay: "0.2s" }}>
-            <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "24px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
+            <h2 className="card-header-nb" style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "24px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
               <span style={{ background: "#00D37F", padding: "4px", borderRadius: "6px", border: "2px solid #000" }}>🏆</span> Project Selesai
             </h2>
             {user.memberships.length === 0 ? (
@@ -401,32 +454,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
 
         {/* Logout Button at the bottom (Owner only) */}
         {isOwner && (
-          <div style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
-            <form action="/api/auth/signout" method="POST" style={{ width: "100%"}}>
-              <button
-                type="submit"
-                className="logout-btn"
-                style={{
-                  width: "100%",
-                  background: "#FF4D4D",
-                  border: "3px solid #000",
-                  borderRadius: "12px",
-                  padding: "14px 24px",
-                  fontFamily: "Space Grotesk, sans-serif",
-                  fontWeight: 900,
-                  fontSize: "16px",
-                  color: "#fff",
-                  boxShadow: "6px 6px 0px #000",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "10px"
-                }}
-              >
-                Keluar Akun
-              </button>
-            </form>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <ProfileLogoutButton />
           </div>
         )}
       </div>

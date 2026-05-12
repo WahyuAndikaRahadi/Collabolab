@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { CATEGORY_META, COMMITMENT_META } from "@/types";
+import { User } from "lucide-react";
 import { calculateSkillMatch } from "@/lib/skill-match";
 import { containerVariants, itemVariants } from "../ui/DecorativeElements";
 import type { ProjectCategory, CommitmentLevel, TrustLevel } from "@prisma/client";
@@ -188,11 +189,17 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
       <div style={{ borderTop: "2px solid #f0f0f0", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <div style={{ position: "relative" }}>
-                <img 
-                    src={project.owner.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${project.owner.name}`} 
-                    alt={project.owner.name}
-                    style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1.5px solid #000" }}
-                />
+                {project.owner.image ? (
+                  <img 
+                      src={project.owner.image} 
+                      alt={project.owner.name}
+                      style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1.5px solid #000" }}
+                  />
+                ) : (
+                  <div style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1.5px solid #000", display: "flex", alignItems: "center", justifyContent: "center", background: "#fff" }}>
+                    <User size={14} strokeWidth={3} />
+                  </div>
+                )}
                 <div style={{ position: "absolute", bottom: -2, right: -2, width: "10px", height: "10px", background: "#00D37F", border: "1.5px solid #000", borderRadius: "50%" }} />
             </div>
           <span style={{ fontSize: "13px", fontWeight: 700 }}>{project.owner.name}</span>

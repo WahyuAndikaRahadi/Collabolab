@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { getPusherClient, CHANNELS, EVENTS } from "@/lib/pusher";
 import { useToast } from "@/lib/toast";
+import { useAlert } from "@/lib/alert";
 import { User } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -70,6 +71,7 @@ export function CollabRoomClient({
   const [members, setMembers] = useState<Member[]>(initialProject.members);
   const [activeTab, setActiveTab] = useState<"kanban" | "chat" | "poll">("kanban");
   const toast = useToast();
+  const alert = useAlert();
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Load message history
@@ -185,7 +187,12 @@ export function CollabRoomClient({
                     {isOwner && !isMe && (
                       <button
                         onClick={async () => {
-                          if (confirm(`Kick ${displayName}?`)) {
+                          const isConfirmed = await alert.confirm({
+                            title: "Konfirmasi Kick",
+                            description: `Apakah Anda yakin ingin melakukan kick pada ${displayName}?`,
+                            confirmLabel: "Kick"
+                          });
+                          if (isConfirmed) {
                             await fetch(`/api/projects/${initialProject.id}/members/${m.id}`, { method: "DELETE" });
                           }
                         }}
@@ -201,7 +208,12 @@ export function CollabRoomClient({
                 {isMe && isAnonymous && (
                   <button
                     onClick={async () => {
-                      if (confirm("Buka identitasmu sekarang? Semua orang akan tahu siapa kamu.")) {
+                      const isConfirmed = await alert.confirm({
+                        title: "Reveal Identity",
+                        description: "Buka identitasmu sekarang? Semua orang di project ini akan tahu siapa kamu sebenarnya.",
+                        confirmLabel: "Buka Identitas"
+                      });
+                      if (isConfirmed) {
                         const res = await fetch(`/api/projects/${initialProject.id}/members/${m.id}/reveal`, { method: "POST" });
                         if (!res.ok) toast.error("Error", "Gagal membuka identitas");
                       }
@@ -422,6 +434,7 @@ function ChatTab({ messages, projectId, currentUserId, chatEndRef, currentMember
 }) {
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const alert = useAlert();
 
   const canModerate = currentMember.role === "OWNER" || currentMember.role === "ADMIN";
 
@@ -442,7 +455,13 @@ function ChatTab({ messages, projectId, currentUserId, chatEndRef, currentMember
   }
 
   async function deleteMessage(messageId: string) {
-    if (!confirm("Hapus pesan ini?")) return;
+    const isConfirmed = await alert.confirm({
+      title: "Hapus Pesan",
+      description: "Apakah Anda yakin ingin menghapus pesan ini?",
+      confirmLabel: "Hapus"
+    });
+    if (!isConfirmed) return;
+    
     await fetch(`/api/chat/${projectId}?messageId=${messageId}`, {
       method: "DELETE",
     });

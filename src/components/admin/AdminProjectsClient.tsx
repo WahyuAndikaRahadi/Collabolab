@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/lib/toast';
+import { useAlert } from '@/lib/alert';
 
 type Project = {
   id: string;
@@ -17,6 +18,7 @@ export function AdminProjectsClient() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
+  const alert = useAlert();
 
   useEffect(() => {
     fetchProjects();
@@ -35,7 +37,14 @@ export function AdminProjectsClient() {
   }
 
   async function takeDown(id: string) {
-    if (!confirm("Apakah Anda yakin ingin me-take down project ini?")) return;
+    const isConfirmed = await alert.confirm({
+      title: "Konfirmasi Take Down",
+      description: "Apakah Anda yakin ingin me-take down project ini? Project akan diarsipkan.",
+      confirmLabel: "Take Down"
+    });
+    
+    if (!isConfirmed) return;
+    
     try {
       const res = await fetch(`/api/admin/projects?id=${id}`, { method: 'DELETE' });
       if (res.ok) {

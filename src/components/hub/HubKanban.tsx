@@ -20,6 +20,7 @@ import {
 import { useDroppable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { TaskCreateModal, TaskDetailModal } from "./TaskModals";
+import { useToast } from "@/lib/toast";
 
 type HubTask = {
   id: string;
@@ -70,6 +71,7 @@ export function HubKanban({ projectId, roomId, members, currentUserId, isGlobal 
   const [activeTask, setActiveTask] = useState<HubTask | null>(null);
   const [createModal, setCreateModal] = useState<{ isOpen: boolean; status: HubTask["status"] }>({ isOpen: false, status: "TODO" });
   const [detailTask, setDetailTask] = useState<HubTask | null>(null);
+  const toast = useToast();
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
@@ -149,9 +151,8 @@ export function HubKanban({ projectId, roomId, members, currentUserId, isGlobal 
     const isPrivileged = currentMember?.role === "OWNER" || currentMember?.role === "ADMIN" || !!currentMember?.roleTitle;
 
     if (draggedTask.status !== targetStatus) {
-      // Permission check for assigned tasks
       if (draggedTask.assigneeId && draggedTask.assigneeId !== currentUserId && !isPrivileged) {
-        alert("Hanya penanggung jawab task ini atau Admin/Lead yang dapat mengubah statusnya.");
+        toast.error("Akses Ditolak", "Hanya penanggung jawab task ini atau Admin/Lead yang dapat mengubah statusnya.");
         return;
       }
 

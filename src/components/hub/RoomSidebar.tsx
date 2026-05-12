@@ -148,7 +148,7 @@ export function RoomSidebar({ rooms, activeRoomId, onSelectRoom, onCreateRoom, i
               onClick={onManageMembers}
               title="Kelola Anggota"
               style={{
-                background: "#000000",
+                background: "#FFE500",
                 color: "#FFE500",
                 border: "none",
                 borderRadius: "4px",
@@ -161,8 +161,8 @@ export function RoomSidebar({ rooms, activeRoomId, onSelectRoom, onCreateRoom, i
                 fontSize: "12px",
                 boxShadow: "1.5px 1.5px 0px #000000"
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#333")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "#000")}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#FFE504")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#FFE504")}
             >
               👥
             </button>

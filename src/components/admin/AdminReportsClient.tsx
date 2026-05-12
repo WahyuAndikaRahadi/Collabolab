@@ -121,7 +121,7 @@ export function AdminReportsClient() {
                   onMouseDown={(e) => (e.currentTarget.style.transform = "translate(2px, 2px)")}
                   onMouseUp={(e) => (e.currentTarget.style.transform = "none")}
                 >
-                  RESOLVE
+                  {r.targetType === "FEED_POST" ? "RESOLVE (Hapus Post)" : "RESOLVE"}
                 </button>
                 <button 
                   onClick={() => updateStatus(r.id, "DISMISSED")}

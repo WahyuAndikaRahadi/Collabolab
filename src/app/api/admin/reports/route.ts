@@ -37,12 +37,27 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const { reportId, status } = await req.json();
+    
+    // Fetch report to check its type
+    const report = await prisma.report.findUnique({ where: { id: reportId } });
+    if (!report) return NextResponse.json({ error: "Report tidak ditemukan" }, { status: 404 });
+
+    // If a feed post report is resolved, delete the post
+    if (status === "RESOLVED" && report.targetType === "FEED_POST") {
+      try {
+        await prisma.feedPost.delete({ where: { id: report.targetId } });
+      } catch (err) {
+        console.warn("FeedPost might have already been deleted", err);
+      }
+    }
+
     const updated = await prisma.report.update({
       where: { id: reportId },
       data: { status }
     });
     return NextResponse.json(updated);
   } catch (err) {
+    console.error("[ADMIN_REPORT_PATCH]", err);
     return NextResponse.json({ error: "Gagal update report" }, { status: 500 });
   }
 }

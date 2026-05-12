@@ -8,6 +8,8 @@ import { id } from "date-fns/locale";
 import { getTrustLevelEmoji, getTrustLevelLabel } from "@/lib/trust-score";
 import { FeedCommentSection } from "./FeedComment";
 import { FeedBookmarkButton } from "./FeedBookmarkButton";
+import { AlertTriangle } from "lucide-react";
+import { ReportPostModal } from "./ReportPostModal";
 
 interface PostCardProps {
   post: any;
@@ -18,6 +20,7 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
   const [likes, setLikes] = useState(post._count.likes);
   const [isLiked, setIsLiked] = useState(false); // Should ideally come from API or initial data
   const [showComments, setShowComments] = useState(false);
+  const [isReporting, setIsReporting] = useState(false);
 
   const isContribution = post.type === "CONTRIBUTION";
   const isEvent = post.type === "EVENT";
@@ -349,7 +352,25 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
           <span style={{ fontWeight: 900, fontSize: "14px", color: showComments ? "#000" : "#000" }}>{post._count.comments}</span>
         </motion.button>
 
-        <div style={{ marginLeft: "auto" }}>
+        <div style={{ marginLeft: "auto", display: "flex", gap: "8px", alignItems: "center" }}>
+          {currentUserId && post.authorId !== currentUserId && (
+            <button
+              onClick={() => setIsReporting(true)}
+              title="Laporkan Post"
+              style={{
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                color: "#FF4D4D",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "8px",
+              }}
+            >
+              <AlertTriangle size={20} />
+            </button>
+          )}
           <FeedBookmarkButton postId={post.id} initialBookmarked={false} />
         </div>
       </div>
@@ -366,6 +387,13 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {isReporting && (
+        <ReportPostModal
+          postId={post.id}
+          onClose={() => setIsReporting(false)}
+        />
+      )}
     </motion.div>
   );
 }

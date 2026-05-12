@@ -4,13 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TOPIC_META, CATEGORY_META } from "@/types";
 
-// Dynamic tags from metadata + general tags
-const PREDEFINED_TAGS = [
+// Dynamic tags from metadata + general tags - deduplicated with Set
+const PREDEFINED_TAGS = Array.from(new Set([
   ...Object.values(TOPIC_META).map(m => m.label),
   ...Object.values(CATEGORY_META).map(m => m.label),
   "Frontend", "Backend", "Design", "Research", "Business", "Marketing", "Writing", 
   "Engineering", "Management", "Education", "Agrotech", "Finance", "Creative"
-];
+]));
 
 interface Props {
   user: any;

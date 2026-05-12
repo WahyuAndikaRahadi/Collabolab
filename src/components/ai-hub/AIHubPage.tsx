@@ -123,7 +123,7 @@ export function AIHubPage({ trustScore }: Props) {
               marginBottom: "24px",
               letterSpacing: "-4px"
             }}>
-              AI HUB <span style={{ color: "#FFE500", WebkitTextStroke: "3px black" }}>01</span>
+              AI HUB
             </h1>
             
             <div style={{ 

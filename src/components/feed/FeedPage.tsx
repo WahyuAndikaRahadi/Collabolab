@@ -146,7 +146,7 @@ export function FeedPage({ user }: Props) {
           padding: "0 16px",
           position: "sticky",
           top: 0,
-          zIndex: 100, // Below drawer
+          zIndex: 99, // Below drawer
           gap: "12px"
         }}>
           <button 

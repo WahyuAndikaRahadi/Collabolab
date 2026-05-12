@@ -21,6 +21,7 @@ async function getInitialProjects() {
       include: {
         requiredSkills: { select: { skillName: true } },
         members: { select: { id: true } },
+        hubTasks: { where: { isGlobal: true }, select: { id: true, status: true } },
         owner: { select: { id: true, name: true, image: true, trustScore: true, trustLevel: true } },
       },
     });

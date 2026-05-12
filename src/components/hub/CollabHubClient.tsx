@@ -259,13 +259,22 @@ export function CollabHubClient({
               inset: 0,
               background: "rgba(0,0,0,0.4)",
               zIndex: 45,
-              backdropFilter: "blur(2px)"
+              backdropFilter: "blur(4px)"
             }}
           />
         )}
 
       {/* ─── Center: Main Content ─── */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
+      <div style={{ 
+        flex: 1, 
+        display: "flex", 
+        flexDirection: "column", 
+        overflow: "hidden", 
+        minWidth: 0,
+        filter: isMobile && mobileSidebar ? "blur(4px)" : "none",
+        transition: "filter 0.3s ease",
+        pointerEvents: isMobile && mobileSidebar ? "none" : "auto"
+      }}>
         {activeRoom ? (
           <>
             {/* Custom room: tab switcher (Chat / Kanban) */}

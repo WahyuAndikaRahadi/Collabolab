@@ -26,11 +26,11 @@ export function Navbar() {
   const navLinks = session?.user 
     ? [
         { href: session.user.role === "ADMIN" ? "/admin" : "/dashboard", label: "Dashboard" },
+        { href: "/project/my-projects", label: "My Projects" },
         { href: "/explore", label: "Explore" },
         { href: "/feed", label: "Feed" },
         { href: "/ai-hub", label: "AI Hub" },
         ...(session.user.role === "ADMIN" ? [{ href: "/admin", label: "🛠️ Admin" }] : []),
-        { href: "/project/my-projects", label: "My Projects" },
       ]
     : pathname === "/" 
       ? [

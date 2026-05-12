@@ -497,3 +497,57 @@ code, kbd, pre, samp {
   from { transform: translateY(0); }
   to { transform: translateY(-4px); }
 }
+
+/* ─── Project Detail Responsive Grid ────────────────────────────────────────── */
+.project-detail-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 320px !important;
+  gap: 24px !important;
+}
+
+@media (max-width: 900px) {
+  .project-detail-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .project-detail-main-card {
+    border-radius: 12px !important;
+    box-shadow: 8px 8px 0px #000 !important;
+    padding: 24px !important;
+  }
+
+  .project-detail-action-card {
+    border-radius: 12px !important;
+    box-shadow: 8px 8px 0px #000 !important;
+    padding: 20px !important;
+  }
+  
+  .project-detail-title {
+    font-size: 28px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .mobile-only-decor {
+    display: block !important;
+  }
+}
+
+@media (min-width: 901px) {
+  .mobile-only-decor {
+    display: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .project-detail-main-card {
+    padding: 20px !important;
+  }
+  
+  .project-detail-title {
+    font-size: 24px !important;
+  }
+  
+  .project-detail-badges {
+    gap: 8px !important;
+  }
+}

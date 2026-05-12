@@ -49,7 +49,7 @@ export function ProjectDetailClient({ projectId, isLoggedIn, isMember, isOwner, 
 
   if (isMember || isOwner) {
     return (
-      <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "8px", boxShadow: "6px 6px 0px #000", padding: "24px" }}>
+      <div className="project-detail-action-card" style={{ background: "#fff", border: "3px solid #000", borderRadius: "8px", boxShadow: "6px 6px 0px #000", padding: "24px" }}>
         <div style={{ background: "#00D37F", border: "2px solid #000", borderRadius: "6px", padding: "12px", marginBottom: "16px", textAlign: "center", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px" }}>
           ✅ {isOwner ? "Kamu Owner project ini" : "Kamu sudah bergabung"}
         </div>
@@ -63,7 +63,7 @@ export function ProjectDetailClient({ projectId, isLoggedIn, isMember, isOwner, 
 
   if (status !== "OPEN" || spotsLeft === 0) {
     return (
-      <div style={{ background: "#fff", border: "2px solid #000", borderRadius: "8px", boxShadow: "4px 4px 0px #000", padding: "24px" }}>
+      <div className="project-detail-action-card" style={{ background: "#fff", border: "3px solid #000", borderRadius: "8px", boxShadow: "4px 4px 0px #000", padding: "24px" }}>
         <div style={{ background: "#FF4D4D", border: "2px solid #000", borderRadius: "6px", padding: "12px", textAlign: "center", color: "#fff", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px" }}>
           {spotsLeft === 0 ? "Project sudah penuh" : `Status: ${status}`}
         </div>
@@ -73,7 +73,7 @@ export function ProjectDetailClient({ projectId, isLoggedIn, isMember, isOwner, 
 
   if (!isLoggedIn) {
     return (
-      <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "8px", boxShadow: "6px 6px 0px #000", padding: "24px" }}>
+      <div className="project-detail-action-card" style={{ background: "#fff", border: "3px solid #000", borderRadius: "8px", boxShadow: "6px 6px 0px #000", padding: "24px" }}>
         <p style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "15px", marginBottom: "16px", textAlign: "center" }}>
           Login untuk melamar project ini!
         </p>
@@ -86,7 +86,7 @@ export function ProjectDetailClient({ projectId, isLoggedIn, isMember, isOwner, 
 
   return (
     <>
-      <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "8px", boxShadow: "6px 6px 0px #000", padding: "24px" }}>
+      <div className="project-detail-action-card" style={{ background: "#fff", border: "3px solid #000", borderRadius: "8px", boxShadow: "6px 6px 0px #000", padding: "24px" }}>
         <div style={{ marginBottom: "16px", textAlign: "center" }}>
           <span style={{ background: spotsLeft <= 1 ? "#FF4D4D" : "#00D37F", color: spotsLeft <= 1 ? "#fff" : "#000", border: "2px solid #000", borderRadius: "4px", padding: "4px 12px", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "14px" }}>
             {spotsLeft} slot tersisa

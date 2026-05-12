@@ -152,6 +152,16 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const existingTask = await prisma.hubTask.findUnique({ where: { id } });
   if (!existingTask) return NextResponse.json({ error: "Task not found" }, { status: 404 });
 
+  // Status change validation
+  if (updates.status !== undefined && updates.status !== existingTask.status) {
+      if (existingTask.assigneeId && existingTask.assigneeId !== session.user.id) {
+          const isPrivileged = member.role === "OWNER" || member.role === "ADMIN" || !!member.roleTitle;
+          if (!isPrivileged) {
+              return NextResponse.json({ error: "Hanya Admin, penanggung jawab task, atau Lead yang bisa mengubah status task ini." }, { status: 403 });
+          }
+      }
+  }
+
   // Assignment logic
   if (updates.assigneeId !== undefined) {
       const isPrivileged = member.role === "OWNER" || member.role === "ADMIN" || !!member.roleTitle;

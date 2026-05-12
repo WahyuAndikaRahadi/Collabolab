@@ -20,6 +20,7 @@ type Project = {
   createdAt: string;
   requiredSkills: { skillName: string }[];
   members: { id: string }[];
+  hubTasks: { id: string; status: string }[];
   owner: {
     id: string;
     name: string;
@@ -47,6 +48,10 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
     userSkills.length > 0
       ? calculateSkillMatch(userSkills, project.requiredSkills.map((s) => s.skillName))
       : null;
+
+  const totalTasks = project.hubTasks?.length || 0;
+  const doneTasks = project.hubTasks?.filter((t) => t.status === "DONE").length || 0;
+  const progressPct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
 
   return (
     <motion.div
@@ -104,35 +109,24 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
         </div>
       </div>
 
-      {/* Skill match bar */}
-      {matchPct !== null && (
+      {/* Progress & Match bars */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        {/* Project Progress */}
         <div style={{ background: "#F5F0E8", border: "2px solid #000", borderRadius: "8px", padding: "10px 14px", boxShadow: "2px 2px 0px #000" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-            <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.5px" }}>🔥 Match Power</span>
-            <span
-              style={{
-                fontFamily: "Space Grotesk, sans-serif",
-                fontWeight: 900,
-                fontSize: "16px",
-                color: matchPct >= 80 ? "#00D37F" : matchPct >= 60 ? "#FF8C00" : "#FF4D4D",
-              }}
-            >
-              {matchPct}%
-            </span>
+            <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.5px" }}>📊 Progres Project</span>
+            <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "16px" }}>{progressPct}%</span>
           </div>
           <div style={{ height: "10px", background: "#fff", border: "2px solid #000", borderRadius: "5px", overflow: "hidden" }}>
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: `${matchPct}%` }}
-              transition={{ duration: 1, ease: "circOut", delay: 0.2 }}
-              style={{
-                height: "100%",
-                background: matchPct >= 80 ? "#00D37F" : matchPct >= 60 ? "#FFE500" : "#FF4D4D",
-              }}
+              animate={{ width: `${progressPct}%` }}
+              transition={{ duration: 1, ease: "circOut" }}
+              style={{ height: "100%", background: "#00D37F" }}
             />
           </div>
         </div>
-      )}
+      </div>
 
       {/* Title */}
       <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", margin: 0, lineHeight: 1.3 }}>

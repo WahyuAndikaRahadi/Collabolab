@@ -145,7 +145,16 @@ export function HubKanban({ projectId, roomId, members, currentUserId, isGlobal 
         : draggedTask.status;
     }
 
+    const currentMember = members.find(m => m.userId === currentUserId);
+    const isPrivileged = currentMember?.role === "OWNER" || currentMember?.role === "ADMIN" || !!currentMember?.roleTitle;
+
     if (draggedTask.status !== targetStatus) {
+      // Permission check for assigned tasks
+      if (draggedTask.assigneeId && draggedTask.assigneeId !== currentUserId && !isPrivileged) {
+        alert("Hanya penanggung jawab task ini atau Admin/Lead yang dapat mengubah statusnya.");
+        return;
+      }
+
       setTasks((prev) => prev.map((t) => t.id === activeId ? { ...t, status: targetStatus } : t));
       patchTask(activeId, { status: targetStatus });
     } else if (activeId !== overId && overData?.type === "task") {

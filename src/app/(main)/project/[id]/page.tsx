@@ -7,6 +7,7 @@ import { CATEGORY_META, COMMITMENT_META, TOPIC_META } from "@/types";
 import { getTrustLevelEmoji, getTrustLevelLabel } from "@/lib/trust-score";
 import { ProjectDetailClient } from "@/components/project/ProjectDetailClient";
 import { ProjectMembersList } from "@/components/project/ProjectMembersList";
+import { GridPattern, NoiseTexture, FloatingShape } from "@/components/ui/DecorativeElements";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -46,20 +47,27 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const TRUST_EMOJI: Record<string, string> = { NEWCOMER: "🔴", MEMBER: "🟡", TRUSTED: "🟢", VERIFIED: "🔵" };
 
   return (
-    <div style={{ background: "#F5F0E8", minHeight: "calc(100vh - 64px)" }}>
-      <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "32px 24px" }}>
+    <div style={{ background: "#F5F0E8", minHeight: "calc(100vh - 64px)", position: "relative", overflow: "hidden" }}>
+      <div className="mobile-only-decor">
+        <NoiseTexture />
+        <GridPattern />
+        <FloatingShape type="circle" color="#FFE500" size={120} top="10%" right="2%" delay={0} />
+        <FloatingShape type="square" color="#FF4D4D" size={80} bottom="5%" left="2%" delay={0.5} />
+      </div>
+      
+      <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "32px 24px", position: "relative", zIndex: 1 }}>
         {/* Back */}
         <Link href="/explore" style={{ color: "#0047FF", fontWeight: 700, textDecoration: "none", fontSize: "14px", display: "inline-flex", alignItems: "center", gap: "4px", marginBottom: "24px" }}>
           ← Kembali ke Explore
         </Link>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: "24px" }} className="project-detail-grid">
+        <div className="project-detail-grid">
           {/* Left */}
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             {/* Main card */}
-            <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "8px", boxShadow: "6px 6px 0px #000", padding: "32px" }}>
+            <div className="project-detail-main-card" style={{ background: "#fff", border: "3px solid #000", borderRadius: "8px", boxShadow: "6px 6px 0px #000", padding: "32px" }}>
               {/* Badges */}
-              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "20px" }}>
+              <div className="project-detail-badges" style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "20px" }}>
                 <span style={{ background: cat.color, border: "2px solid #000", borderRadius: "4px", padding: "4px 12px", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "13px" }}>
                   {cat.emoji} {cat.label}
                 </span>
@@ -74,7 +82,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 </span>
               </div>
 
-              <h1 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "clamp(24px, 4vw, 36px)", marginBottom: "16px" }}>
+              <h1 className="project-detail-title" style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "clamp(24px, 4vw, 36px)", marginBottom: "16px" }}>
                 {project.title}
               </h1>
 

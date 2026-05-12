@@ -47,7 +47,7 @@ export function AIHubPage({ trustScore }: Props) {
   const tools = [
     {
       type: AITool.PROJECT_BRIEF_GENERATOR,
-      title: "Project Brief Generator",
+      title: "Pembuat Draft Project",
       description: "Ubah ide singkatmu menjadi draft project yang lengkap dan menarik.",
       icon: <Sparkles />,
       color: "#FFE500",
@@ -55,24 +55,24 @@ export function AIHubPage({ trustScore }: Props) {
     },
     {
       type: AITool.SKILL_GAP_ANALYZER,
-      title: "Skill Gap Analyzer",
-      description: "Temukan skill apa yang paling dibutuhkan pasar dan cara menutup gap-nya.",
+      title: "Penganalisis Kekurangan Keahlian",
+      description: "Temukan keahlian apa yang paling dibutuhkan pasar dan cara menguasainya.",
       icon: <Brain />,
       color: "#0047FF",
       lightColor: "#E8EFFF",
     },
     {
       type: AITool.PROJECT_RECOMMENDATION,
-      title: "Project Recommendation",
-      description: "Matchmaking AI yang mencarikan project paling cocok dengan skill-mu.",
+      title: "Rekomendasi Project",
+      description: "Sistem cerdas yang mencarikan project paling cocok dengan kemampuanmu.",
       icon: <Search />,
       color: "#00D37F",
       lightColor: "#E6FBF2",
     },
     {
       type: AITool.REVIEW_SUMMARIZER,
-      title: "Review Summarizer",
-      description: "Consolidate peer feedback into actionable growth metrics.",
+      title: "Perangkum Ulasan",
+      description: "Gabungkan semua masukan dari rekan tim menjadi metrik perkembangan yang jelas.",
       icon: <MessageSquare />,
       color: "#FF4D4D",
       lightColor: "#FFF0F0",
@@ -112,7 +112,7 @@ export function AIHubPage({ trustScore }: Props) {
             style={{ marginBottom: "80px", textAlign: "center", position: "relative", zIndex: 1 }}
           >
             <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
-                <SectionLabel>⚡ POWERED BY AI</SectionLabel>
+                <SectionLabel>⚡ DIDUKUNG OLEH AI</SectionLabel>
             </div>
             
             <h1 style={{ 
@@ -137,7 +137,7 @@ export function AIHubPage({ trustScore }: Props) {
               marginBottom: "32px"
             }}>
                 <p style={{ margin: 0, fontWeight: 900, fontSize: "18px", letterSpacing: "1px" }}>
-                    PREMIUM COLLABORATION TOOLS
+                    ALAT KOLABORASI PREMIUM
                 </p>
             </div>
 
@@ -149,7 +149,7 @@ export function AIHubPage({ trustScore }: Props) {
               fontWeight: 600,
               margin: "0 auto"
             }}>
-              Elevate your collaboration game. These tools use cutting-edge AI to help you find the right projects, fill your skill gaps, and understand your team dynamics.
+              Tingkatkan kualitas kolaborasimu. Alat-alat ini menggunakan AI canggih untuk membantumu menemukan project yang tepat, menutupi kekurangan keahlian, dan memahami dinamika timmu.
             </p>
           </motion.div>
 
@@ -220,17 +220,17 @@ export function AIHubPage({ trustScore }: Props) {
               
               <div style={{ position: "relative", zIndex: 1 }}>
                 <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "32px", marginBottom: "16px", textTransform: "uppercase", letterSpacing: "-1px" }}>
-                  The Trust Protocol
+                  Protokol Kepercayaan
                 </h3>
                 <p style={{ fontWeight: 700, fontSize: "18px", lineHeight: 1.4 }}>
-                  Our AI tools are strictly gated by your <span style={{ background: "#000", color: "#fff", padding: "0 6px" }}>Trust Score</span>. This ensures that the most powerful features are reserved for committed and reliable collaborators.
+                  Alat AI kami dibatasi secara ketat berdasarkan <span style={{ background: "#000", color: "#fff", padding: "0 6px" }}>Trust Score</span> milikmu. Ini memastikan bahwa fitur-fitur terkuat hanya tersedia untuk kolaborator yang berkomitmen dan dapat diandalkan.
                 </p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "24px", position: "relative", zIndex: 1 }}>
                 {[
-                    "Build your score by completing projects and getting positive reviews.",
-                    "Unlock advanced generators, analyzers, and matchmaking algorithms.",
-                    "Gain access to exclusive \"Verified Only\" collaborative ecosystems."
+                    "Tingkatkan skormu dengan menyelesaikan project dan mendapatkan ulasan positif.",
+                    "Buka akses ke alat generator canggih, penganalisis, dan algoritma matchmaking.",
+                    "Dapatkan akses eksklusif ke ekosistem kolaborasi \"Hanya Terverifikasi\"."
                 ].map((text, i) => (
                     <div key={i} style={{ display: "flex", gap: "20px", alignItems: "start" }}>
                         <div style={{ background: "#000", color: "#fff", minWidth: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: "18px", border: "2px solid #000", boxShadow: "2px 2px 0px #000" }}>{i + 1}</div>

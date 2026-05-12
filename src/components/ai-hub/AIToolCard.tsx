@@ -47,15 +47,15 @@ export function AIToolCard({
       <div style={{ position: "absolute", top: "-12px", right: "20px", display: "flex", gap: "8px" }}>
         {isLocked ? (
           <div style={{ background: "#000", color: "#fff", padding: "6px 12px", border: "3px solid #000", fontSize: "11px", fontWeight: 900, display: "flex", alignItems: "center", gap: "4px" }}>
-            <Lock size={12} /> LOCKED
+            <Lock size={12} /> TERKUNCI
           </div>
         ) : isCooldown ? (
           <div style={{ background: "#FF4D4D", color: "#fff", padding: "6px 12px", border: "3px solid #000", fontSize: "11px", fontWeight: 900, display: "flex", alignItems: "center", gap: "4px" }}>
-            <Clock size={12} /> COOLDOWN
+            <Clock size={12} /> JEDA WAKTU
           </div>
         ) : (
           <div style={{ background: "#00D37F", color: "#000", padding: "6px 12px", border: "3px solid #000", fontSize: "11px", fontWeight: 900, display: "flex", alignItems: "center", gap: "4px" }}>
-            <CheckCircle2 size={12} /> READY
+            <CheckCircle2 size={12} /> SIAP
           </div>
         )}
       </div>
@@ -104,7 +104,7 @@ export function AIToolCard({
 
       <div style={{ background: "#fff", border: "3px solid #000", padding: "16px", marginBottom: "20px", boxShadow: "4px 4px 0px #000" }}>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", fontWeight: 900, marginBottom: "8px", textTransform: "uppercase" }}>
-          <span>Trust Gate</span>
+          <span>Batas Kepercayaan</span>
           <span style={{ color: userScore >= minScore ? "#00D37F" : "#FF4D4D" }}>
             {userScore} / {minScore}
           </span>
@@ -138,7 +138,7 @@ export function AIToolCard({
           gap: "8px"
         }}
       >
-        {isLocked ? "Increase Trust Score" : isCooldown ? "Tool Resting" : "Launch Tool →"}
+        {isLocked ? "Naikkan Trust Score" : isCooldown ? "Sedang Jeda" : "Gunakan Alat →"}
       </button>
     </motion.div>
   );

@@ -39,7 +39,7 @@ export function SkillGapAnalyzer({ onBack }: Props) {
 
       <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "12px", boxShadow: "6px 6px 0px #000", padding: "32px", marginBottom: "40px" }}>
         <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px" }}>
-          <Search color="#0047FF" /> Skill Gap Analyzer
+          <Search color="#0047FF" /> Penganalisis Kekurangan Keahlian
         </h2>
         <p style={{ color: "#666", marginBottom: "24px" }}>AI akan membandingkan skill-mu dengan project yang sedang aktif untuk menemukan apa yang perlu kamu pelajari.</p>
 
@@ -84,7 +84,7 @@ export function SkillGapAnalyzer({ onBack }: Props) {
                         background: gap.priority === "HIGH" ? "#FF4D4D" : gap.priority === "MEDIUM" ? "#FFE500" : "#00D37F",
                         color: gap.priority === "HIGH" ? "#fff" : "#000",
                         padding: "2px 8px", borderRadius: "4px", fontSize: "11px", fontWeight: 800
-                      }}>{gap.priority} PRIORITY</span>
+                      }}>{gap.priority === "HIGH" ? "PRIORITAS TINGGI" : gap.priority === "MEDIUM" ? "PRIORITAS SEDANG" : "PRIORITAS RENDAH"}</span>
                     </div>
                     <p style={{ fontSize: "14px", color: "#3D3D3D", marginBottom: "12px" }}>{gap.reasoning}</p>
                     <div style={{ borderTop: "1px dashed #ccc", paddingTop: "12px" }}>

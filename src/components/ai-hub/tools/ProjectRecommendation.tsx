@@ -40,7 +40,7 @@ export function ProjectRecommendation({ onBack }: Props) {
 
       <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "12px", boxShadow: "6px 6px 0px #000", padding: "32px", marginBottom: "40px" }}>
         <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px" }}>
-          <Target color="#00D37F" /> Project Recommendation
+          <Target color="#00D37F" /> Rekomendasi Project
         </h2>
         <p style={{ color: "#666", marginBottom: "24px" }}>Cari project yang paling sesuai dengan skill, DNA, dan preferensi kolaborasimu.</p>
 
@@ -78,7 +78,7 @@ export function ProjectRecommendation({ onBack }: Props) {
             {result.recommendations.map((rec: any, i: number) => (
               <div key={i} style={{ background: "#F5F0E8", border: "2px solid #000", borderRadius: "8px", padding: "20px", position: "relative" }}>
                 <div style={{ position: "absolute", top: "12px", right: "12px", background: "#000", color: "#FFE500", padding: "4px 10px", borderRadius: "4px", fontSize: "14px", fontWeight: 900 }}>
-                  {rec.matchScore}% MATCH
+                  {rec.matchScore}% COCOK
                 </div>
                 <div style={{ fontSize: "12px", fontWeight: 800, color: "#666", marginBottom: "4px" }}>REKOMENDASI #{i+1}</div>
                 <h4 style={{ fontWeight: 900, fontSize: "18px", marginBottom: "12px", maxWidth: "80%" }}>{rec.projectTitle || `Project ID: ${rec.projectId}`}</h4>

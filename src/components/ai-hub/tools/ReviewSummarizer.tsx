@@ -39,14 +39,14 @@ export function ReviewSummarizer({ onBack }: Props) {
 
       <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "12px", boxShadow: "6px 6px 0px #000", padding: "32px", marginBottom: "40px" }}>
         <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px" }}>
-          <BarChart2 color="#FFE500" /> Review Summarizer
+          <BarChart2 color="#FFE500" /> Perangkum Ulasan
         </h2>
-        <p style={{ color: "#666", marginBottom: "24px" }}>Dapatkan insight mendalam dari semua peer review yang kamu terima. Temukan kelebihanmu dan area untuk berkembang.</p>
+        <p style={{ color: "#666", marginBottom: "24px" }}>Dapatkan wawasan mendalam dari semua ulasan rekan kerja yang kamu terima. Temukan kelebihanmu dan area untuk berkembang.</p>
 
         {!result ? (
           <div style={{ textAlign: "center", padding: "40px 0" }}>
             <div style={{ fontSize: "64px", marginBottom: "24px" }}>📊</div>
-            <p style={{ marginBottom: "24px", fontWeight: 700 }}>Rangkum reputasimu menjadi insight berharga.</p>
+            <p style={{ marginBottom: "24px", fontWeight: 700 }}>Rangkum reputasimu menjadi wawasan berharga.</p>
             {error && <div style={{ background: "#FF4D4D", color: "#fff", padding: "12px", borderRadius: "6px", fontWeight: 700, fontSize: "14px", marginBottom: "20px" }}>⚠️ {error}</div>}
             <button
               onClick={handleSummarize}
@@ -82,7 +82,7 @@ export function ReviewSummarizer({ onBack }: Props) {
               
               <div style={{ background: "#F5F0E8", border: "2px solid #000", borderRadius: "12px", padding: "24px" }}>
                 <h3 style={{ fontWeight: 900, fontSize: "18px", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                  <TrendingUp size={20} /> BEHAVIOR TAG TERBANYAK
+                  <TrendingUp size={20} /> LABEL SIKAP TERBANYAK
                 </h3>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
                   {result.topBehaviorTags.map((tag: any, i: number) => (

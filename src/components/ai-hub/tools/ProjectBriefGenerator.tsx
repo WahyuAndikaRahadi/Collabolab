@@ -49,7 +49,7 @@ export function ProjectBriefGenerator({ onBack }: Props) {
 
       <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "12px", boxShadow: "6px 6px 0px #000", padding: "32px", marginBottom: "40px" }}>
         <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px" }}>
-          <Sparkles color="#FFE500" fill="#FFE500" /> Project Brief Generator
+          <Sparkles color="#FFE500" fill="#FFE500" /> Pembuat Draft Project
         </h2>
         <p style={{ color: "#666", marginBottom: "24px" }}>Cukup tulis ide projectmu dalam satu atau dua kalimat, AI akan membuatkan draft lengkapnya.</p>
 
@@ -92,7 +92,7 @@ export function ProjectBriefGenerator({ onBack }: Props) {
               }}
             >
               {loading ? <RefreshCw className="animate-spin" /> : <Sparkles />}
-              {loading ? "AI LAGI MIKIR..." : "GENERATE BRIEF"}
+              {loading ? "AI LAGI MIKIR..." : "BUAT DRAFT"}
             </button>
           </div>
         ) : (

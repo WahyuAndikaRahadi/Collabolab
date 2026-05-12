@@ -163,7 +163,7 @@ export function AIHubPage({ trustScore }: Props) {
               zIndex: 1, 
               marginBottom: "80px",
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
               gap: "32px",
               justifyContent: "center"
             }}
@@ -197,7 +197,7 @@ export function AIHubPage({ trustScore }: Props) {
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
             style={{ 
-              maxWidth: "1000px",
+              maxWidth: "1200px",
               margin: "0 auto",
               position: "relative",
               zIndex: 1
@@ -214,9 +214,7 @@ export function AIHubPage({ trustScore }: Props) {
               position: "relative",
               overflow: "hidden"
             }}>
-              <div style={{ position: "absolute", top: -10, right: -10, opacity: 0.1 }}>
-                <Zap size={120} strokeWidth={3} />
-              </div>
+
               
               <div style={{ position: "relative", zIndex: 1 }}>
                 <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "32px", marginBottom: "16px", textTransform: "uppercase", letterSpacing: "-1px" }}>

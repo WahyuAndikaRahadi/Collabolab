@@ -130,7 +130,7 @@ export function Navbar() {
             gap: "8px",
           }}
         >
-          <img src="/images/logo.png" alt="Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
+          <img src="/images/logo.png" alt="Logo" style={{ width: "70px", height: "70px", objectFit: "contain" }} />
           <span
             style={{
               fontFamily: "Space Grotesk, sans-serif",
@@ -139,7 +139,7 @@ export function Navbar() {
               color: "#000",
             }}
           >
-            <span style={{ color: "#FFE500" }}>Collabo</span>Lab
+            CollaboLab
           </span>
         </Link>
 

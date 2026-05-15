@@ -120,25 +120,13 @@ function PageOverlay({ isLoading }: { isLoading: boolean }) {
               width: "90%",
             }}
           >
-            {/* GIF */}
-            <div
-              style={{
-                width: "100px",
-                height: "100px",
-                borderRadius: "8px",
-                border: "3px solid #000",
-                overflow: "hidden",
-                boxShadow: "4px 4px 0px #FFE500",
-                background: "#fff",
-                flexShrink: 0,
-              }}
-            >
+      
               <img
-                src="/images/loading-collabolab.gif"
+                src="/images/loading2.gif"
                 alt="Loading..."
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                style={{ width: "80%", height: "80%", objectFit: "cover" }}
               />
-            </div>
+      
 
             {/* Text + dots */}
             <div

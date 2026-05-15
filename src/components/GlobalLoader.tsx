@@ -75,7 +75,7 @@ export function GlobalLoader() {
               }}
             >
               <img
-                src="/images/loading-collabolab.gif"
+                src="/images/loading2.gif"
                 alt="Loading CollaboLab..."
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />

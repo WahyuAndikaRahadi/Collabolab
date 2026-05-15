@@ -45,7 +45,7 @@ export async function PATCH(
     return NextResponse.json(updatedProject);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return new NextResponse(JSON.stringify(error.errors), { status: 400 });
+      return new NextResponse(JSON.stringify(error.issues), { status: 400 });
     }
     console.error("[PROJECT_UPDATE]", error);
     return new NextResponse("Internal Server Error", { status: 500 });

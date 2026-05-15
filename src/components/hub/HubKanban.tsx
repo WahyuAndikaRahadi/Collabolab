@@ -42,7 +42,7 @@ type Member = {
   isAnonymous: boolean;
   anonymousTag: string | null;
   revealedAt: string | null;
-  user: { id: string; name: string };
+  user: { id: string; name: string; username: string; image: string | null };
 };
 
 type Props = {

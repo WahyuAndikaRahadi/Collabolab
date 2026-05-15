@@ -18,7 +18,7 @@ type Member = {
   userId: string;
   role: string;
   roleTitle: string | null;
-  user: { id: string; name: string };
+  user: { id: string; name: string; username: string; image: string | null };
 };
 
 interface CreateProps {

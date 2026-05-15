@@ -12,7 +12,7 @@ type Member = {
   revealedAt: string | null;
   role: string;
   roleTitle: string | null;
-  user: { id: string; name: string; image: string | null };
+  user: { id: string; name: string; username: string; image: string | null };
 };
 
 type PresenceData = {

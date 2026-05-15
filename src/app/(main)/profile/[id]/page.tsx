@@ -355,7 +355,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
 
           {/* External Links Full Width */}
           <div style={{ width: "100%", marginTop: "8px" }}>
-            <ExternalLinksSection username={user.name} />
+            <ExternalLinksSection userId={user.id} />
           </div>
 
           {/* Bio Full Width */}

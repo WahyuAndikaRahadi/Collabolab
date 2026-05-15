@@ -5,15 +5,24 @@ import { auth } from "@/lib/auth";
 import { LinkVisibility } from "@prisma/client";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ username: string }> }) {
-  const { username } = await params;
+  const { username: identifier } = await params;
   const session = await auth();
   const currentUserId = session?.user?.id;
 
   try {
-    const user = await prisma.user.findFirst({
-      where: { name: username },
+    // Try to find user by ID first (primary method), then fall back to username
+    let user = await prisma.user.findUnique({
+      where: { id: identifier },
       select: { id: true },
     });
+
+    if (!user) {
+      // Fallback: try by unique username field
+      user = await prisma.user.findUnique({
+        where: { username: identifier },
+        select: { id: true },
+      });
+    }
 
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 

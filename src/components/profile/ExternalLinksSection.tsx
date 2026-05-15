@@ -17,17 +17,17 @@ interface Link {
 }
 
 interface Props {
-  username: string;
+  userId: string;
 }
 
-export function ExternalLinksSection({ username }: Props) {
+export function ExternalLinksSection({ userId }: Props) {
   const [links, setLinks] = useState<Link[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchLinks() {
       try {
-        const res = await fetch(`/api/profile/${username}/links`);
+        const res = await fetch(`/api/profile/${encodeURIComponent(userId)}/links`);
         if (res.ok) {
           const data = await res.json();
           setLinks(data);
@@ -39,7 +39,7 @@ export function ExternalLinksSection({ username }: Props) {
       }
     }
     fetchLinks();
-  }, [username]);
+  }, [userId]);
 
   if (loading) return <div style={{ fontSize: "14px", color: "#666" }}>Memuat profil eksternal...</div>;
   if (links.length === 0) return null;

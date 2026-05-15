@@ -29,6 +29,7 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
+  
 
   // Redirect authenticated users away from auth pages
   if (isAuthPage && session?.user) {

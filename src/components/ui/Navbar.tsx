@@ -115,9 +115,9 @@ export function Navbar() {
       <div
         style={{
           width: "100%",
-          maxWidth: session?.user ? "none" : "1200px",
+          maxWidth: session?.user ? "none" : "1400px",
           margin: session?.user ? "0" : "0 auto",
-          padding: "0 24px",
+          padding: "0 40px",
           height: "72px",
           display: "flex",
           alignItems: "center",
@@ -153,12 +153,12 @@ export function Navbar() {
         )}
         <Link
           href="/"
-          className={`items-center gap-2 ${session?.user ? "hidden" : "flex"}`}
+          className={`items-center gap-4 ${session?.user ? "hidden" : "flex"}`}
           style={{
             textDecoration: "none",
           }}
         >
-          <img src="/images/logo.png" alt="Logo" style={{ width: "70px", height: "70px", objectFit: "contain" }} />
+          <img src="/images/logo.png" alt="Logo" style={{ width: "60px", height: "60px", objectFit: "contain" }} />
           <span
             style={{
               fontFamily: "Space Grotesk, sans-serif",
@@ -172,7 +172,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className={`hidden ${session?.user ? "lg:hidden" : "lg:flex"} items-center gap-2`}>
+        <nav className={`hidden ${session?.user ? "xl:hidden" : "xl:flex"} items-center gap-4`}>
           {filteredLinks.map((link) => {
             const isActive = link.href.startsWith("#")
               ? activeHash === link.href
@@ -193,7 +193,7 @@ export function Navbar() {
         {/* Auth section */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginLeft: "auto" }}>
           {session?.user ? (
-            <div className="flex items-center gap-2 lg:gap-3">
+            <div className="flex items-center gap-3 xl:gap-5">
               <div className="hidden sm:block">
                 <div
                   title={`Trust Score: ${session.user.trustScore}`}
@@ -246,7 +246,7 @@ export function Navbar() {
                   <User size={20} strokeWidth={3} />
                 )}
               </Link>
-              <div className="hidden lg:block">
+              <div className="hidden xl:block">
                 <Button
                   variant="danger"
                   size="sm"
@@ -258,7 +258,7 @@ export function Navbar() {
               </div>
             </div>
           ) : (
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="hidden xl:flex items-center gap-4">
               <LinkButton href="/login" variant="secondary" size="sm">
                 Masuk
               </LinkButton>
@@ -273,7 +273,7 @@ export function Navbar() {
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               id="navbar-menu-btn"
-              className="lg:hidden"
+              className="xl:hidden"
               style={{
                 background: menuOpen ? "#FFE500" : "transparent",
                 border: "2px solid #000",
@@ -306,7 +306,7 @@ export function Navbar() {
               background: "#FFFFFF",
               overflow: "hidden",
             }}
-            className="lg:hidden"
+            className="xl:hidden"
           >
             <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
               {filteredLinks.map((link) => {

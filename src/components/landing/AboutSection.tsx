@@ -8,7 +8,7 @@ export function AboutSection() {
       id="about"
       style={{
         background: "#FFFFFF",
-        padding: "100px 24px",
+        padding: "clamp(60px, 10vh, 100px) 24px",
         borderTop: "3px solid #000",
         position: "relative",
         overflow: "hidden",
@@ -22,14 +22,15 @@ export function AboutSection() {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%) rotate(-3deg)",
-          fontSize: "clamp(120px, 20vw, 220px)",
+          fontSize: "clamp(60px, 15vw, 220px)",
           fontWeight: 900,
           color: "transparent",
           WebkitTextStroke: "1px rgba(0,0,0,0.06)",
           whiteSpace: "nowrap",
           pointerEvents: "none",
           zIndex: 0,
-          fontFamily: "Space Grotesk, sans-serif"
+          fontFamily: "Space Grotesk, sans-serif",
+          opacity: 0.5,
         }}>
           WHO WE ARE
         </div>
@@ -95,6 +96,7 @@ export function AboutSection() {
 
         {/* Coral Square floating */}
         <motion.div
+          className="hidden sm:block"
           animate={{ y: [0, -20, 0], rotate: [45, 60, 45] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           style={{
@@ -145,6 +147,7 @@ export function AboutSection() {
 
         {/* NEW: Blue Outline Square middle-left */}
         <motion.div
+          className="hidden sm:block"
           animate={{ x: [0, 20, 0], rotate: [-15, 15, -15] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           style={{
@@ -176,9 +179,9 @@ export function AboutSection() {
         />
 
         {/* NEW: Floating Symbols */}
-        <div style={{ position: "absolute", top: "10%", left: "30%", fontSize: "32px", fontWeight: 900, opacity: 0.1, color: "#FFE500" }}>★</div>
-        <div style={{ position: "absolute", bottom: "35%", right: "5%", fontSize: "24px", fontWeight: 900, opacity: 0.05, transform: "rotate(-10deg)" }}>×</div>
-        <div style={{ position: "absolute", top: "15%", left: "5%", fontSize: "28px", fontWeight: 900, opacity: 0.08, color: "#FF4D4D" }}>●</div>
+        <div className="hidden sm:block" style={{ position: "absolute", top: "10%", left: "30%", fontSize: "32px", fontWeight: 900, opacity: 0.1, color: "#FFE500" }}>★</div>
+        <div className="hidden sm:block" style={{ position: "absolute", bottom: "35%", right: "5%", fontSize: "24px", fontWeight: 900, opacity: 0.05, transform: "rotate(-10deg)" }}>×</div>
+        <div className="hidden sm:block" style={{ position: "absolute", top: "15%", left: "5%", fontSize: "28px", fontWeight: 900, opacity: 0.08, color: "#FF4D4D" }}>●</div>
 
         {/* Dot patterns scattered - MOAR */}
         <div style={{ position: "absolute", bottom: "5%", right: "2%", display: "grid", gridTemplateColumns: "repeat(4, 10px)", gap: "8px", opacity: 0.15 }}>
@@ -277,7 +280,7 @@ export function AboutSection() {
             
             <p
               style={{
-                fontSize: "18px",
+                fontSize: "clamp(16px, 2.5vw, 18px)",
                 lineHeight: 1.7,
                 color: "#3D3D3D",
                 marginBottom: "24px",

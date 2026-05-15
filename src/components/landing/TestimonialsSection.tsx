@@ -54,7 +54,7 @@ const row2 = [...testimonials.reverse(), ...testimonials];
 
 export function TestimonialsSection() {
   return (
-    <section id="testimonials" style={{ background: "#FFFFFF", padding: "100px 0", position: "relative", overflow: "hidden" }}>
+    <section id="testimonials" style={{ background: "#FFFFFF", padding: "clamp(60px, 10vh, 100px) 0", position: "relative", overflow: "hidden" }}>
       {/* Geometric decorations */}
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
         {/* Yellow dashed block top-left */}
@@ -233,9 +233,9 @@ function TestimonialCard({ name, role, text, color, textColor = "#000" }: any) {
         background: color,
         border: "3px solid #000",
         borderRadius: "12px",
-        padding: "24px",
-        width: "320px",
-        boxShadow: "6px 6px 0px #000",
+        padding: "clamp(20px, 4vw, 24px)",
+        width: "clamp(260px, 80vw, 320px)",
+        boxShadow: "clamp(4px, 1vw, 6px) clamp(4px, 1vw, 6px) 0px #000",
         flexShrink: 0,
         display: "flex",
         flexDirection: "column",

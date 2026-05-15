@@ -92,7 +92,7 @@ export function StatsSection() {
       id="stats"
       style={{
         background: "#FFFFFF",
-        padding: "80px 24px",
+        padding: "clamp(60px, 10vh, 100px) 24px",
         borderTop: "3px solid #000",
         position: "relative",
         overflow: "hidden",
@@ -106,20 +106,22 @@ export function StatsSection() {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%) rotate(2deg)",
-          fontSize: "clamp(120px, 20vw, 220px)",
+          fontSize: "clamp(60px, 15vw, 220px)",
           fontWeight: 900,
           color: "transparent",
           WebkitTextStroke: "1px rgba(0,0,0,0.06)",
           whiteSpace: "nowrap",
           pointerEvents: "none",
           zIndex: 0,
-          fontFamily: "Space Grotesk, sans-serif"
+          fontFamily: "Space Grotesk, sans-serif",
+          opacity: 0.5,
         }}>
           THE DATA
         </div>
 
         {/* Floating Sticker: RESEARCH-BACKED */}
         <motion.div
+          className="hidden sm:block"
           animate={{ x: [0, -10, 0], rotate: [2, -2, 2] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           style={{
@@ -202,6 +204,7 @@ export function StatsSection() {
 
         {/* Coral Square floating */}
         <motion.div
+          className="hidden sm:block"
           animate={{ y: [0, -30, 0], rotate: [45, 60, 45] }}
           transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
           style={{
@@ -219,10 +222,12 @@ export function StatsSection() {
 
         {/* Floating Symbols */}
         <motion.div
+          className="hidden sm:block"
           animate={{ rotate: [0, 360], scale: [1, 1.2, 1] }}
           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
           style={{ position: "absolute", top: "50%", left: "8%", fontSize: "32px", fontWeight: 900, opacity: 0.1, color: "#00D37F" }}>★</motion.div>
         <motion.div
+          className="hidden sm:block"
           animate={{ rotate: [360, 0], y: [0, -20, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           style={{ position: "absolute", top: "18%", left: "45%", fontSize: "28px", fontWeight: 900, opacity: 0.1 }}>×</motion.div>
@@ -282,9 +287,9 @@ export function StatsSection() {
           viewport={{ once: true, margin: "-100px" }}
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: "24px",
-            marginBottom: "80px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+            gap: "20px",
+            marginBottom: "60px",
           }}
         >
           {stats.map((stat, i) => (
@@ -345,14 +350,14 @@ export function StatsSection() {
             style={{
               background: "#fff",
               border: "3px solid #000",
-              padding: "60px 32px",
-              boxShadow: "12px 12px 0px #0047FF",
+              padding: "clamp(30px, 5vh, 60px) 24px",
+              boxShadow: "clamp(6px, 1vw, 12px) clamp(6px, 1vw, 12px) 0px #0047FF",
               position: "relative",
               textAlign: "center",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              marginBottom: "80px",
+              marginBottom: "60px",
             }}
           >
             <motion.div
@@ -400,9 +405,9 @@ export function StatsSection() {
           viewport={{ once: true }}
           style={{
             background: "#F5F0E8",
-            padding: "60px 32px",
+            padding: "clamp(30px, 5vh, 60px) 24px",
             border: "3px solid #000",
-            boxShadow: "12px 12px 0px #FFE500",
+            boxShadow: "clamp(6px, 1vw, 12px) clamp(6px, 1vw, 12px) 0px #FFE500",
             position: "relative",
             overflow: "hidden",
           }}
@@ -430,11 +435,12 @@ export function StatsSection() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: "24px",
+              gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+              gap: "20px",
               position: "relative",
               zIndex: 1
             }}
+            className="sm:grid-cols-2 lg:grid-cols-4"
           >
             {impacts.map((impact, i) => (
               <TiltWrapper key={i} index={i}>

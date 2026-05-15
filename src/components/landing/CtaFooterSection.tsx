@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export function CtaFooterSection() {
   return (
-    <section style={{ background: "#F5F0E8", padding: "120px 24px 80px", position: "relative", overflow: "hidden" }}>
+    <section style={{ background: "#F5F0E8", padding: "clamp(60px, 10vh, 120px) 24px clamp(40px, 5vh, 80px)", position: "relative", overflow: "hidden" }}>
       {/* Wavy Divider */}
       {/* Dashed Top Divider */}
       <div
@@ -139,7 +139,7 @@ export function CtaFooterSection() {
         <p
           style={{
             color: "#3D3D3D",
-            fontSize: "18px",
+            fontSize: "clamp(16px, 2.5vw, 18px)",
             lineHeight: 1.7,
             marginBottom: "40px",
             maxWidth: "500px",
@@ -149,12 +149,12 @@ export function CtaFooterSection() {
           Ribuan Gen-Z sudah menemukan tim impian mereka. Giliranmu!
         </p>
 
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
           <Link
             href="/register"
             className="btn-primary btn-lg"
             id="cta-footer-register"
-            style={{ fontSize: "18px", padding: "18px 40px" }}
+            style={{ fontSize: "clamp(16px, 3vw, 18px)", padding: "18px 40px", width: "min(100%, 400px)" }}
           >
             🚀 Mulai Gratis — 30 detik
           </Link>
@@ -169,7 +169,7 @@ export function CtaFooterSection() {
             marginTop: "24px",
             display: "flex",
             justifyContent: "center",
-            gap: "32px",
+            gap: "clamp(16px, 4vw, 32px)",
             flexWrap: "wrap",
           }}
         >

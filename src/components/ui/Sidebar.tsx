@@ -91,7 +91,7 @@ export function Sidebar() {
           position: isMobile ? "fixed" : "sticky",
           top: 0,
           left: 0,
-          zIndex: 150,
+          zIndex: 1000,
           overflowX: "hidden",
           padding: isSidebarCollapsed && !isMobile ? "24px 12px" : "24px 16px"
         }}

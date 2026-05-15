@@ -162,7 +162,7 @@ export function FeedPage({ user }: Props) {
             left: 0,
             bottom: 0,
             width: "280px",
-            zIndex: 1000,
+            zIndex: 999,
             background: "#F5F0E8",
             transform: showSidebar ? "translateX(0)" : "translateX(-100%)",
             transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",

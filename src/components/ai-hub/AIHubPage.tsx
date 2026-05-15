@@ -87,7 +87,7 @@ export function AIHubPage({ trustScore, trustLevel, currentUsages }: Props) {
     <div style={{ 
       maxWidth: "1200px", 
       margin: "0 auto", 
-      padding: "80px 20px",
+      padding: "clamp(40px, 8vh, 80px) 16px",
       position: "relative",
       minHeight: "100vh",
       width: "100%"
@@ -102,11 +102,11 @@ export function AIHubPage({ trustScore, trustLevel, currentUsages }: Props) {
 
       {!selectedTool && (
         <>
-          {/* Floating Decorations */}
-          <FloatingShape type="circle" color="#FFE500" size={140} top="5%" left="-2%" delay={0} />
-          <FloatingShape type="triangle" color="#00D37F" size={100} bottom="10%" right="5%" delay={0.4} />
-          <FloatingShape type="square" color="#FF4D4D" size={60} top="20%" right="15%" delay={0.8} />
-          <FloatingShape type="circle" color="#0047FF" size={80} bottom="20%" left="10%" delay={1.2} />
+          {/* Floating Decorations - Hidden on mobile */}
+          <FloatingShape className="hidden sm:block" type="circle" color="#FFE500" size={140} top="5%" left="-2%" delay={0} />
+          <FloatingShape className="hidden sm:block" type="triangle" color="#00D37F" size={100} bottom="10%" right="5%" delay={0.4} />
+          <FloatingShape className="hidden sm:block" type="square" color="#FF4D4D" size={60} top="20%" right="15%" delay={0.8} />
+          <FloatingShape className="hidden sm:block" type="circle" color="#0047FF" size={80} bottom="20%" left="10%" delay={1.2} />
 
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
@@ -123,7 +123,7 @@ export function AIHubPage({ trustScore, trustLevel, currentUsages }: Props) {
               fontSize: "clamp(48px, 10vw, 92px)", 
               lineHeight: 0.85,
               marginBottom: "24px",
-              letterSpacing: "-4px"
+              letterSpacing: "clamp(-4px, -1vw, -1px)"
             }}>
               AI HUB
             </h1>
@@ -163,10 +163,10 @@ export function AIHubPage({ trustScore, trustLevel, currentUsages }: Props) {
             style={{ 
               position: "relative", 
               zIndex: 1, 
-              marginBottom: "80px",
+              marginBottom: "clamp(40px, 8vh, 80px)",
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-              gap: "32px",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
+              gap: "24px",
               justifyContent: "center"
             }}
           >
@@ -208,11 +208,11 @@ export function AIHubPage({ trustScore, trustLevel, currentUsages }: Props) {
             <div style={{ 
               background: "#FFE500", 
               border: "4px solid #000", 
-              padding: "48px", 
-              boxShadow: "16px 16px 0px #000",
+              padding: "clamp(24px, 5vw, 48px)", 
+              boxShadow: "clamp(8px, 2vw, 16px) clamp(8px, 2vw, 16px) 0px #000",
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: "40px",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+              gap: "32px",
               position: "relative",
               overflow: "hidden"
             }}>

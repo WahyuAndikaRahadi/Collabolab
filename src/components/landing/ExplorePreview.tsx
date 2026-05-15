@@ -68,7 +68,7 @@ export function ExplorePreview({ projects, isAuthenticated }: ExplorePreviewProp
       id="explore-preview"
       style={{
         background: "#FFFFFF",
-        padding: "80px 24px",
+        padding: "clamp(60px, 10vh, 100px) 24px",
         position: "relative",
         overflow: "hidden",
       }}
@@ -273,10 +273,10 @@ export function ExplorePreview({ projects, isAuthenticated }: ExplorePreviewProp
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-            gap: "48px",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: "clamp(24px, 4vw, 48px)",
             marginBottom: "40px",
-            padding: "20px",
+            padding: "10px",
           }}
         >
           {displayProjects.map((project, index) => {

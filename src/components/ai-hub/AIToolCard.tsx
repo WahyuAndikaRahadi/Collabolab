@@ -34,7 +34,7 @@ export function AIToolCard({
         border: "4px solid #000",
         borderRadius: "0px", // Sharp corners for more "brutalism"
         boxShadow: "6px 6px 0px #000",
-        padding: "32px",
+        padding: "clamp(24px, 4vw, 32px)",
         cursor: isLocked || isCooldown ? "not-allowed" : "pointer",
         position: "relative",
         display: "flex",

@@ -14,6 +14,7 @@ export function HeroSection() {
         position: "relative",
         overflow: "hidden",
         minHeight: "calc(100vh - 72px)",
+        padding: "40px 0",
         display: "flex",
         alignItems: "center",
       }}
@@ -41,8 +42,8 @@ export function HeroSection() {
               position: "absolute",
               top: "-40px",
               right: "-40px",
-              width: "280px",
-              height: "280px",
+              width: "clamp(180px, 30vw, 280px)",
+              height: "clamp(180px, 30vw, 280px)",
               background: "#FFE500",
               border: "3px solid #000",
               boxShadow: "12px 12px 0px #000",
@@ -91,6 +92,7 @@ export function HeroSection() {
         {/* Small coral square */}
         <MagnetWrapper strength={50}>
           <motion.div
+            className="hidden sm:block"
             animate={{ rotate: [20, 380] }}
             transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
             style={{
@@ -125,8 +127,10 @@ export function HeroSection() {
         </MagnetWrapper>
 
         {/* Floating Mint bar center-left */}
+        {/* Floating Mint bar center-left - Hidden on small mobile */}
         <MagnetWrapper strength={30}>
           <motion.div
+            className="hidden sm:block"
             animate={{ x: [-10, 10, -10], rotate: [45, 50, 45] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             style={{
@@ -164,6 +168,7 @@ export function HeroSection() {
 
         {/* Floating "X" and "+" symbols */}
         <motion.div
+          className="hidden sm:block"
           animate={{ rotate: 360 }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
           style={{ position: "absolute", top: "45%", right: "8%", fontSize: "32px", fontWeight: 900, opacity: 0.15, color: "#000" }}
@@ -171,6 +176,7 @@ export function HeroSection() {
           ×
         </motion.div>
         <motion.div
+          className="hidden sm:block"
           animate={{ y: [0, -20, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           style={{ position: "absolute", bottom: "35%", left: "8%", fontSize: "40px", fontWeight: 900, opacity: 0.1, color: "#0047FF" }}
@@ -183,7 +189,7 @@ export function HeroSection() {
         style={{
           maxWidth: "1200px",
           margin: "0 auto",
-          padding: "80px 24px",
+          padding: "clamp(60px, 10vh, 120px) 24px",
           position: "relative",
           zIndex: 1,
         }}
@@ -244,12 +250,13 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             style={{
-              fontSize: "18px",
+              fontSize: "clamp(16px, 2.5vw, 18px)",
               color: "#3D3D3D",
               lineHeight: 1.7,
               marginBottom: "40px",
               maxWidth: "600px",
               position: "relative",
+              padding: "0 10px",
             }}
           >
             Platform kolaborasi untuk{" "}
@@ -288,12 +295,20 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}
+            style={{ 
+              display: "flex", 
+              gap: "16px", 
+              flexDirection: "column",
+              width: "100%",
+              maxWidth: "400px",
+              alignItems: "stretch",
+            }}
+            className="sm:flex-row sm:w-auto sm:max-w-none sm:justify-center"
           >
-            <Link href="/register" className="btn-primary btn-lg" id="hero-cta-register">
+            <Link href="/register" className="btn-primary btn-lg" id="hero-cta-register" style={{ width: "100%" }}>
               🚀 Mulai Gratis
             </Link>
-            <Link href="#explore-preview" className="btn-secondary btn-lg" id="hero-cta-explore">
+            <Link href="#explore-preview" className="btn-secondary btn-lg" id="hero-cta-explore" style={{ width: "100%" }}>
               Lihat Project →
             </Link>
           </motion.div>

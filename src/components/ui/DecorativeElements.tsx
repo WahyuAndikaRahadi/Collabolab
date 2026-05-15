@@ -48,7 +48,8 @@ export function FloatingShape({
   right, 
   bottom, 
   type = "circle",
-  delay = 0 
+  delay = 0,
+  className = ""
 }: { 
   color?: string; 
   size?: number; 
@@ -58,9 +59,11 @@ export function FloatingShape({
   bottom?: string; 
   type?: "circle" | "square" | "triangle";
   delay?: number;
+  className?: string;
 }) {
   return (
     <motion.div
+      className={className}
       initial={{ y: 0, rotate: 0 }}
       animate={{ 
         y: [0, -20, 0],

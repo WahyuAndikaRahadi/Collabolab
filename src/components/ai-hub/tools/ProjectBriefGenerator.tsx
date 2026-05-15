@@ -47,7 +47,7 @@ export function ProjectBriefGenerator({ onBack }: Props) {
         <ArrowLeft size={20} /> KEMBALI KE HUB
       </button>
 
-      <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "12px", boxShadow: "6px 6px 0px #000", padding: "32px", marginBottom: "40px" }}>
+      <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "12px", boxShadow: "6px 6px 0px #000", padding: "clamp(20px, 4vw, 32px)", marginBottom: "40px" }}>
         <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px" }}>
           <Sparkles color="#FFE500" fill="#FFE500" /> Pembuat Draft Project
         </h2>
@@ -121,7 +121,7 @@ export function ProjectBriefGenerator({ onBack }: Props) {
                 ))}
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))", gap: "16px" }}>
                 <div>
                   <label style={{ display: "block", fontSize: "12px", fontWeight: 800, color: "#666", textTransform: "uppercase" }}>Kategori</label>
                   <div style={{ fontWeight: 800 }}>{result.category}</div>

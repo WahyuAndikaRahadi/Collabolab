@@ -37,7 +37,7 @@ export function ReviewSummarizer({ onBack }: Props) {
         <ArrowLeft size={20} /> KEMBALI KE HUB
       </button>
 
-      <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "12px", boxShadow: "6px 6px 0px #000", padding: "32px", marginBottom: "40px" }}>
+      <div style={{ background: "#fff", border: "3px solid #000", borderRadius: "12px", boxShadow: "6px 6px 0px #000", padding: "clamp(20px, 4vw, 32px)", marginBottom: "40px" }}>
         <h2 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px" }}>
           <BarChart2 color="#FFE500" /> Perangkum Ulasan
         </h2>
@@ -73,7 +73,7 @@ export function ReviewSummarizer({ onBack }: Props) {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))", gap: "24px" }}>
               <div style={{ background: "#000", color: "#FFE500", border: "2px solid #000", borderRadius: "12px", padding: "24px", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center" }}>
                 <div style={{ fontSize: "14px", fontWeight: 800, marginBottom: "8px" }}>RATA-RATA RATING</div>
                 <div style={{ fontSize: "64px", fontWeight: 900, fontFamily: "Space Grotesk, sans-serif" }}>{result.averageRating}</div>

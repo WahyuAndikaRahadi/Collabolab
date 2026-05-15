@@ -37,7 +37,7 @@ export function WhySection() {
       style={{
         background: "#FFFFFF",
         borderBottom: "3px solid #000",
-        padding: "100px 24px",
+        padding: "clamp(60px, 10vh, 100px) 24px",
         position: "relative",
         overflow: "hidden",
       }}
@@ -51,14 +51,15 @@ export function WhySection() {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%) rotate(-5deg)",
-          fontSize: "clamp(120px, 20vw, 220px)",
+          fontSize: "clamp(60px, 15vw, 220px)",
           fontWeight: 900,
           color: "transparent",
           WebkitTextStroke: "1px rgba(0,0,0,0.06)",
           whiteSpace: "nowrap",
           pointerEvents: "none",
           zIndex: 0,
-          fontFamily: "Space Grotesk, sans-serif"
+          fontFamily: "Space Grotesk, sans-serif",
+          opacity: 0.5,
         }}>
           REAL PROBLEMS
         </div>
@@ -82,6 +83,7 @@ export function WhySection() {
 
         {/* Floating Sticker: GEN-Z ONLY */}
         <motion.div
+          className="hidden sm:block"
           animate={{ x: [0, 10, 0], rotate: [-10, -5, -10] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           style={{
@@ -148,6 +150,7 @@ export function WhySection() {
 
         {/* NEW: Blue dashed circle top-left */}
         <motion.div
+          className="hidden sm:block"
           animate={{ rotate: [0, 360] }}
           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
           style={{
@@ -163,9 +166,9 @@ export function WhySection() {
         />
 
         {/* NEW: Floating symbols */}
-        <div style={{ position: "absolute", top: "35%", left: "5%", fontSize: "32px", fontWeight: 900, opacity: 0.12, color: "#FFE500" }}>★</div>
-        <div style={{ position: "absolute", bottom: "30%", left: "20%", fontSize: "32px", fontWeight: 900, opacity: 0.05, transform: "rotate(45deg)" }}>+</div>
-        <div style={{ position: "absolute", top: "15%", right: "8%", fontSize: "28px", fontWeight: 900, opacity: 0.08 }}>×</div>
+        <div className="hidden sm:block" style={{ position: "absolute", top: "35%", left: "5%", fontSize: "32px", fontWeight: 900, opacity: 0.12, color: "#FFE500" }}>★</div>
+        <div className="hidden sm:block" style={{ position: "absolute", bottom: "30%", left: "20%", fontSize: "32px", fontWeight: 900, opacity: 0.05, transform: "rotate(45deg)" }}>+</div>
+        <div className="hidden sm:block" style={{ position: "absolute", top: "15%", right: "8%", fontSize: "28px", fontWeight: 900, opacity: 0.08 }}>×</div>
       </div>
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "60px" }}>
@@ -185,9 +188,9 @@ export function WhySection() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: "48px", // Increased gap
-            padding: "20px", // Added padding
+            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+            gap: "24px",
+            padding: "0 10px",
           }}
         >
           {painPoints.map((item, index) => (

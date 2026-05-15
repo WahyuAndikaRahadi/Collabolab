@@ -464,13 +464,14 @@ code, kbd, pre, samp {
   font-size: 15px;
   color: var(--text-primary);
   text-decoration: none;
-  padding: 8px 16px;
+  padding: 8px 12px;
   border-radius: 8px;
   border: 2px solid transparent;
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
 }
 
 .nav-link:hover {

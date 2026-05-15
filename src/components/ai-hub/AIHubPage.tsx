@@ -10,14 +10,16 @@ import { SkillGapAnalyzer } from "./tools/SkillGapAnalyzer";
 import { ProjectRecommendation } from "./tools/ProjectRecommendation";
 import { ReviewSummarizer } from "./tools/ReviewSummarizer";
 import { AI_TOOL_CONFIG } from "@/lib/ai/config";
-import { AITool } from "@prisma/client";
+import { AITool, TrustLevel } from "@prisma/client";
 import { GridPattern, FloatingShape, NoiseTexture, SectionLabel, containerVariants, itemVariants } from "../ui/DecorativeElements";
 
 interface Props {
   trustScore: number;
+  trustLevel?: TrustLevel;
+  currentUsages?: { toolType: AITool; expiresAt: string }[];
 }
 
-export function AIHubPage({ trustScore }: Props) {
+export function AIHubPage({ trustScore, trustLevel, currentUsages }: Props) {
   const [selectedTool, setSelectedTool] = useState<AITool | null>(null);
   const [cooldowns, setCooldowns] = useState<Record<string, string>>({});
 

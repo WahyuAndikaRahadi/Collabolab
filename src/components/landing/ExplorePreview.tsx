@@ -68,7 +68,6 @@ export function ExplorePreview({ projects, isAuthenticated }: ExplorePreviewProp
       id="explore-preview"
       style={{
         background: "#FFFFFF",
-        borderBottom: "3px solid #000",
         padding: "80px 24px",
         position: "relative",
         overflow: "hidden",

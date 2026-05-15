@@ -18,6 +18,18 @@ export function HeroSection() {
         alignItems: "center",
       }}
     >
+      {/* Background patterns */}
+      <div 
+        style={{ 
+          position: "absolute", 
+          inset: 0, 
+          backgroundImage: "radial-gradient(#000 1.5px, transparent 1.5px)", 
+          backgroundSize: "40px 40px", 
+          opacity: 0.05,
+          zIndex: 0 
+        }} 
+      />
+
       {/* Geometric decorations */}
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
         {/* Big yellow block top-right */}
@@ -33,11 +45,12 @@ export function HeroSection() {
               height: "280px",
               background: "#FFE500",
               border: "3px solid #000",
-              boxShadow: "8px 8px 0px #000",
+              boxShadow: "12px 12px 0px #000",
               opacity: 0.8,
             }}
           />
         </MagnetWrapper>
+
         {/* Blue block bottom-left */}
         <MagnetWrapper strength={-30}>
           <motion.div
@@ -51,7 +64,7 @@ export function HeroSection() {
               height: "160px",
               background: "#0047FF",
               border: "3px solid #000",
-              boxShadow: "6px 6px 0px #000",
+              boxShadow: "8px 8px 0px #000",
               opacity: 0.8,
             }}
           />
@@ -70,7 +83,7 @@ export function HeroSection() {
               background: "#00D37F",
               border: "3px solid #000",
               borderRadius: "50%",
-              boxShadow: "4px 4px 0px #000",
+              boxShadow: "6px 6px 0px #000",
               opacity: 0.8,
             }}
           />
@@ -83,7 +96,7 @@ export function HeroSection() {
             style={{
               position: "absolute",
               top: "25%",
-              right: "8%",
+              right: "25%",
               width: "50px",
               height: "50px",
               background: "#FF4D4D",
@@ -130,67 +143,40 @@ export function HeroSection() {
           />
         </MagnetWrapper>
 
-        {/* NEW: Small Yellow dots top-left */}
-        <motion.div
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 4, repeat: Infinity }}
-          style={{
-            position: "absolute",
-            top: "15%",
-            left: "15%",
-            width: "15px",
-            height: "15px",
-            background: "#FFE500",
-            borderRadius: "50%",
-            border: "1.5px solid #000",
-            opacity: 0.4,
-          }}
-        />
-
-        {/* NEW: Coral outline circle middle-right */}
-        <motion.div
-          animate={{ y: [0, -30, 0] }}
-          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            position: "absolute",
-            top: "50%",
-            right: "20%",
-            width: "60px",
-            height: "60px",
-            border: "2px solid #FF4D4D",
-            borderRadius: "50%",
-            opacity: 0.2,
-          }}
-        />
-
         {/* Scattered Dot patterns - MOAR */}
-        <div style={{ position: "absolute", top: "20%", left: "10%", display: "grid", gridTemplateColumns: "repeat(4, 10px)", gap: "8px", opacity: 0.15 }}>
+        <div style={{ position: "absolute", top: "20%", left: "10%", display: "grid", gridTemplateColumns: "repeat(4, 10px)", gap: "8px", opacity: 0.25 }}>
           {Array.from({ length: 12 }).map((_, i) => (
             <div key={i} style={{ width: "6px", height: "6px", background: "#000", borderRadius: "50%" }} />
           ))}
         </div>
 
-        <div style={{ position: "absolute", bottom: "25%", left: "5%", display: "grid", gridTemplateColumns: "repeat(6, 8px)", gap: "6px", opacity: 0.1 }}>
+        <div style={{ position: "absolute", bottom: "25%", left: "15%", display: "grid", gridTemplateColumns: "repeat(6, 8px)", gap: "6px", opacity: 0.2 }}>
           {Array.from({ length: 24 }).map((_, i) => (
             <div key={i} style={{ width: "4px", height: "4px", background: "#000", borderRadius: "50%" }} />
           ))}
         </div>
 
-        <div style={{ position: "absolute", bottom: "15%", right: "10%", display: "grid", gridTemplateColumns: "repeat(3, 12px)", gap: "10px", opacity: 0.2 }}>
-          {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} style={{ width: "5px", height: "5px", background: "#000", borderRadius: "50%" }} />
-          ))}
-        </div>
-
-        <div style={{ position: "absolute", top: "10%", right: "30%", display: "grid", gridTemplateColumns: "repeat(6, 8px)", gap: "6px", opacity: 0.1 }}>
+        <div style={{ position: "absolute", top: "10%", right: "30%", display: "grid", gridTemplateColumns: "repeat(6, 8px)", gap: "6px", opacity: 0.2 }}>
           {Array.from({ length: 18 }).map((_, i) => (
             <div key={i} style={{ width: "4px", height: "4px", background: "#000", borderRadius: "50%" }} />
           ))}
         </div>
 
-        {/* NEW: Small floating X's */}
-        <div style={{ position: "absolute", top: "45%", right: "5%", transform: "rotate(15deg)", fontSize: "24px", fontWeight: 900, opacity: 0.1 }}>×</div>
-        <div style={{ position: "absolute", bottom: "40%", left: "12%", transform: "rotate(-10deg)", fontSize: "32px", fontWeight: 900, opacity: 0.05 }}>+</div>
+        {/* Floating "X" and "+" symbols */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          style={{ position: "absolute", top: "45%", right: "8%", fontSize: "32px", fontWeight: 900, opacity: 0.15, color: "#000" }}
+        >
+          ×
+        </motion.div>
+        <motion.div
+          animate={{ y: [0, -20, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: "absolute", bottom: "35%", left: "8%", fontSize: "40px", fontWeight: 900, opacity: 0.1, color: "#0047FF" }}
+        >
+          +
+        </motion.div>
       </div>
 
       <div

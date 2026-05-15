@@ -16,6 +16,47 @@ export function TrustSection() {
     >
       {/* Geometric decorations */}
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
+        {/* Giant Background Text */}
+        <div style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%) rotate(3deg)",
+          fontSize: "clamp(120px, 20vw, 220px)",
+          fontWeight: 900,
+          color: "transparent",
+          WebkitTextStroke: "1px rgba(0,0,0,0.06)",
+          whiteSpace: "nowrap",
+          pointerEvents: "none",
+          zIndex: 0,
+          fontFamily: "Space Grotesk, sans-serif"
+        }}>
+          TRUST FIRST
+        </div>
+
+        {/* Floating Sticker: VERIFIED */}
+        <motion.div
+          animate={{ scale: [1, 1.1, 1], rotate: [5, 10, 5] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          style={{
+            position: "absolute",
+            top: "10%",
+            right: "15%",
+            background: "#00D37F",
+            color: "#000",
+            padding: "10px 20px",
+            border: "3px solid #000",
+            boxShadow: "6px 6px 0px #000",
+            fontFamily: "Space Grotesk, sans-serif",
+            fontWeight: 900,
+            fontSize: "14px",
+            transform: "rotate(5deg)",
+            zIndex: 2,
+          }}
+        >
+          ✅ VERIFIED COMMUNITY
+        </motion.div>
+
         {/* Big Yellow outline square top-right */}
         <motion.div
           animate={{ rotate: [15, 25, 15], y: [0, -20, 0] }}
@@ -45,7 +86,7 @@ export function TrustSection() {
             background: "#0047FF",
             border: "3px solid #000",
             borderRadius: "50%",
-            boxShadow: "6px 6px 0px #000",
+            boxShadow: "8px 8px 0px #000",
             opacity: 0.4,
           }}
         />
@@ -101,35 +142,37 @@ export function TrustSection() {
         />
 
         {/* NEW: Floating Symbols */}
-        <div style={{ position: "absolute", top: "45%", left: "3%", fontSize: "32px", fontWeight: 900, opacity: 0.05, transform: "rotate(-20deg)" }}>×</div>
-        <div style={{ position: "absolute", bottom: "35%", right: "20%", fontSize: "28px", fontWeight: 900, opacity: 0.07, transform: "rotate(10deg)" }}>+</div>
-        <div style={{ position: "absolute", top: "15%", left: "45%", fontSize: "24px", fontWeight: 900, opacity: 0.1 }}>O</div>
+        <div style={{ position: "absolute", top: "45%", left: "3%", fontSize: "40px", fontWeight: 900, opacity: 0.1, color: "#FF4D4D" }}>★</div>
+        <div style={{ position: "absolute", bottom: "15%", right: "8%", fontSize: "32px", fontWeight: 900, opacity: 0.08, transform: "rotate(10deg)" }}>+</div>
+        <div style={{ position: "absolute", top: "15%", left: "45%", fontSize: "28px", fontWeight: 900, opacity: 0.1, color: "#00D37F" }}>●</div>
 
         {/* Small dots scattered - MOAR */}
-        <div style={{ position: "absolute", top: "15%", left: "5%", display: "grid", gridTemplateColumns: "repeat(5, 8px)", gap: "6px", opacity: 0.1 }}>
+        <div style={{ position: "absolute", top: "15%", left: "5%", display: "grid", gridTemplateColumns: "repeat(5, 8px)", gap: "6px", opacity: 0.15 }}>
           {Array.from({ length: 15 }).map((_, i) => (
             <div key={i} style={{ width: "4px", height: "4px", background: "#000", borderRadius: "50%" }} />
           ))}
         </div>
 
-        <div style={{ position: "absolute", bottom: "25%", right: "5%", display: "grid", gridTemplateColumns: "repeat(4, 10px)", gap: "8px", opacity: 0.1 }}>
+        <div style={{ position: "absolute", bottom: "25%", right: "5%", display: "grid", gridTemplateColumns: "repeat(4, 10px)", gap: "8px", opacity: 0.15 }}>
           {Array.from({ length: 12 }).map((_, i) => (
             <div key={i} style={{ width: "5px", height: "5px", background: "#000", borderRadius: "50%" }} />
           ))}
         </div>
       </div>
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 1 }}>
         <div style={{ textAlign: "center", marginBottom: "60px" }}>
-          <span className="section-label">🛡️ TRUST & KOMUNITAS</span>
+          <span className="section-label" style={{ background: "#0047FF", color: "#fff" }}>🛡️ TRUST & KOMUNITAS</span>
           <h2
             style={{
               fontFamily: "Space Grotesk, sans-serif",
               fontWeight: 900,
-              fontSize: "clamp(28px, 4vw, 48px)",
-              marginTop: "8px",
+              fontSize: "clamp(32px, 5vw, 52px)",
+              marginTop: "16px",
+              lineHeight: 1.1,
             }}
           >
-            Ekosistem yang sehat dimulai dari kepercayaan.
+            Ekosistem yang sehat <br />
+            <span style={{ color: "#0047FF", textShadow: "1.5px 1.5px 0px #000" }}>Dimulai dari Kepercayaan.</span>
           </h2>
         </div>
 

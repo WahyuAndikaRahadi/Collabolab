@@ -16,6 +16,24 @@ export function AboutSection() {
     >
       {/* Geometric decorations */}
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
+        {/* Giant Background Text */}
+        <div style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%) rotate(-3deg)",
+          fontSize: "clamp(120px, 20vw, 220px)",
+          fontWeight: 900,
+          color: "transparent",
+          WebkitTextStroke: "1px rgba(0,0,0,0.06)",
+          whiteSpace: "nowrap",
+          pointerEvents: "none",
+          zIndex: 0,
+          fontFamily: "Space Grotesk, sans-serif"
+        }}>
+          WHO WE ARE
+        </div>
+
         {/* Yellow Circle top-right */}
         <motion.div
           animate={{ scale: [1, 1.1, 1], y: [0, 15, 0] }}
@@ -125,7 +143,6 @@ export function AboutSection() {
           }}
         />
 
-
         {/* NEW: Blue Outline Square middle-left */}
         <motion.div
           animate={{ x: [0, 20, 0], rotate: [-15, 15, -15] }}
@@ -158,9 +175,10 @@ export function AboutSection() {
           }}
         />
 
-        {/* NEW: Floating "X" and "+" shapes */}
-        <div style={{ position: "absolute", top: "10%", left: "30%", fontSize: "28px", fontWeight: 900, opacity: 0.1, transform: "rotate(20deg)" }}>+</div>
+        {/* NEW: Floating Symbols */}
+        <div style={{ position: "absolute", top: "10%", left: "30%", fontSize: "32px", fontWeight: 900, opacity: 0.1, color: "#FFE500" }}>★</div>
         <div style={{ position: "absolute", bottom: "35%", right: "5%", fontSize: "24px", fontWeight: 900, opacity: 0.05, transform: "rotate(-10deg)" }}>×</div>
+        <div style={{ position: "absolute", top: "15%", left: "5%", fontSize: "28px", fontWeight: 900, opacity: 0.08, color: "#FF4D4D" }}>●</div>
 
         {/* Dot patterns scattered - MOAR */}
         <div style={{ position: "absolute", bottom: "5%", right: "2%", display: "grid", gridTemplateColumns: "repeat(4, 10px)", gap: "8px", opacity: 0.15 }}>
@@ -172,12 +190,6 @@ export function AboutSection() {
         <div style={{ position: "absolute", top: "15%", left: "5%", display: "grid", gridTemplateColumns: "repeat(3, 8px)", gap: "6px", opacity: 0.1 }}>
           {Array.from({ length: 9 }).map((_, i) => (
             <div key={i} style={{ width: "4px", height: "4px", background: "#000", borderRadius: "50%" }} />
-          ))}
-        </div>
-
-        <div style={{ position: "absolute", top: "60%", right: "5%", display: "grid", gridTemplateColumns: "repeat(5, 6px)", gap: "5px", opacity: 0.08 }}>
-          {Array.from({ length: 25 }).map((_, i) => (
-            <div key={i} style={{ width: "3px", height: "3px", background: "#000", borderRadius: "50%" }} />
           ))}
         </div>
       </div>

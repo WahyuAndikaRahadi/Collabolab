@@ -25,17 +25,8 @@ export function Navbar() {
   // Hide navbar on auth pages and admin area
   if (pathname === "/login" || pathname === "/register" || pathname.startsWith("/admin")) return null;
 
-  const navLinks = session?.user
+  const navLinks = pathname === "/"
     ? [
-      { href: session.user.role === "ADMIN" ? "/admin" : "/dashboard", label: "Dashboard" },
-      { href: "/project/my-projects", label: "My Projects" },
-      { href: "/explore", label: "Explore" },
-      { href: "/feed", label: "Feed" },
-      { href: "/ai-hub", label: "AI Hub" },
-      ...(session.user.role === "ADMIN" ? [{ href: "/admin", label: "🛠️ Admin" }] : []),
-    ]
-    : pathname === "/"
-      ? [
         { href: "#about", label: "About" },
         { href: "#stats", label: "Background" },
         { href: "#how-it-works", label: "How It Works" },
@@ -43,10 +34,19 @@ export function Navbar() {
         { href: "#trust", label: "Trust System" },
         { href: "#testimonials", label: "Testimonials" },
       ]
+    : session?.user
+      ? [
+          { href: session.user.role === "ADMIN" ? "/admin" : "/dashboard", label: "Dashboard" },
+          { href: "/project/my-projects", label: "My Projects" },
+          { href: "/explore", label: "Explore" },
+          { href: "/feed", label: "Feed" },
+          { href: "/ai-hub", label: "AI Hub" },
+          ...(session.user.role === "ADMIN" ? [{ href: "/admin", label: "🛠️ Admin" }] : []),
+        ]
       : [
-        { href: "/", label: "Home" },
-        { href: "/explore", label: "Explore" },
-      ];
+          { href: "/", label: "Home" },
+          { href: "/explore", label: "Explore" },
+        ];
 
   const filteredLinks = navLinks;
 
@@ -58,16 +58,25 @@ export function Navbar() {
 
     const observerOptions = {
       root: null,
-      rootMargin: "-40% 0px -40% 0px",
-      threshold: 0
+      rootMargin: "-20% 0px -60% 0px", // More focused on the upper half of the screen
+      threshold: [0, 0.1, 0.5]
     };
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setActiveHash(`#${entry.target.id}`);
-        }
-      });
+      // We want to find the section that is currently most relevant (closest to the top)
+      const intersectingEntries = entries.filter(entry => entry.isIntersecting);
+      
+      if (intersectingEntries.length > 0) {
+        // Sort by how close the top of the element is to the top of the viewport
+        const closest = intersectingEntries.sort((a, b) => {
+          return Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top);
+        })[0];
+        
+        setActiveHash(`#${closest.target.id}`);
+      } else {
+        // Clear hash if no sections are in view (e.g. at the hero section)
+        setActiveHash("");
+      }
     };
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
@@ -115,10 +124,10 @@ export function Navbar() {
       <div
         style={{
           width: "100%",
-          maxWidth: session?.user ? "none" : "1400px",
-          margin: session?.user ? "0" : "0 auto",
-          padding: "0 40px",
-          height: "72px",
+          maxWidth: session?.user ? "none" : "1200px",
+          margin: "0 auto",
+          padding: session?.user ? "0 24px" : "0 24px",
+          height: "80px", // Increased height slightly for breathing room
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -151,28 +160,36 @@ export function Navbar() {
             <Menu size={20} color="#000" strokeWidth={3} />
           </button>
         )}
-        <Link
-          href="/"
-          className={`items-center gap-4 ${session?.user ? "hidden" : "flex"}`}
-          style={{
-            textDecoration: "none",
-          }}
-        >
-          <img src="/images/logo.png" alt="Logo" style={{ width: "60px", height: "60px", objectFit: "contain" }} />
-          <span
+        <div style={{ flex: session?.user ? "0 0 auto" : 1, display: "flex", alignItems: "center" }}>
+          <Link
+            href="/"
+            className={`items-center gap-4 ${session?.user ? "hidden" : "flex"}`}
             style={{
-              fontFamily: "Space Grotesk, sans-serif",
-              fontWeight: 800,
-              fontSize: "20px",
-              color: "#000",
+              textDecoration: "none",
             }}
           >
-            CollaboLab
-          </span>
-        </Link>
+            <img src="/images/logo.png" alt="Logo" style={{ width: "50px", height: "50px", objectFit: "contain" }} />
+            <span
+              style={{
+                fontFamily: "Space Grotesk, sans-serif",
+                fontWeight: 900,
+                fontSize: "22px",
+                color: "#000",
+                letterSpacing: "-0.5px"
+              }}
+            >
+              CollaboLab
+            </span>
+          </Link>
+        </div>
 
         {/* Desktop Nav */}
-        <nav className={`hidden ${session?.user ? "xl:hidden" : "xl:flex"} items-center gap-4`}>
+        <nav 
+          className={`hidden ${pathname === "/" ? "xl:flex" : (session?.user ? "xl:hidden" : "xl:flex")} items-center gap-2`}
+          style={{
+            // Removed pill background and border for a cleaner look
+          }}
+        >
           {filteredLinks.map((link) => {
             const isActive = link.href.startsWith("#")
               ? activeHash === link.href
@@ -183,6 +200,11 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={`nav-link ${isActive ? "active" : ""}`}
+                style={{
+                  fontSize: "14px",
+                  padding: "6px 12px",
+                  borderRadius: "8px"
+                }}
               >
                 {link.label}
               </Link>
@@ -191,7 +213,7 @@ export function Navbar() {
         </nav>
 
         {/* Auth section */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginLeft: "auto" }}>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "12px", justifyContent: "flex-end" }}>
           {session?.user ? (
             <div className="flex items-center gap-3 xl:gap-5">
               <div className="hidden sm:block">

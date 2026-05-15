@@ -10,6 +10,8 @@ type Member = {
   isAnonymous: boolean;
   anonymousTag: string | null;
   revealedAt: string | null;
+  role: string;
+  roleTitle: string | null;
   user: { id: string; name: string; image: string | null };
 };
 

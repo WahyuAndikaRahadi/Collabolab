@@ -34,6 +34,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return {
           id: user.id,
           name: user.name,
+          username: user.username,
           email: user.email,
           image: user.image,
           trustScore: user.trustScore,
@@ -50,6 +51,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
+        token.username = (user as any).username;
         token.role = (user as any).role;
         token.onboardingDone = (user as any).onboardingDone;
         token.trustScore = (user as any).trustScore;

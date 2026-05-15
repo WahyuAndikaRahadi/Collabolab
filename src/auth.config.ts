@@ -24,6 +24,7 @@ export default {
     async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
+        token.username = (user as any).username ?? "";
         token.trustScore = (user as any).trustScore ?? 20;
         token.trustLevel = (user as any).trustLevel ?? "NEWCOMER";
         token.availStatus = (user as any).availStatus ?? "OPEN";
@@ -42,12 +43,16 @@ export default {
         if (session?.trustLevel !== undefined) {
           token.trustLevel = session.trustLevel;
         }
+        if (session?.username !== undefined) {
+          token.username = session.username;
+        }
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.username = token.username as string;
         session.user.trustScore = token.trustScore as number;
         session.user.trustLevel = token.trustLevel as any;
         session.user.availStatus = token.availStatus as any;

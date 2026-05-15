@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { GlobalLoader } from "@/components/GlobalLoader";
+import { NavigationLoader } from "@/components/NavigationLoader";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -46,6 +48,8 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <body className="min-h-screen flex flex-col bg-white antialiased" suppressHydrationWarning>
+        <GlobalLoader />
+        <NavigationLoader />
         <Providers>{children}</Providers>
       </body>
     </html>

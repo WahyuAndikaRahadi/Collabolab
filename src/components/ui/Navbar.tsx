@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button, LinkButton } from "@/components/ui/Button";
-import { getTrustLevelEmoji, getTrustLevelColor } from "@/lib/trust-score";
+import { getTrustLevelEmoji } from "@/lib/trust-score";
 import { NotificationBell } from "@/components/ui/NotificationBell";
 import { useToast } from "@/lib/toast";
 import { Modal } from "@/components/ui/Modal";
@@ -190,7 +190,6 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Auth section */}
         {/* Auth section */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginLeft: "auto" }}>
           {session?.user ? (

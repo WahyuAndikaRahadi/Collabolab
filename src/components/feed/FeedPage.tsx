@@ -87,36 +87,6 @@ export function FeedPage({ user }: Props) {
       position: "relative",
       overflowX: "hidden"
     }}>
-      {/* 
-         Drawer & Backdrop (Top-level) 
-         Ensures it correctly overlays everything without z-index conflicts
-      */}
-      <style jsx>{`
-        @media (max-width: 1024px) {
-          .feed-sidebar-container {
-            position: fixed !important;
-            top: ${drawerTop}px !important;
-            left: 0 !important;
-            bottom: 0 !important;
-            width: 280px !important;
-            z-index: 1000 !important; /* Top of everything */
-            background: #F5F0E8 !important;
-            transform: ${showSidebar ? "translateX(0)" : "translateX(-100%)"};
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 20px !important;
-            border-right: 3px solid #000 !important;
-            overflow-y: auto !important;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.3) !important;
-          }
-          .sidebar-card {
-            box-shadow: none !important;
-            border: none !important;
-            padding: 0 !important;
-            background: transparent !important;
-          }
-        }
-      `}</style>
-
       {isMobile && showSidebar && (
         <div 
           onClick={() => setShowSidebar(false)}
@@ -185,7 +155,23 @@ export function FeedPage({ user }: Props) {
         padding: isMobile ? "16px" : "0"
       }}>
         {/* Left Sidebar / Drawer */}
-        <div className="feed-sidebar-container">
+        <div className="feed-sidebar-container" style={{
+          ...(isMobile ? {
+            position: "fixed",
+            top: `${drawerTop}px`,
+            left: 0,
+            bottom: 0,
+            width: "280px",
+            zIndex: 1000,
+            background: "#F5F0E8",
+            transform: showSidebar ? "translateX(0)" : "translateX(-100%)",
+            transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            padding: "20px",
+            borderRight: "3px solid #000",
+            overflowY: "auto",
+            boxShadow: "10px 0 30px rgba(0,0,0,0.3)",
+          } : {})
+        }}>
           <motion.div 
             initial={false}
             style={{ 
@@ -199,11 +185,18 @@ export function FeedPage({ user }: Props) {
           >
             {/* Sidebar Card Container */}
             <div className="sidebar-card" style={{
-              background: "#fff",
-              border: "3px solid #222",
-              boxShadow: "6px 6px 0px #222",
+              ...(isMobile ? {
+                background: "transparent",
+                border: "none",
+                boxShadow: "none",
+                padding: "0",
+              } : {
+                background: "#fff",
+                border: "3px solid #222",
+                boxShadow: "6px 6px 0px #222",
+                padding: "20px",
+              }),
               borderRadius: "12px",
-              padding: "20px",
               display: "flex",
               flexDirection: "column",
               gap: "20px"

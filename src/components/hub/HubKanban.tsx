@@ -196,6 +196,7 @@ export function HubKanban({ projectId, roomId, members, currentUserId, isGlobal 
     } = useSortable({
       id: task.id,
       data: { type: "task", status: task.status, task },
+      disabled: task.isApproved,
     });
   
     return (
@@ -206,12 +207,12 @@ export function HubKanban({ projectId, roomId, members, currentUserId, isGlobal 
           transform: CSS.Translate.toString(transform),
           transition,
           opacity: isDragging ? 0.35 : 1,
-          background: "#FFFFFF",
+          background: task.isApproved ? "#F5F0E8" : "#FFFFFF",
           border: "3px solid #000000",
           boxShadow: isDragging ? "1px 1px 0px #000" : "3px 3px 0px #000000",
           borderRadius: "6px",
           padding: "12px",
-          cursor: isDragging ? "grabbing" : "pointer",
+          cursor: task.isApproved ? "pointer" : (isDragging ? "grabbing" : "grab"),
           touchAction: "none",
         }}
         {...attributes}

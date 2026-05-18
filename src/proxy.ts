@@ -36,6 +36,7 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
+  
   // --- ADMIN ISOLATION ---
   // If user is ADMIN, they should NOT access user-facing features (dashboard, explore, etc.)
   if (

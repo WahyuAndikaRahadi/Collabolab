@@ -23,9 +23,6 @@ export function Navbar() {
   const [activeHash, setActiveHash] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  // Hide navbar on auth pages, admin area, and CollabHub
-  if (pathname === "/login" || pathname === "/register" || pathname.startsWith("/admin") || isCollabHub) return null;
-
   const navLinks = pathname === "/"
     ? [
         { href: "#about", label: "About" },
@@ -109,6 +106,9 @@ export function Navbar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [navLinks]);
+
+  // Hide navbar on auth pages, admin area, and CollabHub
+  if (pathname === "/login" || pathname === "/register" || pathname.startsWith("/admin") || isCollabHub) return null;
 
   return (
     <header

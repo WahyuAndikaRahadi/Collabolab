@@ -23,8 +23,8 @@ export function Navbar() {
   const [activeHash, setActiveHash] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  // Hide navbar on auth pages and admin area
-  if (pathname === "/login" || pathname === "/register" || pathname.startsWith("/admin")) return null;
+  // Hide navbar on auth pages, admin area, and CollabHub
+  if (pathname === "/login" || pathname === "/register" || pathname.startsWith("/admin") || isCollabHub) return null;
 
   const navLinks = pathname === "/"
     ? [

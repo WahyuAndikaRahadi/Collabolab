@@ -77,7 +77,7 @@ export default async function CollabHubPage({
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 64px)", overflow: "hidden", background: "#F5F0E8" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden", background: "#F5F0E8" }}>
       {/* Hub header */}
       <div style={{
         background: "#FFFFFF",

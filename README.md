@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./public/logo.png" alt="CollaboLab Logo" width="180" />
+  <img src="./public/images/logo.png" alt="CollaboLab Logo" width="180" />
   <br />
   <br />
   <img src="https://img.shields.io/badge/SEFEST-2026-FFE500?style=for-the-badge&logo=code&logoColor=black" alt="SEFEST 2026" />

@@ -195,7 +195,7 @@ export function MentionInput({ members, onlineStatus, onSend, disabled, disabled
                   </div>
                   <div>
                     <div style={{ color: "#000000", fontSize: "13px", fontWeight: 800, fontFamily: "Space Grotesk, sans-serif" }}>
-                      {m.user.name} <span style={{ fontSize: "11px", opacity: 0.6 }}>@{m.user.username}</span>
+                      {m.isAnonymous && !m.revealedAt ? "Anonim" : m.user.name} <span style={{ fontSize: "11px", opacity: 0.6 }}>@{m.isAnonymous && !m.revealedAt ? name : m.user.username}</span>
                     </div>
                     <div style={{ color: isOnline ? "#00D37F" : "#3D3D3D", fontSize: "11px", fontWeight: 600 }}>{isOnline ? "● Online" : "○ Offline"}</div>
                   </div>

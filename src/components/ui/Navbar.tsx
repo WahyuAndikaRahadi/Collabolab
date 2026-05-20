@@ -55,8 +55,8 @@ export function Navbar() {
 
     const observerOptions = {
       root: null,
-      rootMargin: "-20% 0px -60% 0px",
-      threshold: [0, 0.1, 0.5]
+      rootMargin: "-80px 0px -40% 0px",
+      threshold: 0
     };
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
@@ -68,8 +68,6 @@ export function Navbar() {
         })[0];
         
         setActiveHash(`#${closest.target.id}`);
-      } else {
-        setActiveHash("");
       }
     };
 
@@ -84,9 +82,8 @@ export function Navbar() {
 
     const handleScroll = () => {
       const isAtTop = window.scrollY < 100;
-      const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100;
 
-      if (isAtTop || isAtBottom) {
+      if (isAtTop) {
         setActiveHash("");
       }
     };

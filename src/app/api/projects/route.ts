@@ -8,9 +8,9 @@ import { canCreateProject, getMaxActiveProjects } from "@/lib/trust-score";
 const createProjectSchema = z.object({
   title: z.string().min(5, "Judul minimal 5 karakter").max(100),
   description: z.string().min(20, "Deskripsi minimal 20 karakter").max(2000),
-  category: z.enum(["LOMBA", "STARTUP", "KREATIF", "BELAJAR", "SOSIAL", "AKADEMIK", "BISNIS", "PERTANIAN", "TEKNOLOGI", "PERKANTORAN"]),
+  category: z.enum(["LOMBA", "STARTUP", "KREATIF", "BELAJAR", "SOSIAL", "AKADEMIK", "BISNIS", "PERTANIAN", "TEKNOLOGI", "PERKANTORAN", "KESEHATAN", "HUKUM", "TEKNIK", "SENI", "OLAHRAGA", "KULINER", "SAINS"]),
   commitmentLevel: z.enum(["CASUAL", "SERIUS", "KOMPETISI"]),
-  projectTopic: z.enum(["TEKNOLOGI", "PERTANIAN", "PENDIDIKAN", "LINGKUNGAN", "EKONOMI", "KARYA_TULIS", "RESEARCH", "PENGABDIAN", "KESEHATAN", "SENI_BUDAYA"]),
+  projectTopic: z.enum(["TEKNOLOGI", "PERTANIAN", "PENDIDIKAN", "LINGKUNGAN", "EKONOMI", "KARYA_TULIS", "RESEARCH", "PENGABDIAN", "KESEHATAN", "SENI_BUDAYA", "HUKUM_POLITIK", "MANUFAKTUR", "KULINER_PARIWISATA", "OLAHRAGA_KEBUGARAN", "MARITIM_DIRGANTARA", "SAINS_MURNI"]),
   maxMembers: z.number().int().min(2).max(20),
   requiredSkills: z.array(z.string().min(1)).min(1).max(10),
   deadline: z.string().datetime().nullable().optional(),

@@ -278,7 +278,8 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
             <div style={{ fontSize: "12px", color: "#555", marginTop: "2px" }}>{roomDescription}</div>
           )}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           {currentMember.isAnonymous && !currentMember.revealedAt && (
             <button
               onClick={async () => {

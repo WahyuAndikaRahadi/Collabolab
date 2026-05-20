@@ -117,7 +117,6 @@ export function HowItWorksSection() {
           }}
         />
 
-        {/* NEW: Small Yellow dots floating left */}
         <motion.div
           animate={{ x: [0, 20, 0], y: [0, -20, 0] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
@@ -134,7 +133,6 @@ export function HowItWorksSection() {
           }}
         />
 
-        {/* NEW: Blue outline square middle-right */}
         <motion.div
           animate={{ rotate: [-15, 15, -15], scale: [1, 1.1, 1] }}
           transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
@@ -149,12 +147,10 @@ export function HowItWorksSection() {
           }}
         />
 
-        {/* NEW: Floating Symbols */}
         <div style={{ position: "absolute", top: "45%", left: "3%", fontSize: "32px", fontWeight: 900, opacity: 0.05, transform: "rotate(-20deg)" }}>×</div>
         <div style={{ position: "absolute", bottom: "35%", right: "12%", fontSize: "28px", fontWeight: 900, opacity: 0.07, transform: "rotate(10deg)" }}>O</div>
         <div style={{ position: "absolute", top: "15%", left: "45%", fontSize: "24px", fontWeight: 900, opacity: 0.1 }}>+</div>
 
-        {/* NEW: Large Yellow outline circle bottom-right */}
         <motion.div
           animate={{ scale: [1, 1.1, 1], y: [0, -30, 0] }}
           transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
@@ -170,7 +166,6 @@ export function HowItWorksSection() {
           }}
         />
 
-        {/* NEW: Mint Bar middle-right */}
         <motion.div
           animate={{ x: [0, -30, 0], rotate: [0, 5, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
@@ -187,7 +182,6 @@ export function HowItWorksSection() {
           }}
         />
 
-        {/* NEW: Floating Blue Square center */}
         <motion.div
           animate={{ rotate: [0, 360] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
@@ -223,7 +217,6 @@ export function HowItWorksSection() {
           ))}
         </div>
 
-        {/* NEW: Overlapping Coral Squares bottom-right */}
         <div style={{ position: "absolute", bottom: "5%", right: "15%", opacity: 0.2 }}>
           <motion.div
             animate={{ rotate: [0, 10, 0] }}
@@ -238,7 +231,6 @@ export function HowItWorksSection() {
         </div>
 
 
-        {/* NEW: Big Blue outline square top-center */}
         <motion.div
           animate={{ y: [-20, 20, -20], rotate: [0, 5, 0] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}

@@ -80,7 +80,6 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
     >
       <div style={{ position: "absolute", top: 0, right: 0, width: "100%", height: "6px", background: cat.color }} />
 
-      {/* Top row */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px" }}>
         <span style={{ background: cat.color, border: "1.5px solid #000", borderRadius: "4px", padding: "3px 10px", fontFamily: "Space Grotesk, sans-serif", fontWeight: 700, fontSize: "12px" }}>
           {cat.emoji} {cat.label}
@@ -108,9 +107,7 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
         </div>
       </div>
 
-      {/* Progress & Match bars */}
       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        {/* Project Progress */}
         <div style={{ background: "#F5F0E8", border: "2px solid #000", borderRadius: "8px", padding: "10px 14px", boxShadow: "2px 2px 0px #000" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
             <span style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.5px" }}>📊 Progres Project</span>
@@ -127,12 +124,10 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
         </div>
       </div>
 
-      {/* Title */}
       <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "18px", margin: 0, lineHeight: 1.3 }}>
         {project.title}
       </h3>
 
-      {/* Description */}
       <p
         style={{
           color: "#3D3D3D",
@@ -150,7 +145,6 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
         {project.description}
       </p>
 
-      {/* Skills */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
         {project.requiredSkills.slice(0, 4).map((s) => (
           <span
@@ -177,7 +171,6 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
         )}
       </div>
 
-      {/* Footer */}
       <div style={{ borderTop: "2px solid #f0f0f0", paddingTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto", gap: "8px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0, flex: 1 }}>
             <div style={{ position: "relative", flexShrink: 0 }}>
@@ -217,7 +210,6 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
         </div>
       </div>
 
-      {/* CTA */}
       <Link
         href={`/project/${project.id}`}
         className="btn-primary btn-sm"
@@ -428,7 +420,6 @@ function TabBar({
         );
       })}
 
-      {/* Thin divider */}
       <div
         style={{
           flex: 1,
@@ -571,7 +562,6 @@ export function ExploreClient({
         </div>
       ) : (
         <>
-          {/* Result count */}
           <p
             style={{
               fontFamily: "Space Grotesk, sans-serif",

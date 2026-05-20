@@ -123,7 +123,6 @@ export function ExplorePreview({ projects, isAuthenticated }: ExplorePreviewProp
           }}
         />
 
-        {/* NEW: Green Outline Triangle bottom-left */}
         <motion.div
           animate={{ rotate: [10, -10, 10] }}
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
@@ -141,7 +140,6 @@ export function ExplorePreview({ projects, isAuthenticated }: ExplorePreviewProp
           </svg>
         </motion.div>
 
-        {/* NEW: Small Coral dots floating */}
         <motion.div
           animate={{ scale: [1, 1.2, 1], x: [0, 10, 0] }}
           transition={{ duration: 4, repeat: Infinity }}
@@ -158,12 +156,10 @@ export function ExplorePreview({ projects, isAuthenticated }: ExplorePreviewProp
           }}
         />
 
-        {/* NEW: Floating Symbols */}
         <div style={{ position: "absolute", top: "10%", left: "30%", fontSize: "32px", fontWeight: 900, opacity: 0.05 }}>+</div>
         <div style={{ position: "absolute", bottom: "40%", right: "2%", fontSize: "28px", fontWeight: 900, opacity: 0.08 }}>×</div>
         <div style={{ position: "absolute", bottom: "10%", left: "45%", fontSize: "24px", fontWeight: 900, opacity: 0.06 }}>O</div>
 
-        {/* NEW: Floating Yellow square bottom-left */}
         <motion.div
           animate={{ scale: [1, 1.2, 1], x: [0, 20, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
@@ -180,7 +176,6 @@ export function ExplorePreview({ projects, isAuthenticated }: ExplorePreviewProp
           }}
         />
 
-        {/* NEW: Coral outline triangle middle-right */}
         <motion.div
           animate={{ rotate: [-20, 20, -20] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
@@ -198,7 +193,6 @@ export function ExplorePreview({ projects, isAuthenticated }: ExplorePreviewProp
           </svg>
         </motion.div>
 
-        {/* NEW: Floating Symbols - MOAR */}
         <div style={{ position: "absolute", top: "25%", left: "5%", fontSize: "24px", fontWeight: 900, opacity: 0.08 }}>O</div>
         <div style={{ position: "absolute", bottom: "30%", left: "20%", fontSize: "32px", fontWeight: 900, opacity: 0.05, transform: "rotate(45deg)" }}>+</div>
         <div style={{ position: "absolute", top: "15%", right: "8%", fontSize: "28px", fontWeight: 900, opacity: 0.06 }}>×</div>
@@ -223,7 +217,6 @@ export function ExplorePreview({ projects, isAuthenticated }: ExplorePreviewProp
           ))}
         </div>
 
-        {/* NEW: Horizontal Dashed Line middle */}
         <div 
           style={{ 
             position: "absolute", 

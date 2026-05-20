@@ -111,7 +111,6 @@ export function TrustSection() {
           </svg>
         </motion.div>
 
-        {/* NEW: Small Yellow dots floating top-left */}
         <motion.div
           animate={{ x: [0, 15, 0], y: [0, 10, 0] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
@@ -128,7 +127,6 @@ export function TrustSection() {
           }}
         />
 
-        {/* NEW: Blue dashed square middle-right */}
         <motion.div
           className="hidden sm:block"
           animate={{ rotate: [-15, 15, -15], scale: [1, 1.1, 1] }}
@@ -144,7 +142,6 @@ export function TrustSection() {
           }}
         />
 
-        {/* NEW: Floating Symbols */}
         <div className="hidden sm:block" style={{ position: "absolute", top: "45%", left: "3%", fontSize: "40px", fontWeight: 900, opacity: 0.1, color: "#FF4D4D" }}>★</div>
         <div className="hidden sm:block" style={{ position: "absolute", bottom: "15%", right: "8%", fontSize: "32px", fontWeight: 900, opacity: 0.08, transform: "rotate(10deg)" }}>+</div>
         <div className="hidden sm:block" style={{ position: "absolute", top: "15%", left: "45%", fontSize: "28px", fontWeight: 900, opacity: 0.1, color: "#00D37F" }}>●</div>

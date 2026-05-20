@@ -109,7 +109,6 @@ export function TestimonialsSection() {
           }}
         />
 
-        {/* NEW: Mint Circle top-right */}
         <motion.div
           animate={{ scale: [1, 1.1, 1], x: [0, -20, 0] }}
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
@@ -127,7 +126,6 @@ export function TestimonialsSection() {
           }}
         />
 
-        {/* NEW: Yellow Outline Square middle-left */}
         <motion.div
           animate={{ rotate: [-15, 15, -15] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
@@ -142,7 +140,6 @@ export function TestimonialsSection() {
           }}
         />
 
-        {/* NEW: Floating Symbols - MOAR */}
         <div style={{ position: "absolute", top: "15%", left: "25%", fontSize: "32px", fontWeight: 900, opacity: 0.05 }}>+</div>
         <div style={{ position: "absolute", bottom: "10%", right: "5%", fontSize: "28px", fontWeight: 900, opacity: 0.08 }}>×</div>
         <div style={{ position: "absolute", top: "45%", right: "12%", fontSize: "24px", fontWeight: 900, opacity: 0.06 }}>O</div>
@@ -167,7 +164,6 @@ export function TestimonialsSection() {
           ))}
         </div>
 
-        {/* NEW: Horizontal Dashed Line */}
         <div 
           style={{ 
             position: "absolute", 

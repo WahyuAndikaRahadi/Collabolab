@@ -112,7 +112,6 @@ export function AboutSection() {
           }}
         />
 
-        {/* NEW: Dashed Square middle-right */}
         <motion.div
           animate={{ rotate: [12, -8, 12], y: [0, 10, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
@@ -128,7 +127,6 @@ export function AboutSection() {
           }}
         />
 
-        {/* NEW: Small Mint circle floating */}
         <motion.div
           animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
           transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
@@ -145,7 +143,6 @@ export function AboutSection() {
           }}
         />
 
-        {/* NEW: Blue Outline Square middle-left */}
         <motion.div
           className="hidden sm:block"
           animate={{ x: [0, 20, 0], rotate: [-15, 15, -15] }}
@@ -161,7 +158,6 @@ export function AboutSection() {
           }}
         />
 
-        {/* NEW: Small Yellow dots floating */}
         <motion.div
           animate={{ scale: [1, 1.3, 1], y: [0, -40, 0] }}
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
@@ -178,7 +174,6 @@ export function AboutSection() {
           }}
         />
 
-        {/* NEW: Floating Symbols */}
         <div className="hidden sm:block" style={{ position: "absolute", top: "10%", left: "30%", fontSize: "32px", fontWeight: 900, opacity: 0.1, color: "#FFE500" }}>★</div>
         <div className="hidden sm:block" style={{ position: "absolute", bottom: "35%", right: "5%", fontSize: "24px", fontWeight: 900, opacity: 0.05, transform: "rotate(-10deg)" }}>×</div>
         <div className="hidden sm:block" style={{ position: "absolute", top: "15%", left: "5%", fontSize: "28px", fontWeight: 900, opacity: 0.08, color: "#FF4D4D" }}>●</div>

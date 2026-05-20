@@ -148,7 +148,6 @@ export function WhySection() {
           ))}
         </div>
 
-        {/* NEW: Blue dashed circle top-left */}
         <motion.div
           className="hidden sm:block"
           animate={{ rotate: [0, 360] }}
@@ -165,7 +164,6 @@ export function WhySection() {
           }}
         />
 
-        {/* NEW: Floating symbols */}
         <div className="hidden sm:block" style={{ position: "absolute", top: "35%", left: "5%", fontSize: "32px", fontWeight: 900, opacity: 0.12, color: "#FFE500" }}>★</div>
         <div className="hidden sm:block" style={{ position: "absolute", bottom: "30%", left: "20%", fontSize: "32px", fontWeight: 900, opacity: 0.05, transform: "rotate(45deg)" }}>+</div>
         <div className="hidden sm:block" style={{ position: "absolute", top: "15%", right: "8%", fontSize: "28px", fontWeight: 900, opacity: 0.08 }}>×</div>

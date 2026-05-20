@@ -75,11 +75,25 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
       channel.bind("hub-poll-vote", (data: { messageId: string; poll: any }) => {
         setMessages((prev) => prev.map(m => m.id === data.messageId ? { ...m, poll: data.poll } : m));
       });
+
+      const projectChannel = pusher.subscribe(CHANNELS.project(projectId));
+      projectChannel.bind(EVENTS.IDENTITY_REVEALED, ({ memberId, userName, anonymousTag }: { memberId: string; userName: string; anonymousTag: string }) => {
+        setMessages((prev) => prev.map((m) => {
+          if (m.sender.id === memberId || (m.sender.isAnonymous && memberId === currentUserId && currentMember.isAnonymous)) {
+            return { ...m, sender: { ...m.sender, name: userName, isAnonymous: false } };
+          }
+          return m;
+        }));
+      });
+
     } catch {}
     return () => {
-      try { pusher?.unsubscribe(CHANNELS.hubRoom(roomId)); } catch {}
+      try { 
+        pusher?.unsubscribe(CHANNELS.hubRoom(roomId)); 
+        pusher?.unsubscribe(CHANNELS.project(projectId));
+      } catch {}
     };
-  }, [roomId]);
+  }, [roomId, projectId, currentUserId, currentMember.isAnonymous]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -95,9 +109,9 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
       status: "pending",
       sender: {
         id: currentUserId,
-        name: currentMember.isAnonymous ? `Anon#${currentMember.anonymousTag || "0000"}` : currentMember.user.name,
-        image: currentMember.isAnonymous ? null : currentMember.user.image,
-        isAnonymous: currentMember.isAnonymous
+        name: currentMember.isAnonymous && !currentMember.revealedAt ? `Anon#${currentMember.anonymousTag || "0000"}` : currentMember.user.name,
+        image: currentMember.isAnonymous && !currentMember.revealedAt ? null : currentMember.user.image,
+        isAnonymous: currentMember.isAnonymous && !currentMember.revealedAt
       }
     };
 
@@ -138,15 +152,18 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
       status: "pending",
       type: "POLL",
       poll: {
-        id: pendingId,
         question,
-        options: options.map((opt, i) => ({ id: `opt-${i}`, text: opt, votes: [] }))
+        options: options.map((opt, idx) => ({
+          id: `temp-opt-${idx}`,
+          text: opt,
+          votes: []
+        }))
       },
       sender: {
         id: currentUserId,
-        name: currentMember.isAnonymous ? `Anon#${currentMember.anonymousTag || "0000"}` : currentMember.user.name,
-        image: currentMember.isAnonymous ? null : currentMember.user.image,
-        isAnonymous: currentMember.isAnonymous
+        name: currentMember.isAnonymous && !currentMember.revealedAt ? `Anon#${currentMember.anonymousTag || "0000"}` : currentMember.user.name,
+        image: currentMember.isAnonymous && !currentMember.revealedAt ? null : currentMember.user.image,
+        isAnonymous: currentMember.isAnonymous && !currentMember.revealedAt
       }
     };
 
@@ -243,11 +260,12 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
         borderBottom: "3px solid #000000",
         display: "flex",
         alignItems: "center",
-        gap: "12px",
+        justifyContent: "space-between",
         flexShrink: 0,
         background: "#FFFFFF",
       }}>
-        <div>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div>
           <div style={{
             fontFamily: "Space Grotesk, sans-serif",
             fontWeight: 900,
@@ -260,22 +278,48 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
             <div style={{ fontSize: "12px", color: "#555", marginTop: "2px" }}>{roomDescription}</div>
           )}
         </div>
-        {isAnnouncement && !isOwner && (
-          <div style={{
-            marginLeft: "auto",
-            background: "#F5F0E8",
-            border: "2px solid #000000",
-            borderRadius: "20px",
-            padding: "4px 12px",
-            fontSize: "12px",
-            color: "#000000",
-            fontWeight: 800,
-            fontFamily: "Space Grotesk, sans-serif",
-            boxShadow: "2px 2px 0px #000",
-          }}>
-            📢 Read-only
-          </div>
-        )}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          {currentMember.isAnonymous && !currentMember.revealedAt && (
+            <button
+              onClick={async () => {
+                const res = await fetch(`/api/projects/${projectId}/members/${currentMember.id}/reveal`, { method: "POST" });
+                if (res.ok) {
+                  // Memicu event Pusher secara otomatis dari API
+                }
+              }}
+              style={{
+                background: "#FFE500",
+                border: "2px solid #000000",
+                borderRadius: "4px",
+                padding: "6px 12px",
+                fontSize: "12px",
+                fontWeight: 800,
+                cursor: "pointer",
+                boxShadow: "2px 2px 0px #000",
+                fontFamily: "Space Grotesk, sans-serif"
+              }}
+              title="Semua orang akan tahu nama aslimu!"
+            >
+              🕵️ Reveal Identity
+            </button>
+          )}
+
+          {isAnnouncement && !isOwner && (
+            <div style={{
+              background: "#F5F0E8",
+              border: "2px solid #000000",
+              borderRadius: "20px",
+              padding: "4px 12px",
+              fontSize: "12px",
+              color: "#000000",
+              fontWeight: 800,
+              fontFamily: "Space Grotesk, sans-serif",
+              boxShadow: "2px 2px 0px #000",
+            }}>
+              📢 Read-only
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Messages area */}

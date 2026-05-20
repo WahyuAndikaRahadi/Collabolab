@@ -40,7 +40,27 @@ export async function GET(req: NextRequest, { params }: Params) {
     },
   });
 
-  return NextResponse.json(messages);
+  const projectMembers = await prisma.projectMember.findMany({
+    where: { projectId },
+    select: { userId: true, isAnonymous: true, anonymousTag: true, revealedAt: true }
+  });
+
+  const memberMap = new Map();
+  projectMembers.forEach(m => memberMap.set(m.userId, m));
+
+  const safeMessages = messages.map(msg => {
+    const member = memberMap.get(msg.senderId);
+    const isAnon = member?.isAnonymous && !member.revealedAt;
+    
+    return {
+      ...msg,
+      sender: isAnon
+        ? { id: msg.senderId, name: `Anon#${member.anonymousTag || "0000"}`, image: null, isAnonymous: true }
+        : { id: msg.senderId, name: msg.sender.name, image: msg.sender.image, isAnonymous: false }
+    };
+  });
+
+  return NextResponse.json(safeMessages);
 }
 
 export async function POST(req: NextRequest, { params }: Params) {

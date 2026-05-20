@@ -55,6 +55,7 @@ export function CollabHubClient({
   initialRoomId?: string;
 }) {
   const [rooms, setRooms] = useState<HubRoom[]>(initialProject.hubRooms);
+  const [members, setMembers] = useState<Member[]>(initialProject.members);
   const [projectInfo, setProjectInfo] = useState({ title: initialProject.title, description: initialProject.description });
   const [activeRoom, setActiveRoom] = useState<HubRoom | null>(null);
   const [customTab, setCustomTab] = useState<"chat" | "kanban">("chat");
@@ -100,6 +101,11 @@ export function CollabHubClient({
           if (prev.find((r) => r.id === room.id)) return prev;
           return [...prev, room];
         });
+      });
+      channel.bind(EVENTS.IDENTITY_REVEALED, ({ memberId, userName, anonymousTag }: { memberId: string; userName: string; anonymousTag: string }) => {
+        setMembers((prev) => prev.map((m) => 
+          m.id === memberId ? { ...m, revealedAt: new Date().toISOString(), isAnonymous: false } : m
+        ));
       });
     } catch {}
     return () => {
@@ -303,10 +309,10 @@ export function CollabHubClient({
                 roomName={activeRoom.name}
                 roomType={activeRoom.type}
                 roomDescription={activeRoom.description}
-                members={initialProject.members}
+                members={members}
                 onlineStatus={onlineStatus}
                 currentUserId={currentUserId}
-                currentMember={currentMember}
+                currentMember={members.find(m => m.userId === currentUserId) || currentMember}
               />
             )}
 
@@ -316,7 +322,7 @@ export function CollabHubClient({
                 key={`kanban-${activeRoom.id}`}
                 projectId={initialProject.id}
                 roomId={isCustomRoom ? activeRoom.id : undefined}
-                members={initialProject.members}
+                members={members}
                 currentUserId={currentUserId}
                 isGlobal={isKanbanRoom}
               />
@@ -349,7 +355,7 @@ export function CollabHubClient({
       }}>
         <PresencePanel
           projectId={initialProject.id}
-          members={initialProject.members}
+          members={members}
           currentUserId={currentUserId}
           onStatusChange={setOnlineStatus}
         />
@@ -385,7 +391,7 @@ export function CollabHubClient({
       {showManageMembers && (
         <ManageMembersModal
           projectId={initialProject.id}
-          members={initialProject.members}
+          members={members}
           currentUserId={currentUserId}
           isAdmin={isAdmin}
           isOwner={isOwner}

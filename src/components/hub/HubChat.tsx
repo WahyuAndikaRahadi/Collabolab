@@ -21,6 +21,8 @@ type HubMessage = {
   content: string;
   createdAt: string;
   mentions: string[];
+  type?: "TEXT" | "POLL";
+  poll?: any;
   sender: { id: string; name: string; image: string | null; isAnonymous?: boolean };
   status?: "pending" | "sent";
 };
@@ -69,6 +71,9 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
           if (prev.find((m) => m.id === msg.id)) return prev;
           return [...prev, { ...msg, status: "sent" }];
         });
+      });
+      channel.bind("hub-poll-vote", (data: { messageId: string; poll: any }) => {
+        setMessages((prev) => prev.map(m => m.id === data.messageId ? { ...m, poll: data.poll } : m));
       });
     } catch {}
     return () => {
@@ -121,6 +126,65 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
     } catch {
       setMessages((prev) => prev.filter((m) => m.id !== pendingId));
     }
+  }
+
+  async function handleSendPoll(question: string, options: string[]) {
+    const pendingId = `pending-poll-${Date.now()}`;
+    const pendingMsg: HubMessage = {
+      id: pendingId,
+      content: "",
+      createdAt: new Date().toISOString(),
+      mentions: [],
+      status: "pending",
+      type: "POLL",
+      poll: {
+        id: pendingId,
+        question,
+        options: options.map((opt, i) => ({ id: `opt-${i}`, text: opt, votes: [] }))
+      },
+      sender: {
+        id: currentUserId,
+        name: currentMember.isAnonymous ? `Anon#${currentMember.anonymousTag || "0000"}` : currentMember.user.name,
+        image: currentMember.isAnonymous ? null : currentMember.user.image,
+        isAnonymous: currentMember.isAnonymous
+      }
+    };
+
+    setMessages((prev) => [...prev, pendingMsg]);
+
+    try {
+      const res = await fetch(`/api/hub/${projectId}/rooms/${roomId}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: "", mentions: [], type: "POLL", pollQuestion: question, pollOptions: options }),
+      });
+      
+      if (res.ok) {
+        const savedMsg = await res.json();
+        savedMsg.status = "sent";
+        
+        setMessages((prev) => {
+          if (prev.find(m => m.id === savedMsg.id)) {
+            return prev.filter(m => m.id !== pendingId).map(m => m.id === savedMsg.id ? { ...m, status: "sent" } : m);
+          }
+          return prev.map((m) => (m.id === pendingId ? savedMsg : m));
+        });
+      } else {
+        setMessages((prev) => prev.filter((m) => m.id !== pendingId));
+      }
+    } catch {
+      setMessages((prev) => prev.filter((m) => m.id !== pendingId));
+    }
+  }
+
+  async function handleVote(messageId: string, optionId: string) {
+    try {
+      await fetch(`/api/hub/${projectId}/rooms/${roomId}/messages/${messageId}/vote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ optionId })
+      });
+    } catch (e) {}
   }
 
   const formatTime = (iso: string) => new Date(iso).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
@@ -283,7 +347,69 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
                         wordBreak: "break-word",
                         boxShadow: isMe ? "-2px 2px 0px #000" : "2px 2px 0px #000",
                       }}>
-                        {renderContent(msg.content, isMe)}
+                        {msg.type === "POLL" && msg.poll ? (
+                          <div style={{ display: "flex", flexDirection: "column", gap: "8px", minWidth: "200px" }}>
+                            <div style={{ fontWeight: 800, fontFamily: "Space Grotesk, sans-serif", fontSize: "16px", marginBottom: "4px" }}>📊 {msg.poll.question}</div>
+                            {msg.poll.options.map((opt: any) => {
+                               const totalVotes = msg.poll.options.reduce((acc: number, o: any) => acc + o.votes.length, 0);
+                               const percentage = totalVotes === 0 ? 0 : Math.round((opt.votes.length / totalVotes) * 100);
+                               const hasVoted = opt.votes.some((v: any) => v.userId === currentUserId);
+                               
+                               return (
+                                 <div key={opt.id} style={{ display: "flex", flexDirection: "column", gap: "4px", marginBottom: "4px" }}>
+                                   <button
+                                     type="button"
+                                     onClick={() => handleVote(msg.id, opt.id)}
+                                     disabled={msg.status === "pending"}
+                                     style={{
+                                       position: "relative",
+                                       display: "flex",
+                                       justifyContent: "space-between",
+                                       background: hasVoted ? "rgba(0,0,0,0.1)" : "#fff",
+                                       border: "2px solid #000",
+                                       padding: "8px 12px",
+                                       borderRadius: "6px",
+                                       cursor: msg.status === "pending" ? "not-allowed" : "pointer",
+                                       overflow: "hidden",
+                                       textAlign: "left"
+                                     }}
+                                   >
+                                     <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${percentage}%`, background: hasVoted ? "#00D37F" : "rgba(0,0,0,0.1)", zIndex: 0, transition: "width 0.3s ease" }} />
+                                     <span style={{ position: "relative", zIndex: 1, fontWeight: hasVoted ? 800 : 600 }}>{opt.text}</span>
+                                     <span style={{ position: "relative", zIndex: 1, fontWeight: 800, fontSize: "12px" }}>{percentage}%</span>
+                                   </button>
+                                   
+                                   {opt.votes.length > 0 && (
+                                     <div style={{ display: "flex", alignItems: "center", gap: "6px", paddingLeft: "4px" }}>
+                                       <div style={{ display: "flex" }}>
+                                         {opt.votes.slice(0, 5).map((v: any, idx: number) => (
+                                           <div key={v.userId} title={v.user?.name} style={{
+                                             width: "20px", height: "20px", borderRadius: "50%", border: "1.5px solid #000",
+                                             marginLeft: idx > 0 ? "-6px" : "0", background: "#F5F0E8", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 5 - idx
+                                           }}>
+                                             {v.user?.image ? (
+                                               <img src={v.user.image} alt={v.user.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                             ) : (
+                                               <span style={{ fontSize: "10px", fontWeight: 800 }}>{v.user?.name?.charAt(0) || "?"}</span>
+                                             )}
+                                           </div>
+                                         ))}
+                                       </div>
+                                       {opt.votes.length > 5 && (
+                                         <span style={{ fontSize: "10px", fontWeight: 700, color: "#555" }}>+{opt.votes.length - 5} memilih ini</span>
+                                       )}
+                                     </div>
+                                   )}
+                                 </div>
+                               );
+                            })}
+                            <div style={{ fontSize: "11px", fontWeight: 700, marginTop: "4px", color: "#555" }}>
+                              Total suara: {msg.poll.options.reduce((acc: number, o: any) => acc + o.votes.length, 0)}
+                            </div>
+                          </div>
+                        ) : (
+                          renderContent(msg.content, isMe)
+                        )}
                       </div>
                       <div style={{ fontSize: "11px", color: "#555", marginTop: "4px", textAlign: isMe ? "right" : "left", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: isMe ? "flex-end" : "flex-start", gap: "4px" }}>
                         {formatTime(msg.createdAt)}
@@ -308,6 +434,8 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
         disabled={!canSend}
         disabledReason="Hanya owner yang bisa mengirim di #announcement"
         currentUserId={currentUserId}
+        canCreatePoll={isOwner || currentMember.role === "ADMIN"}
+        onSendPoll={handleSendPoll}
       />
     </div>
   );

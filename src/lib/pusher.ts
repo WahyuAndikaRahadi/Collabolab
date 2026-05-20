@@ -54,4 +54,5 @@ export const EVENTS = {
   MESSAGE_DELETED: "message-deleted",
   MEMBER_KICKED: "member-kicked",
   IDENTITY_REVEALED: "identity-revealed",
+  HUB_POLL_VOTE: "hub-poll-vote",
 } as const;

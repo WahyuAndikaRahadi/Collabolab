@@ -25,13 +25,18 @@ type Props = {
   disabled?: boolean;
   disabledReason?: string;
   currentUserId: string;
+  canCreatePoll?: boolean;
+  onSendPoll?: (question: string, options: string[]) => void;
 };
 
-export function MentionInput({ members, onlineStatus, onSend, disabled, disabledReason, currentUserId }: Props) {
+export function MentionInput({ members, onlineStatus, onSend, disabled, disabledReason, currentUserId, canCreatePoll, onSendPoll }: Props) {
   const [value, setValue] = useState("");
   const [mentionChips, setMentionChips] = useState<MentionChip[]>([]);
   const [mentionQuery, setMentionQuery] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [pollModalOpen, setPollModalOpen] = useState(false);
+  const [pollQuestion, setPollQuestion] = useState("");
+  const [pollOptions, setPollOptions] = useState<string[]>(["", ""]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const getDisplayName = (m: Member) => {
@@ -98,6 +103,18 @@ export function MentionInput({ members, onlineStatus, onSend, disabled, disabled
     onSend(trimmed, mentionedIds);
     setValue("");
     setMentionChips([]);
+  }
+
+  function handlePollSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!onSendPoll) return;
+    const validOptions = pollOptions.filter(o => o.trim() !== "");
+    if (!pollQuestion.trim() || validOptions.length < 2) return;
+    
+    onSendPoll(pollQuestion, validOptions);
+    setPollModalOpen(false);
+    setPollQuestion("");
+    setPollOptions(["", ""]);
   }
 
   return (
@@ -233,7 +250,98 @@ export function MentionInput({ members, onlineStatus, onSend, disabled, disabled
           </div>
         )}
 
+        {pollModalOpen && (
+          <div style={{
+            position: "absolute",
+            bottom: "calc(100% + 8px)",
+            right: 0,
+            background: "#FFFFFF",
+            border: "3px solid #000000",
+            boxShadow: "4px 4px 0px #000000",
+            borderRadius: "8px",
+            width: "300px",
+            padding: "16px",
+            zIndex: 100,
+          }}>
+            <div style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 800, fontSize: "16px", marginBottom: "12px" }}>
+              📊 Buat Polling
+            </div>
+            <form onSubmit={handlePollSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <input
+                type="text"
+                placeholder="Pertanyaan (Wajib)"
+                value={pollQuestion}
+                onChange={(e) => setPollQuestion(e.target.value)}
+                style={{ width: "100%", padding: "8px", border: "2px solid #000", borderRadius: "4px" }}
+                required
+              />
+              {pollOptions.map((opt, i) => (
+                <input
+                  key={i}
+                  type="text"
+                  placeholder={`Opsi ${i + 1}`}
+                  value={opt}
+                  onChange={(e) => {
+                    const newOpts = [...pollOptions];
+                    newOpts[i] = e.target.value;
+                    setPollOptions(newOpts);
+                  }}
+                  style={{ width: "100%", padding: "8px", border: "2px solid #000", borderRadius: "4px" }}
+                  required={i < 2}
+                />
+              ))}
+              {pollOptions.length < 5 && (
+                <button
+                  type="button"
+                  onClick={() => setPollOptions([...pollOptions, ""])}
+                  style={{ background: "none", border: "none", color: "#0047FF", cursor: "pointer", textAlign: "left", fontSize: "12px", fontWeight: 700 }}
+                >
+                  + Tambah Opsi
+                </button>
+              )}
+              <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => setPollModalOpen(false)}
+                  style={{ flex: 1, padding: "8px", border: "2px solid #000", background: "#fff", cursor: "pointer", fontWeight: 700 }}
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  style={{ flex: 1, padding: "8px", border: "2px solid #000", background: "#FFE500", cursor: "pointer", fontWeight: 800 }}
+                >
+                  Kirim
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          {canCreatePoll && !disabled && (
+            <button
+              type="button"
+              onClick={() => setPollModalOpen(!pollModalOpen)}
+              title="Buat Polling"
+              style={{
+                background: "#00D37F",
+                border: "2px solid #000000",
+                boxShadow: "2px 2px 0px #000000",
+                borderRadius: "6px",
+                width: "42px",
+                height: "42px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                flexShrink: 0,
+                fontSize: "18px"
+              }}
+            >
+              📊
+            </button>
+          )}
           <input
             ref={inputRef}
             type="text"

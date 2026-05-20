@@ -26,6 +26,17 @@ export async function GET(req: NextRequest, { params }: Params) {
     ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     include: {
       sender: { select: { id: true, name: true, image: true } },
+      poll: {
+        include: {
+          options: {
+            include: {
+              votes: {
+                include: { user: { select: { id: true, name: true, username: true, image: true } } }
+              }
+            }
+          }
+        }
+      }
     },
   });
 
@@ -50,13 +61,14 @@ export async function POST(req: NextRequest, { params }: Params) {
   }
 
   const body = await req.json();
-  const { content, mentions: clientMentions = [] } = body as { content: string; mentions: string[] };
+  const { content, mentions: clientMentions = [], type = "TEXT", pollQuestion, pollOptions = [] } = body as { content: string; mentions: string[]; type: "TEXT" | "POLL"; pollQuestion?: string; pollOptions?: string[] };
 
-  if (!content?.trim()) return NextResponse.json({ error: "Pesan tidak boleh kosong." }, { status: 400 });
-  if (content.length > 2000) return NextResponse.json({ error: "Pesan terlalu panjang (maks 2000 karakter)." }, { status: 400 });
+  if (type === "TEXT" && !content?.trim()) return NextResponse.json({ error: "Pesan tidak boleh kosong." }, { status: 400 });
+  if (type === "POLL" && (!pollQuestion?.trim() || pollOptions.length < 2)) return NextResponse.json({ error: "Poll membutuhkan pertanyaan dan minimal 2 opsi." }, { status: 400 });
+  if (content && content.length > 2000) return NextResponse.json({ error: "Pesan terlalu panjang (maks 2000 karakter)." }, { status: 400 });
 
   let mentions = [...clientMentions];
-  if (content.includes("@all") && !mentions.includes("all")) {
+  if (content && content.includes("@all") && !mentions.includes("all")) {
     mentions.push("all");
   }
 
@@ -65,7 +77,7 @@ export async function POST(req: NextRequest, { params }: Params) {
     include: { user: { select: { id: true, name: true, username: true } } }
   });
 
-  const nameMatches = content.match(/@(\w+)/g);
+  const nameMatches = content ? content.match(/@(\w+)/g) : null;
   if (nameMatches) {
     for (const match of nameMatches) {
       const username = match.slice(1).toLowerCase();
@@ -86,11 +98,33 @@ export async function POST(req: NextRequest, { params }: Params) {
     data: {
       roomId,
       senderId: session.user.id,
-      content: content.trim(),
+      content: content ? content.trim() : "",
       mentions,
+      type: type as any,
+      ...(type === "POLL" && pollQuestion && pollOptions.length >= 2 ? {
+        poll: {
+          create: {
+            question: pollQuestion.trim(),
+            options: {
+              create: pollOptions.map(opt => ({ text: opt.trim() }))
+            }
+          }
+        }
+      } : {})
     },
     include: {
       sender: { select: { id: true, name: true, image: true } },
+      poll: {
+        include: {
+          options: {
+            include: { 
+              votes: {
+                include: { user: { select: { id: true, name: true, username: true, image: true } } }
+              } 
+            }
+          }
+        }
+      }
     },
   });
 
@@ -99,6 +133,8 @@ export async function POST(req: NextRequest, { params }: Params) {
     content: message.content,
     createdAt: message.createdAt,
     mentions: message.mentions,
+    type: message.type,
+    poll: message.poll,
     sender: isAnon
       ? { id: session.user.id, name: `Anon#${member.anonymousTag || "0000"}`, image: null, isAnonymous: true }
       : { id: message.sender.id, name: message.sender.name, image: message.sender.image, isAnonymous: false },

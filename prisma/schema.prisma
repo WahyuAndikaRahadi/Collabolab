@@ -115,6 +115,11 @@ enum AITool {
   REVIEW_SUMMARIZER
 }
 
+enum HubMessageType {
+  TEXT
+  POLL
+}
+
 // ─── Models ──────────────────────────────────────────────────────────────────
 
 model User {
@@ -155,6 +160,7 @@ model User {
   projectReportsSent ProjectReport[] @relation("reporter")
   projectReportsTarget ProjectReport[] @relation("reported")
   hubMessages       HubMessage[]
+  hubPollVotes      HubPollVote[]
   externalLinks     ExternalLink[]
   notifications     Notification[]
   feedPosts         FeedPost[]
@@ -285,7 +291,7 @@ model Application {
   applicantId     String
   message         String
   commitmentLevel CommitmentLevel
-  status          String   @default("PENDING") // PENDING | APPROVED | REJECTED
+  status          String   @default("PENDING") 
   isAnonymous     Boolean  @default(false)
   createdAt       DateTime @default(now())
 
@@ -297,7 +303,7 @@ model Invitation {
   projectId String
   inviterId String
   inviteeId String
-  status    String   @default("PENDING") // PENDING | ACCEPTED | DECLINED
+  status    String   @default("PENDING") 
   createdAt DateTime @default(now())
 
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -417,7 +423,6 @@ model Bookmark {
   @@unique([userId, projectId])
 }
 
-// ─── Collab Hub ──────────────────────────────────────────────────────────────
 
 model HubRoom {
   id           String      @id @default(cuid())
@@ -440,12 +445,46 @@ model HubMessage {
   senderId  String
   content   String
   mentions  String[] @default([])
+  type      HubMessageType @default(TEXT)
 
   room      HubRoom  @relation(fields: [roomId], references: [id], onDelete: Cascade)
   sender    User     @relation(fields: [senderId], references: [id])
+  poll      HubPoll?
 
   createdAt DateTime @default(now())
 }
+
+model HubPoll {
+  id           String   @id @default(cuid())
+  hubMessageId String   @unique
+  question     String
+  isActive     Boolean  @default(true)
+  multiple     Boolean  @default(false)
+
+  message      HubMessage @relation(fields: [hubMessageId], references: [id], onDelete: Cascade)
+  options      HubPollOption[]
+}
+
+model HubPollOption {
+  id        String   @id @default(cuid())
+  pollId    String
+  text      String
+
+  poll      HubPoll  @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  votes     HubPollVote[]
+}
+
+model HubPollVote {
+  id        String   @id @default(cuid())
+  optionId  String
+  userId    String
+
+  option    HubPollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([optionId, userId])
+}
+
 
 model HubTask {
   id          String     @id @default(cuid())
@@ -476,7 +515,7 @@ model Notification {
   userId    String
   title     String
   message   String
-  type      String   // "MENTION", "TASK", "APPLICATION", "SYSTEM", "INVITATION"
+  type      String  
   link      String?
   invitationId String?
   isRead    Boolean  @default(false)
@@ -489,23 +528,21 @@ model Notification {
 model FeedPost {
   id          String       @id @default(cuid())
   authorId    String
-  type        FeedPostType // CONTRIBUTION | EVENT
-  content     String       // maks 500 karakter untuk contribution, 280 untuk event
-  mediaUrl    String?      // opsional, URL gambar (contribution)
+  type        FeedPostType 
+  content     String       
+  mediaUrl    String?      
   projectTopic ProjectTopic?
   impactTag   String?
 
-  // Khusus contribution post
   projectId   String?
 
-  // Khusus event post
   eventName   String?
   eventCategory EventCategory?
   eventDeadline DateTime?
   eventLink   String?
-  eventSkills String[]     // array skill tag
+  eventSkills String[]     
 
-  tags        String[]     @default([]) // Untuk menyimpan hashtag dari content
+  tags        String[]     @default([]) 
 
   isArchived  Boolean      @default(false)
   createdAt   DateTime     @default(now())
@@ -536,8 +573,8 @@ model FeedComment {
   postId    String
   parentId  String?
   authorId  String
-  content   String   // maks 200 karakter
-  mentions  String[] // array userId yang di-mention
+  content   String   
+  mentions  String[] 
   createdAt DateTime @default(now())
 
   post      FeedPost @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -592,12 +629,11 @@ model ExternalLink {
   userId         String
   platform       ExternalPlatform
   url            String
-  label          String?          // untuk custom link
-  username       String?          // diekstrak dari URL
+  label          String?          
+  username       String?         
   status         LinkStatus       @default(PENDING)
   visibility     LinkVisibility   @default(MEMBERS_ONLY)
 
-  // Cache metadata untuk preview
   previewTitle   String?
   previewImage   String?
 
@@ -664,11 +700,11 @@ model AIToolResult {
 model Report {
   id          String   @id @default(cuid())
   reporterId  String
-  targetId    String   // Could be project ID or user ID
-  targetType  String   // "PROJECT" or "USER"
+  targetId    String   
+  targetType  String   
   reason      String
   description String?
-  status      String   @default("PENDING") // PENDING, RESOLVED, DISMISSED
+  status      String   @default("PENDING")
   createdAt   DateTime @default(now())
 
   reporter    User     @relation("reportsSent", fields: [reporterId], references: [id])
@@ -694,7 +730,7 @@ model ProjectReport {
   reportedId  String
   reason      String
   description String?
-  status      String   @default("PENDING") // PENDING, KICKED, BANNED, DISMISSED
+  status      String   @default("PENDING") 
   createdAt   DateTime @default(now())
 
   project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)

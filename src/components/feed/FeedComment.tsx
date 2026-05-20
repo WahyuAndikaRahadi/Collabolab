@@ -42,7 +42,6 @@ export function FeedCommentSection({ postId, currentUserId }: Props) {
   const [replyTo, setReplyTo] = useState<{ id: string; name: string; rootId: string } | null>(null);
   const [mentionedUsers, setMentionedUsers] = useState<{ id: string; name: string }[]>([]);
 
-  // Mention autocomplete
   const [showMentionSuggestions, setShowMentionSuggestions] = useState(false);
   const [mentionSearch, setMentionSearch] = useState("");
   const [mentionSuggestions, setMentionSuggestions] = useState<UserSuggestion[]>([]);
@@ -59,7 +58,6 @@ export function FeedCommentSection({ postId, currentUserId }: Props) {
       .catch(() => setLoading(false));
   }, [postId]);
 
-  // Mention search
   useEffect(() => {
     if (mentionSearch.length < 1) {
       setMentionSuggestions([]);
@@ -129,7 +127,6 @@ export function FeedCommentSection({ postId, currentUserId }: Props) {
     setSending(true);
 
     const mentionIds = mentionedUsers.map((u) => u.id);
-    // parentId is always the ROOT comment id (no staircase)
     const parentId = replyTo?.rootId ?? null;
 
     try {
@@ -150,10 +147,8 @@ export function FeedCommentSection({ postId, currentUserId }: Props) {
   };
 
   const handleReplyClick = (comment: CommentData, rootId: string) => {
-    // When replying to a child, parentId = rootId; auto-prepend @username
     setReplyTo({ id: comment.id, name: comment.author.name, rootId });
     setNewComment(`@${(comment.author as any).username || comment.author.name.toLowerCase().replace(/\s+/g, "")} `);
-    // Mark the mentioned user
     setMentionedUsers([{ id: comment.authorId, name: comment.author.name }]);
     inputRef.current?.focus();
   };

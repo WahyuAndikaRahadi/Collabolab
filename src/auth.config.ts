@@ -1,7 +1,6 @@
 import type { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-// Note: prisma cannot be imported here (Edge-compatible config). DB refresh is handled via trigger.
 
 export default {
   providers: [
@@ -11,8 +10,6 @@ export default {
       allowDangerousEmailAccountLinking: true,
     }),
     Credentials({
-      // Placeholder for Edge compatibility. 
-      // The real authorize will be defined in lib/auth.ts
       authorize: async () => null,
     }),
   ],
@@ -32,7 +29,6 @@ export default {
         token.role = (user as any).role ?? "USER";
         token.isBlocked = (user as any).isBlocked ?? false;
       }
-      // When session.update() is called from the client, refresh token fields
       if (trigger === "update") {
         if (session?.onboardingDone !== undefined) {
           token.onboardingDone = session.onboardingDone;

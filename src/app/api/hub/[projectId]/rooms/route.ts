@@ -11,7 +11,6 @@ const createRoomSchema = z.object({
   password: z.string().min(4).max(50).optional(),
 });
 
-// GET /api/hub/[projectId]/rooms — list all rooms
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ projectId: string }> }
@@ -20,7 +19,6 @@ export async function GET(
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Check membership
   const member = await prisma.projectMember.findUnique({
     where: { projectId_userId: { projectId, userId: session.user.id } },
   });
@@ -34,13 +32,12 @@ export async function GET(
       name: true,
       description: true,
       type: true,
-      passwordHash: false, // never expose hash
+      passwordHash: false,
       createdAt: true,
       _count: { select: { messages: true } },
     },
   });
 
-  // Mark private rooms
   const rawRooms = await prisma.hubRoom.findMany({
     where: { projectId },
     orderBy: { createdAt: "asc" },
@@ -59,7 +56,6 @@ export async function GET(
   return NextResponse.json(result);
 }
 
-// POST /api/hub/[projectId]/rooms — create custom room
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ projectId: string }> }
@@ -68,7 +64,6 @@ export async function POST(
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Only owner/admin can create rooms
   const member = await prisma.projectMember.findUnique({
     where: { projectId_userId: { projectId, userId: session.user.id } },
   });
@@ -84,11 +79,9 @@ export async function POST(
 
   const { name, description, password } = parsed.data;
 
-  // Normalize room name
   const normalizedName = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
   if (!normalizedName) return NextResponse.json({ error: "Nama room tidak valid." }, { status: 400 });
 
-  // Check duplicate name
   const existing = await prisma.hubRoom.findFirst({ where: { projectId, name: normalizedName } });
   if (existing) return NextResponse.json({ error: "Room dengan nama ini sudah ada." }, { status: 409 });
 
@@ -104,7 +97,6 @@ export async function POST(
     },
   });
 
-  // Notify all members via Pusher
   try {
     await pusherServer.trigger(CHANNELS.hub(projectId), EVENTS.HUB_ROOM_CREATED, {
       id: room.id,

@@ -44,14 +44,12 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
 
   if (!user) notFound();
 
-  // Check for Identity Linked Badge
   const linkedIn = user.externalLinks.find(l => l.platform === "LINKEDIN");
   const isIdentityLinked = linkedIn && (
     user.name.toLowerCase().replace(/\s+/g, "").includes(linkedIn.username?.toLowerCase() || "") ||
     linkedIn.username?.toLowerCase().includes(user.name.toLowerCase().replace(/\s+/g, ""))
   );
 
-  // Aggregate endorsements
   const endorsementsCount = user.endorsementsReceived.reduce((acc, curr) => {
     acc[curr.skillName] = (acc[curr.skillName] || 0) + 1;
     return acc;

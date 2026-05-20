@@ -28,13 +28,11 @@ export async function POST(req: NextRequest) {
 
     const { name, email, password } = parsed.data;
 
-    // Check existing user
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       if (existing.emailVerified) {
         return NextResponse.json({ error: "Email sudah terdaftar." }, { status: 409 });
       }
-      // Re-send OTP for unverified user
       const otp = generateOtp();
       const expiry = new Date(Date.now() + 10 * 60 * 1000);
       await prisma.user.update({
@@ -48,7 +46,6 @@ export async function POST(req: NextRequest) {
     const otp = generateOtp();
     const expiry = new Date(Date.now() + 10 * 60 * 1000);
 
-    // Generate unique username
     let baseUsername = email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '');
     if (baseUsername.length < 3) baseUsername = baseUsername + "user";
     let username = baseUsername;

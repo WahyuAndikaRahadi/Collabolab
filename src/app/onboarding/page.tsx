@@ -19,7 +19,6 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { data: session, status, update } = useSession();
 
-  // Redirect ADMINs away from onboarding
   useEffect(() => {
     if (status === "authenticated" && (session?.user as any)?.role === "ADMIN") {
       router.replace("/admin");
@@ -70,7 +69,6 @@ export default function OnboardingPage() {
       return;
     }
 
-    // Final submit
     setIsLoading(true);
     setError("");
     try {
@@ -92,11 +90,9 @@ export default function OnboardingPage() {
       const newScore: number = data.trustScore ?? 20;
       const newLevel = newScore >= 86 ? "VERIFIED" : newScore >= 61 ? "TRUSTED" : newScore >= 31 ? "MEMBER" : "NEWCOMER";
 
-      // Success sequence — sync session with freshly computed trust score
       setShowSuccess(true);
       await update({ onboardingDone: true, trustScore: newScore, trustLevel: newLevel });
       
-      // Delay for success animation feel
       setTimeout(() => {
         window.location.replace("/dashboard");
       }, 2000);
@@ -106,7 +102,6 @@ export default function OnboardingPage() {
     }
   }
 
-  // Estimated trust score preview matching real trust-score.ts logic
   const estimatedScore = 20
     + (links.linkedin.startsWith("https://id.linkedin.com/in/") ? 8 : 0)
     + (links.portfolio ? 6 : 0)

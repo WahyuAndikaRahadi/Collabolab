@@ -52,7 +52,6 @@ export function MentionInput({ members, onlineStatus, onSend, disabled, disabled
     const v = e.target.value;
     setValue(v);
 
-    // Detect @ trigger
     const lastAt = v.lastIndexOf("@");
     if (lastAt !== -1) {
       const afterAt = v.slice(lastAt + 1);
@@ -93,7 +92,6 @@ export function MentionInput({ members, onlineStatus, onSend, disabled, disabled
   function handleSend() {
     const trimmed = value.trim();
     if (!trimmed || disabled) return;
-    // Collect only mentioned userIds that appear in message
     const mentionedIds = mentionChips
       .filter((c) => trimmed.includes(`@${c.displayName}`))
       .map((c) => c.userId);

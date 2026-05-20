@@ -60,7 +60,7 @@ export function MemberRoleModal({ isOpen, onClose, member, projectId, onUpdate, 
             onChange={(e) => setRole(e.target.value as any)}
             className="nb-textarea"
             style={{ width: "100%", padding: "10px" }}
-            disabled={!isOwner && member.role === "ADMIN"} // Admin can't change other admins
+            disabled={!isOwner && member.role === "ADMIN"}
           >
             <option value="MEMBER">Member (Akses terbatas)</option>
             <option value="ADMIN">Admin (Bisa atur task & member lain)</option>

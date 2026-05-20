@@ -10,14 +10,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
   const currentUserId = session?.user?.id;
 
   try {
-    // Try to find user by ID first (primary method), then fall back to username
     let user = await prisma.user.findUnique({
       where: { id: identifier },
       select: { id: true },
     });
 
     if (!user) {
-      // Fallback: try by unique username field
       user = await prisma.user.findUnique({
         where: { username: identifier },
         select: { id: true },
@@ -26,13 +24,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
 
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    // Base visibility filter
     const visibilities: LinkVisibility[] = [LinkVisibility.PUBLIC];
     
     if (currentUserId) {
       visibilities.push(LinkVisibility.MEMBERS_ONLY);
       
-      // Check for collaboration relation
       const areCollaborators = await prisma.projectMember.findFirst({
         where: {
           userId: currentUserId,
@@ -48,7 +44,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
         visibilities.push(LinkVisibility.COLLABORATORS_ONLY);
       }
       
-      // If it's the user's own profile, show all
       if (currentUserId === user.id) {
         visibilities.push(LinkVisibility.COLLABORATORS_ONLY);
       }

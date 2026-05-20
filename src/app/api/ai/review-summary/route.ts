@@ -26,7 +26,6 @@ export async function POST() {
 
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    // Minimum requirement check
     if (user.reviewsReceived.length < 3) {
       return NextResponse.json({ 
         error: "Minimal butuh 3 review untuk membuat ringkasan yang bermakna. Kamu baru punya " + user.reviewsReceived.length + "." 

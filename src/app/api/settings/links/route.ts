@@ -30,14 +30,12 @@ export async function POST(req: NextRequest) {
 
     if (!url) return NextResponse.json({ error: "URL is required" }, { status: 400 });
 
-    // Basic URL validation
     try {
       new URL(url);
     } catch {
       return NextResponse.json({ error: "Invalid URL format" }, { status: 400 });
     }
 
-    // Check for custom link limit (max 2)
     const platform = require("@/lib/link-verifier").detectPlatform(url);
     if (platform === "CUSTOM") {
       const customCount = await prisma.externalLink.count({
@@ -48,7 +46,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Verify link and fetch metadata
     const verification = await verifyExternalLink(url);
     
     if (!verification.isValid) {
@@ -71,7 +68,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Update Trust Score
     const updatedUser = await prisma.user.findUnique({
       where: { id: session.user.id },
       include: { externalLinks: true }

@@ -33,11 +33,9 @@ export async function DELETE(req: NextRequest) {
 
     if (!projectId) return NextResponse.json({ error: "ID Project diperlukan" }, { status: 400 });
 
-    // Perform Take Down (soft delete or hard delete depending on policy)
-    // Here we'll do hard delete for demo simplicity, or just change status to ARCHIVED
     await prisma.project.update({
       where: { id: projectId },
-      data: { status: "ARCHIVED" } // Better to archive than delete for auditing
+      data: { status: "ARCHIVED" }
     });
 
     return NextResponse.json({ message: "Project berhasil di take down (Archived)" });

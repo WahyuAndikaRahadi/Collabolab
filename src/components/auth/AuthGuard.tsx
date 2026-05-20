@@ -17,13 +17,11 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       setIsRedirecting(true)
       toast.error('Akses Ditolak', 'Silakan login terlebih dahulu untuk mengakses halaman ini.')
       
-      // Store current path to redirect back after login
       const callbackUrl = encodeURIComponent(pathname)
       router.push(`/login?callbackUrl=${callbackUrl}`)
     }
   }, [status, router, pathname, toast, isRedirecting])
 
-  // Show loading state while checking session or if unauthenticated (during redirect)
   if (status === 'loading' || status === 'unauthenticated') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">

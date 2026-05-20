@@ -44,7 +44,6 @@ export default async function CollabHubPage({
 
   const currentMember = project.members.find((m) => m.userId === session.user.id)!;
 
-  // If no hubRooms yet (legacy projects), auto-create default rooms
   if (project.hubRooms.length === 0) {
     await prisma.hubRoom.createMany({
       data: [
@@ -53,12 +52,10 @@ export default async function CollabHubPage({
         { projectId: id, name: "kanban", type: "KANBAN", description: "Workspace kanban board project." },
       ],
     });
-    // Re-fetch
     const newRooms = await prisma.hubRoom.findMany({ where: { projectId: id }, orderBy: { createdAt: "asc" } });
     project.hubRooms.push(...newRooms);
   }
 
-  // Sanitize: remove passwordHash from client payload
   const hubRooms = project.hubRooms.map((r: any) => ({
     id: r.id,
     name: r.name,
@@ -88,7 +85,7 @@ export default async function CollabHubPage({
         justifyContent: "space-between",
         flexShrink: 0,
         zIndex: 10,
-        gap: "16px", // Added gap
+        gap: "16px",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0, flex: 1 }}>
           <Link
@@ -106,10 +103,10 @@ export default async function CollabHubPage({
               padding: "6px 12px",
               borderRadius: "6px",
               border: "2px solid #000000",
-              whiteSpace: "nowrap", // Prevent wrap
-              overflow: "hidden", // Truncate
+              whiteSpace: "nowrap",
+              overflow: "hidden",
               textOverflow: "ellipsis",
-              maxWidth: "180px", // Limit width
+              maxWidth: "180px",
             }}
           >
             ← {project.title}
@@ -124,7 +121,7 @@ export default async function CollabHubPage({
             fontWeight: 800,
             fontSize: "12px",
             boxShadow: "2px 2px 0px #000",
-            whiteSpace: "nowrap", // Prevent wrap
+            whiteSpace: "nowrap",
             display: "inline-flex",
             alignItems: "center",
             gap: "4px"

@@ -46,7 +46,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       },
     });
 
-    // Create DB Notification
     await prisma.notification.create({
       data: {
         userId: project.owner.id,
@@ -57,14 +56,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       }
     });
 
-    // Notify owner via Pusher
     await pusherServer.trigger(CHANNELS.user(project.owner.id), EVENTS.NEW_APPLICATION, {
       projectId: id,
       projectTitle: project.title,
       applicantId: session.user.id,
     });
     
-    // Also trigger NEW_NOTIFICATION for the bell icon
     await pusherServer.trigger(CHANNELS.user(project.owner.id), EVENTS.NEW_NOTIFICATION, {});
 
     return NextResponse.json(application, { status: 201 });
@@ -88,7 +85,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       orderBy: { createdAt: "desc" },
     });
 
-    // Get applicant details
     const applicantsData = await Promise.all(
       applications.map(async (app) => {
         const user = await prisma.user.findUnique({
@@ -138,7 +134,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     await prisma.application.update({ where: { id: applicationId }, data: { status: decision } });
 
     if (decision === "APPROVED") {
-      // Add member
       await prisma.projectMember.create({
         data: { 
           projectId: id, 
@@ -149,7 +144,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         },
       });
 
-      // Create DB Notification
       await prisma.notification.create({
         data: {
           userId: application.applicantId,
@@ -160,7 +154,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         }
       });
 
-      // Notify via Pusher
       await pusherServer.trigger(CHANNELS.user(application.applicantId), EVENTS.APPLICATION_DECISION, {
         decision: "APPROVED",
         projectId: id,
@@ -168,11 +161,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       });
       await pusherServer.trigger(CHANNELS.user(application.applicantId), EVENTS.NEW_NOTIFICATION, {});
 
-      // Send email
       const applicant = await prisma.user.findUnique({ where: { id: application.applicantId }, select: { name: true, email: true } });
       if (applicant) await sendApprovalEmail(applicant.email, applicant.name, project.title);
     } else {
-      // Create DB Notification
       await prisma.notification.create({
         data: {
           userId: application.applicantId,
@@ -183,7 +174,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         }
       });
 
-      // Notify rejection via Pusher
       await pusherServer.trigger(CHANNELS.user(application.applicantId), EVENTS.APPLICATION_DECISION, {
         decision: "REJECTED",
         projectId: id,
@@ -191,7 +181,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       });
       await pusherServer.trigger(CHANNELS.user(application.applicantId), EVENTS.NEW_NOTIFICATION, {});
 
-      // Send email
       const applicant = await prisma.user.findUnique({ where: { id: application.applicantId }, select: { name: true, email: true } });
       if (applicant) await sendRejectionEmail(applicant.email, applicant.name, project.title);
     }

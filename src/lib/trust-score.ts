@@ -62,9 +62,8 @@ export function canCreateProject(level: TrustLevel): boolean {
   return level !== "NEWCOMER";
 }
 export function refreshUserTrustScore(user: any): { score: number, level: TrustLevel } {
-  let score = 20; // Base score for everyone
+  let score = 20;
 
-  // 1. External Links (Capped at 20)
   let linkScore = 0;
   const verifiedLinks = user.externalLinks?.filter((l: any) => l.status === "VERIFIED") || [];
   verifiedLinks.forEach((l: any) => {
@@ -72,26 +71,19 @@ export function refreshUserTrustScore(user: any): { score: number, level: TrustL
   });
   score += linkScore;
 
-  // 2. Profile Completeness (+5 for bio, +5 for image)
   if (user.bio) {
     score += TRUST_SCORE_DELTAS.PROFILE_COMPLETE;
   }
   if (user.image && !user.image.includes("default")) {
-    // Maybe image is another +5 or +10, but let's stick to the 46 target first.
-    // Actually, if we want to follow the rules (+10 for complete profile), 
-    // and the user says 46 = 20 + 8 + 8 + 10, then 10 must be the bio.
   }
 
-  // 3. Student Verification (+10)
   if (user.isStudentVerified) {
     score += TRUST_SCORE_DELTAS.STUDENT_VERIFIED;
   }
 
-  // 4. Tambahkan Event Score (Poin dinamis dari database seperti Project Completed, Kicked, dll)
   const dynamicEventScore = user.eventScore || 0;
   score += dynamicEventScore;
 
-  // Final Level
   const level = calculateTrustLevel(score);
   return { score, level };
 }

@@ -84,10 +84,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { type, mentions = [] } = body;
     
-    // Extract hashtags from content
     const tags = body.content ? (body.content.match(/#\w+/g)?.map((t: string) => t.slice(1)) || []) : [];
 
-    // Helper: send mention notifications
     const sendMentionNotifications = async (postId: string, authorName: string, postType: string) => {
       for (const userId of mentions as string[]) {
         if (userId === session.user.id) continue;
@@ -115,18 +113,14 @@ export async function POST(req: NextRequest) {
     if (type === "CONTRIBUTION") {
       const { content, mediaUrl, projectTopic, impactTag, projectId } = body;
 
-      // projectId is now optional (General Post)
       if (projectId) {
-        // Check membership if projectId is provided
         const member = await prisma.projectMember.findUnique({
           where: {
             projectId_userId: { projectId, userId: session.user.id },
           },
         });
-        // We don't strictly block if they aren't a member, but it's good for tagging.
       }
 
-      // Check daily limit (max 2)
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
 
@@ -177,7 +171,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Field wajib event belum lengkap" }, { status: 400 });
       }
 
-      // Check cooldown (24h)
       const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
       const recentEvent = await prisma.feedPost.findFirst({
         where: {

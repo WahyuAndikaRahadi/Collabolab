@@ -17,7 +17,6 @@ export function detectPlatform(url: string): string {
     if (hostname.includes("dribbble.com")) return "DRIBBBLE";
     if (hostname.includes("instagram.com")) return "INSTAGRAM";
     if (hostname.includes("youtube.com")) return "YOUTUBE";
-    // Check for common portfolio hosting
     if (hostname.includes("vercel.app") || hostname.includes("netlify.app") || hostname.includes("github.io")) return "PORTFOLIO";
     return "CUSTOM";
   } catch {
@@ -88,7 +87,7 @@ export async function verifyExternalLink(url: string): Promise<VerificationResul
     const meta = await fetchOpenGraphMeta(url);
     
     return {
-      isValid: true, // If fetchOpenGraphMeta didn't throw, we assume it's reachable
+      isValid: true,
       previewTitle: meta.title,
       previewImage: meta.image,
       platform,

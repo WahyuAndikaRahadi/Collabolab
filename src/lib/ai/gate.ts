@@ -21,7 +21,6 @@ export async function checkAIGate(userId: string, tool: AITool): Promise<GateRes
     return { allowed: false, reason: "TRUST_SCORE_INSUFFICIENT", currentScore: 0, requiredScore: config.minTrustScore };
   }
 
-  // 1. Check Trust Score
   if (user.trustScore < config.minTrustScore) {
     return {
       allowed: false,
@@ -31,7 +30,6 @@ export async function checkAIGate(userId: string, tool: AITool): Promise<GateRes
     };
   }
 
-  // 2. Check Cooldown
   const lastUsage = await prisma.aIToolUsage.findFirst({
     where: { userId, toolType: tool },
     orderBy: { usedAt: "desc" },
@@ -46,7 +44,6 @@ export async function checkAIGate(userId: string, tool: AITool): Promise<GateRes
     };
   }
 
-  // 3. Check Daily Limit
   const todayUsage = await prisma.aIToolUsage.count({
     where: {
       userId,

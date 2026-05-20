@@ -11,7 +11,6 @@ export async function GET() {
   if (!await isAdmin()) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   try {
-    // Using raw query to bypass any potential stale Prisma client issues
     const reports = await prisma.$queryRawUnsafe<any[]>(
       `SELECT r.*, u.name as "reporterName" 
        FROM "Report" r 
@@ -19,7 +18,6 @@ export async function GET() {
        ORDER BY r."createdAt" DESC`
     );
     
-    // Format to match the client's expected structure (with nested reporter object)
     const formatted = (reports || []).map(r => ({
       ...r,
       reporter: { name: r.reporterName }
@@ -38,11 +36,9 @@ export async function PATCH(req: NextRequest) {
   try {
     const { reportId, status } = await req.json();
     
-    // Fetch report to check its type
     const report = await prisma.report.findUnique({ where: { id: reportId } });
     if (!report) return NextResponse.json({ error: "Report tidak ditemukan" }, { status: 404 });
 
-    // If a feed post report is resolved, delete the post
     if (status === "RESOLVED" && report.targetType === "FEED_POST") {
       try {
         await prisma.feedPost.delete({ where: { id: report.targetId } });

@@ -22,7 +22,6 @@ export function NotificationBell({ userId }: { userId: string }) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Fetch initial notifications
   const fetchNotifications = async () => {
     try {
       console.log(`[Pusher] Fetching notifications for user: ${userId}`);
@@ -41,7 +40,6 @@ export function NotificationBell({ userId }: { userId: string }) {
     fetchNotifications();
   }, []);
 
-  // Pusher real-time updates
   useEffect(() => {
     let pusher: ReturnType<typeof getPusherClient>;
     try {
@@ -61,7 +59,6 @@ export function NotificationBell({ userId }: { userId: string }) {
     };
   }, [userId]);
 
-  // Click outside to close
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -96,9 +93,8 @@ export function NotificationBell({ userId }: { userId: string }) {
   };
 
   const handleInvitation = async (e: React.MouseEvent, id: string, invitationId: string, action: "ACCEPT" | "DECLINE") => {
-    e.stopPropagation(); // Prevent marking as read and navigating
+    e.stopPropagation();
     
-    // Optimistic UI update
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)));
     
     try {
@@ -109,10 +105,8 @@ export function NotificationBell({ userId }: { userId: string }) {
       });
       
       if (!res.ok) {
-        // Rollback if needed, but for now we just show error
         console.error("Failed to respond to invitation");
       } else {
-        // Refresh notifications to reflect state
         fetchNotifications();
         if (action === "ACCEPT") {
           router.refresh();

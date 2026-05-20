@@ -11,7 +11,6 @@ const createPrismaClient = () => {
     throw new Error("DATABASE_URL is not set");
   }
 
-  // Prisma 7: PrismaNeon takes { connectionString } directly, NOT a Pool.
   const adapter = new PrismaNeon({ connectionString });
   return new PrismaClient({ adapter });
 };

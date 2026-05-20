@@ -38,7 +38,6 @@ const TRUST_EMOJI: Record<TrustLevel, string> = {
   VERIFIED: "🔵",
 };
 
-// ─── Project Card ─────────────────────────────────────────────────────────────
 
 export function ProjectCard({ project, userSkills }: { project: Project; userSkills: string[] }) {
   const spotsLeft = project.maxMembers - project.members.length;
@@ -159,7 +158,6 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
             className="skill-chip"
             style={{
               cursor: "default",
-              // highlight skills the user has
               background:
                 userSkills.map((u) => u.toLowerCase()).includes(s.skillName.toLowerCase())
                   ? "#FFE500"
@@ -233,7 +231,6 @@ export function ProjectCard({ project, userSkills }: { project: Project; userSki
 }
 
 
-// ─── Filter Bar ───────────────────────────────────────────────────────────────
 
 interface Filters {
   category: string;
@@ -322,7 +319,6 @@ export function FilterBar({ filters, onChange }: { filters: Filters; onChange: (
   );
 }
 
-// ─── Tab Bar ──────────────────────────────────────────────────────────────────
 
 type Tab = "semua" | "untuk-kamu";
 
@@ -446,7 +442,6 @@ function TabBar({
   );
 }
 
-// ─── Explore Page Client Component ───────────────────────────────────────────
 
 export function ExploreClient({
   initialProjects,
@@ -493,7 +488,6 @@ export function ExploreClient({
     return () => clearTimeout(t);
   }, [filters, fetchProjects]);
 
-  // "Untuk Kamu" = projects where ≥1 required skill matches user's skills
   const untukKamuProjects = allProjects.filter((p) =>
     p.requiredSkills.some((s) => userSkillsLower.includes(s.skillName.toLowerCase()))
   );

@@ -24,8 +24,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         data: { postId, userId: session.user.id },
       });
 
-      // Optional: Logic for +3 Trust Score if event post gets high engagement
-      // For now, just return success
       return NextResponse.json({ liked: true });
     }
   } catch (error) {

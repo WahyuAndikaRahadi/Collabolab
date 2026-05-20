@@ -33,13 +33,13 @@ export async function POST() {
         ownerId: { not: session.user.id },
         id: { notIn: user.memberships.map(m => m.projectId) }
       },
-      take: 20, // Keep it manageable for context
+      take: 20,
       include: { requiredSkills: { select: { skillName: true } } }
     });
 
     const userContext = {
       skills: user.skills.map(s => s.skillName),
-      dnaType: "BUILDER", // Fallback for now
+      dnaType: "BUILDER",
       availability: (user as any).availStatus || "OPEN",
       trustLevel: user.trustLevel,
       completedProjectCategories: Array.from(new Set(user.memberships.map(m => m.project.category))),

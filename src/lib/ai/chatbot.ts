@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const MODEL_NAME = "gemini-3.1-flash-lite-preview"; // Standard high-speed model
+const MODEL_NAME = "gemini-3.1-flash-lite-preview";
 
 export async function callChatbotAI(message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) {
   const apiKey = process.env.GEMINI_KEY_BRIEF;
@@ -36,8 +36,6 @@ Jika user bertanya "Siapa pembuatmu?", jawab bahwa kamu dikembangkan oleh tim de
   });
 
   try {
-    // Gemini history MUST start with 'user' role. 
-    // Filter out the initial greeting if it's at the start.
     const filteredHistory = history.filter((item, index) => {
       if (index === 0 && item.role === 'model') return false;
       return true;

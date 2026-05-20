@@ -3,7 +3,6 @@ import { NoiseTexture, SectionLabel } from "@/components/ui/DecorativeElements";
 
 async function getStats() {
   try {
-    // Using raw queries to bypass any potential stale Prisma client issues in Turbopack
     const userCountRes = await prisma.$queryRawUnsafe<any[]>(`SELECT count(*)::INT as count FROM "User"`);
     const projectCountRes = await prisma.$queryRawUnsafe<any[]>(`SELECT count(*)::INT as count FROM "Project"`);
     const reportCountRes = await prisma.$queryRawUnsafe<any[]>(`SELECT count(*)::INT as count FROM "Report"`);

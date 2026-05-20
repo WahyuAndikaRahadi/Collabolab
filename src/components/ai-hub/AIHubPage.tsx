@@ -24,7 +24,6 @@ export function AIHubPage({ trustScore, trustLevel, currentUsages }: Props) {
   const [cooldowns, setCooldowns] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    // Fetch cooldowns
     const fetchCooldowns = async () => {
       const toolTypes = Object.values(AITool);
       const results: Record<string, string> = {};

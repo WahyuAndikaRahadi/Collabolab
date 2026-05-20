@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing params" }, { status: 400 });
     }
 
-    // For presence channels, include user info
     if (channel.startsWith("presence-")) {
       const presenceData = {
         user_id: session.user.id,
@@ -31,7 +30,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(authResponse);
     }
 
-    // For private channels
     const authResponse = pusherServer.authorizeChannel(socketId, channel);
     return NextResponse.json(authResponse);
   } catch (err) {

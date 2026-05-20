@@ -7,9 +7,9 @@ export async function GET(req: NextRequest) {
       where: {
         type: "EVENT",
         isArchived: false,
-        eventDeadline: { gte: new Date() }, // Only upcoming events
+        eventDeadline: { gte: new Date() },
       },
-      orderBy: { eventDeadline: "asc" }, // Closest deadline first
+      orderBy: { eventDeadline: "asc" },
       include: {
         author: {
           select: {

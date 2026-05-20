@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "Temukan project kolaborasi yang cocok dengan skill kamu di CollaboLab.",
 };
 
-export const revalidate = 60; // ISR: revalidate every 60 seconds
+export const revalidate = 60;
 
 async function getInitialProjects() {
   try {
@@ -38,7 +38,6 @@ async function getInitialProjects() {
 export default async function ExplorePage() {
   const session = await auth();
 
-  // Fetch logged-in user's skills for "Untuk Kamu" tab
   let userSkills: string[] = [];
   if (session?.user?.id) {
     const userWithSkills = await prisma.user.findUnique({

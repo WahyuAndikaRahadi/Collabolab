@@ -17,7 +17,6 @@ export default function GuestGuard({ children }: { children: React.ReactNode }) 
     }
   }, [status, router])
 
-  // Show nothing while loading or redirecting to avoid flicker
   if (status === 'loading' || status === 'authenticated') {
     return null;
   }

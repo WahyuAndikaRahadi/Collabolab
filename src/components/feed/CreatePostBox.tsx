@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TOPIC_META, CATEGORY_META } from "@/types";
 
-// Dynamic tags from metadata + general tags - deduplicated with Set
 const PREDEFINED_TAGS = Array.from(new Set([
   ...Object.values(TOPIC_META).map(m => m.label),
   ...Object.values(CATEGORY_META).map(m => m.label),
@@ -44,7 +43,6 @@ export function CreatePostBox({ user, onSuccess }: Props) {
   const [mentionSuggestions, setMentionSuggestions] = useState<any[]>([]);
   const [activeTrigger, setActiveTrigger] = useState<"#" | "@" | null>(null);
 
-  // Corrected Project Fetch URL
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -147,7 +145,6 @@ export function CreatePostBox({ user, onSuccess }: Props) {
 
   const highlightText = (text: string) => {
     if (!text) return null;
-    // Highlight @username and #tag
     const parts = text.split(/(@\w+|#\w+)/g);
     return parts.map((part, i) => {
       if (part.startsWith("@")) {
@@ -178,7 +175,6 @@ export function CreatePostBox({ user, onSuccess }: Props) {
 
     setLoading(true);
     try {
-      // If type is null, we default to CONTRIBUTION (General Post)
       const finalType = type || "CONTRIBUTION";
 
       const payload = finalType === "CONTRIBUTION"

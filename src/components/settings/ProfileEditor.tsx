@@ -31,7 +31,6 @@ export function ProfileEditor({ initialData }: ProfileEditorProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check size (500MB limit as requested)
     if (file.size > 500 * 1024 * 1024) {
       toast.error("File terlalu besar", "Maksimal ukuran file adalah 500MB.");
       return;

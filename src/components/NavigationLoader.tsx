@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ─── Top Progress Bar ─────────────────────────────────────────────────────────
 function TopProgressBar({ isLoading }: { isLoading: boolean }) {
   const [width, setWidth] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -12,7 +11,6 @@ function TopProgressBar({ isLoading }: { isLoading: boolean }) {
   useEffect(() => {
     if (isLoading) {
       setWidth(0);
-      // Quickly grow to 80%, then slow down (simulate realistic progress)
       const steps = [15, 30, 45, 60, 72, 80, 85];
       let step = 0;
       const delays = [80, 150, 200, 300, 400, 600, 900];
@@ -26,7 +24,6 @@ function TopProgressBar({ isLoading }: { isLoading: boolean }) {
       };
       intervalRef.current = setTimeout(runStep, 50);
     } else {
-      // Complete the bar
       setWidth(100);
     }
 
@@ -80,7 +77,6 @@ function TopProgressBar({ isLoading }: { isLoading: boolean }) {
   );
 }
 
-// ─── Full Screen Overlay (only for slow pages) ───────────────────────────────
 function PageOverlay({ isLoading }: { isLoading: boolean }) {
   return (
     <AnimatePresence>
@@ -89,7 +85,7 @@ function PageOverlay({ isLoading }: { isLoading: boolean }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2, delay: 0.4 }} // Only show after 400ms (slow pages)
+          transition={{ duration: 0.2, delay: 0.4 }}
           style={{
             position: "fixed",
             inset: 0,
@@ -181,14 +177,12 @@ function PageOverlay({ isLoading }: { isLoading: boolean }) {
   );
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 export function NavigationLoader() {
   const pathname = usePathname();
   const [isNavigating, setIsNavigating] = useState(false);
   const prevPathname = useRef(pathname);
   const finishTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Detect route change START: intercept all <a> clicks
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest("a");
@@ -197,7 +191,6 @@ export function NavigationLoader() {
       const href = target.getAttribute("href");
       if (!href) return;
 
-      // Only trigger for internal navigation links (not anchors, not external)
       if (
         href.startsWith("/") &&
         !href.startsWith("//") &&
@@ -213,12 +206,10 @@ export function NavigationLoader() {
     return () => document.removeEventListener("click", handleClick, true);
   }, [pathname]);
 
-  // Detect route change END: when pathname actually changes
   useEffect(() => {
     if (pathname !== prevPathname.current) {
       prevPathname.current = pathname;
 
-      // Give a brief moment then hide the loader
       if (finishTimerRef.current) clearTimeout(finishTimerRef.current);
       finishTimerRef.current = setTimeout(() => {
         setIsNavigating(false);

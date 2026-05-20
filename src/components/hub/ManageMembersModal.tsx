@@ -8,7 +8,7 @@ import { User } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type Member = {
-  id: string; // ProjectMember.id
+  id: string;
   userId: string;
   isAnonymous: boolean;
   anonymousTag: string | null;
@@ -86,7 +86,6 @@ export function ManageMembersModal({ projectId, members, currentUserId, isAdmin,
       setActionState(null);
       setReason("");
       router.refresh();
-      // Don't close modal immediately so they can manage other members
     } catch (error: any) {
       toast.error("Error", error.message);
     } finally {
@@ -132,7 +131,6 @@ export function ManageMembersModal({ projectId, members, currentUserId, isAdmin,
         {activeTab === "members" ? (
           members.map((m) => {
             const isMe = m.userId === currentUserId;
-            // Admin cannot kick Owner or other Admins (unless they are Owner themselves)
             const canKick = !isMe && (isOwner || (isAdmin && m.role !== "OWNER" && m.role !== "ADMIN"));
 
             return (

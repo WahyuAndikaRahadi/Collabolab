@@ -1,7 +1,6 @@
 import type { TrustLevel, AvailStatus, ProjectCategory, CommitmentLevel, ProjectTopic, ProjectStatus, TaskStatus, Priority, MemberRole, UserRole } from "@prisma/client";
 import "next-auth/jwt";
 
-// ─── NextAuth type augmentation ──────────────────────────────────────────────
 declare module "next-auth" {
   interface User {
     id: string;
@@ -41,7 +40,6 @@ declare module "next-auth/jwt" {
   }
 }
 
-// ─── Domain Types ─────────────────────────────────────────────────────────────
 
 export type UserSkillData = {
   id: string;
@@ -156,7 +154,6 @@ export type ApplicationData = {
   applicant?: UserPublicProfile;
 };
 
-// ─── Category Metadata ────────────────────────────────────────────────────────
 
 export const CATEGORY_META: Record<ProjectCategory, { emoji: string; label: string; color: string }> = {
   LOMBA: { emoji: "🏆", label: "Lomba", color: "#FFE500" },
@@ -209,7 +206,6 @@ export const AVAIL_META: Record<AvailStatus, { label: string; color: string; emo
   BUSY: { label: "Sibuk", color: "#FF4D4D", emoji: "🔴" },
 };
 
-// ─── Skill Groups for UI Categorization ──────────────────────────────────────
 
 export const SKILL_GROUPS = [
   {

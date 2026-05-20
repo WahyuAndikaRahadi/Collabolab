@@ -5,7 +5,6 @@ import bcrypt from "bcryptjs";
 
 type Params = { params: Promise<{ projectId: string; roomId: string }> };
 
-// POST /api/hub/[projectId]/rooms/[roomId]/join — verify password for private room
 export async function POST(req: NextRequest, { params }: Params) {
   const { projectId, roomId } = await params;
   const session = await auth();
@@ -21,7 +20,6 @@ export async function POST(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "Room tidak ditemukan." }, { status: 404 });
   }
 
-  // If no password, allow freely
   if (!room.passwordHash) {
     return NextResponse.json({ ok: true });
   }

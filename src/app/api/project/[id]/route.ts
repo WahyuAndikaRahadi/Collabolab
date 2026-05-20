@@ -20,7 +20,6 @@ export async function PATCH(
     const body = await req.json();
     const { title, description } = updateSchema.parse(body);
 
-    // Check if user is OWNER or ADMIN of the project
     const member = await prisma.projectMember.findUnique({
       where: {
         projectId_userId: {

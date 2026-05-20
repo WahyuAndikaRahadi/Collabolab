@@ -59,8 +59,6 @@ function CommitmentBadge({ level }: { level: CommitmentLevel }) {
 }
 
 export function ExplorePreview({ projects, isAuthenticated }: ExplorePreviewProps) {
-  // If no projects, we could show a fallback or nothing. 
-  // For landing page, showing at least the section is good.
   const displayProjects = projects.length > 0 ? projects : [];
 
   return (

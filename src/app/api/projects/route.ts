@@ -30,13 +30,12 @@ export async function GET(req: NextRequest) {
     
     if (isNaN(page) || page < 1) page = 1;
     if (isNaN(limit) || limit < 1) limit = 12;
-    if (limit > 50) limit = 50; // Cap limit for safety
+    if (limit > 50) limit = 50;
 
     const skip = (page - 1) * limit;
 
     const where: any = {};
 
-    // Only add to where if they are not "ALL" and exist
     if (category && category !== "ALL") {
       where.category = category;
     }
@@ -60,7 +59,6 @@ export async function GET(req: NextRequest) {
       };
     }
 
-    // Use try-catch specifically for the database query to isolate connection issues
     try {
       const [projects, total] = await Promise.all([
         prisma.project.findMany({
@@ -123,12 +121,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Data tidak valid: " + parsed.error.issues[0].message }, { status: 400 });
     }
 
-    // Check trust level
     if (!canCreateProject(session.user.trustLevel)) {
       return NextResponse.json({ error: "Trust Level kamu belum cukup untuk membuat project. Minimal Member (31+ pts)." }, { status: 403 });
     }
 
-    // Check active project limit
     const maxActive = getMaxActiveProjects(session.user.trustLevel as any, (session.user as any).trustScore || 0);
     if (maxActive !== Infinity) {
       const activeCount = await prisma.project.count({
@@ -169,11 +165,9 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Handle Invitations
     if (invitedUserIds && invitedUserIds.length > 0) {
       try {
         for (const userId of invitedUserIds) {
-          // Create formal Invitation record
           const invitation = await prisma.invitation.create({
             data: {
               projectId: project.id,
@@ -183,7 +177,6 @@ export async function POST(req: NextRequest) {
             },
           });
 
-          // Create Notification linked to the invitation
           await prisma.notification.create({
             data: {
               userId,
@@ -195,7 +188,6 @@ export async function POST(req: NextRequest) {
             },
           });
 
-          // Trigger Pusher for each invited user
           await pusherServer.trigger(CHANNELS.user(userId), EVENTS.NEW_NOTIFICATION, {});
         }
       } catch (invError) {

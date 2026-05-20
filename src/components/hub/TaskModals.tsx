@@ -169,7 +169,7 @@ export function TaskDetailModal({ isOpen, onClose, task, members, currentUserId,
       if (!res.ok) throw new Error(data.error);
       onUpdate(data);
       if (action === "APPROVE") {
-        onClose(); // Auto close on approve
+        onClose();
       } else {
         setIsRevising(false);
         setRevisionNote("");

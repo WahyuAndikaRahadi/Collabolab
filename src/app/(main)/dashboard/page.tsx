@@ -16,12 +16,10 @@ export default async function DashboardHub() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  // If Admin, redirect to Admin Dashboard
   if (session.user.role === "ADMIN") {
     redirect("/admin");
   }
 
-  // ── 7-day activity window ────────────────────────────────────────────────────
   const now = new Date();
   const sevenDaysAgo = new Date(now);
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
@@ -59,7 +57,6 @@ export default async function DashboardHub() {
         },
       },
     }),
-    // Using raw query to bypass any potential stale Prisma client issues
     prisma.$queryRawUnsafe<any[]>(
       `SELECT "createdAt" FROM "ChatMessage" WHERE "senderId" = $1 AND "createdAt" >= $2`,
       session.user.id,
@@ -74,15 +71,14 @@ export default async function DashboardHub() {
 
   if (!user) redirect("/login");
 
-  // Build per-day contribution counts (last 7 days)
   const dayLabels: string[] = [];
   const dayKeys: string[] = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date(now);
     d.setDate(d.getDate() - i);
-    dayKeys.push(d.toISOString().slice(0, 10)); // "YYYY-MM-DD"
+    dayKeys.push(d.toISOString().slice(0, 10));
     dayLabels.push(
-      d.toLocaleDateString("id-ID", { weekday: "short" }) // "Sen", "Sel" …
+      d.toLocaleDateString("id-ID", { weekday: "short" })
     );
   }
   const activityMap: Record<string, number> = {};
@@ -108,7 +104,6 @@ export default async function DashboardHub() {
   );
   const recentActivity = allMemberships.slice(0, 3);
 
-  // Stats
   const totalProjects = allMemberships.length;
   const totalContributions = allMemberships.reduce((sum, m) => {
     const doneTasks = m.project.hubTasks.filter((t) => t.status === "DONE").length;

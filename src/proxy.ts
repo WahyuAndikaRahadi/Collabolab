@@ -23,7 +23,6 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
   const isProtected = PROTECTED_PATHS.some((p) => pathname.startsWith(p));
   const isAuthPage = AUTH_PATHS.some((p) => pathname.startsWith(p));
 
-  // Redirect to login if not authenticated and trying to access protected route
   if (isProtected && !session?.user) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
@@ -31,14 +30,11 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
   }
   
 
-  // Redirect authenticated users away from auth pages
   if (isAuthPage && session?.user) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   
-  // --- ADMIN ISOLATION ---
-  // If user is ADMIN, they should NOT access user-facing features (dashboard, explore, etc.)
   if (
     session?.user &&
     (session.user as any).role === "ADMIN" &&
@@ -49,7 +45,6 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
     return NextResponse.redirect(new URL("/admin", req.url));
   }
 
-  // Redirect to onboarding if not completed (Skip for ADMINs)
   if (
     session?.user &&
     (session.user as any).role !== "ADMIN" &&

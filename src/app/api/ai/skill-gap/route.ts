@@ -22,7 +22,6 @@ export async function POST() {
 
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    // Get market demand (top 20 required skills from open projects)
     const marketDemandRaw = await prisma.projectSkill.groupBy({
       by: ["skillName"],
       where: { project: { status: "OPEN" } },
@@ -36,7 +35,6 @@ export async function POST() {
       count: s._count.skillName
     }));
 
-    // Get sample open projects that user HASN'T joined
     const openProjects = await prisma.project.findMany({
       where: { 
         status: "OPEN",
@@ -48,7 +46,7 @@ export async function POST() {
 
     const result = await analyzeSkillGap(
       user.skills.map(s => s.skillName),
-      "BUILDER", // Fallback DNA
+      "BUILDER",
       marketDemand,
       openProjects.map(p => ({ title: p.title, skills: p.requiredSkills.map(s => s.skillName) }))
     );

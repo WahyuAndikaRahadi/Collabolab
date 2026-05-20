@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 
-// Middleware check for admin is handled in the route or a wrapper
 async function isAdmin() {
   const session = await auth();
   return session?.user?.role === "ADMIN";
@@ -12,7 +11,6 @@ export async function GET() {
   if (!await isAdmin()) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   try {
-    // Using raw query to bypass any stale Prisma client issues
     const users = await prisma.$queryRawUnsafe<any[]>(
       `SELECT id, name, email, "trustScore", "trustLevel", role, "isBlocked", "createdAt" 
        FROM "User" 
@@ -58,7 +56,6 @@ export async function DELETE(req: NextRequest) {
     }
 
     await prisma.$transaction(async (tx) => {
-      // Find projects owned by user to delete related entities missing cascade
       const projects = await tx.project.findMany({ where: { ownerId: userId }, select: { id: true } });
       const projectIds = projects.map((p: any) => p.id);
 
@@ -77,11 +74,10 @@ export async function DELETE(req: NextRequest) {
       });
       await tx.project.deleteMany({ where: { ownerId: userId } });
       
-      // Finally delete the user
       await tx.user.delete({ where: { id: userId } });
     }, {
-      maxWait: 10000, // 10 seconds
-      timeout: 30000, // 30 seconds
+      maxWait: 10000,
+      timeout: 30000,
     });
 
     return NextResponse.json({ success: true });

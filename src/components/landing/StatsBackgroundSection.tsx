@@ -9,21 +9,21 @@ export function StatsBackgroundSection() {
       value: 68,
       label: "Feedback Mingguan",
       source: "Officevibe, 2024",
-      color: "#FFE500", // Yellow
+      color: "#FFE500",
       desc: "Gen-Z menginginkan umpan balik setidaknya sekali seminggu."
     },
     {
       value: 72,
       label: "Transparansi Tujuan",
       source: "Betterworks, 2024",
-      color: "#00D37F", // Green
+      color: "#00D37F",
       desc: "Ingin melihat bagaimana peran mereka berkontribusi pada visi besar."
     },
     {
       value: 81,
       label: "Akses Real-Time",
       source: "PwC, 2024",
-      color: "#0047FF", // Blue
+      color: "#0047FF",
       textColor: "#FFFFFF",
       desc: "Mengharapkan dashboard real-time dan akses mobile."
     },
@@ -31,7 +31,7 @@ export function StatsBackgroundSection() {
       value: 83,
       label: "Kesehatan Mental",
       source: "Survei internal, 2024",
-      color: "#FF4D4D", // Coral
+      color: "#FF4D4D",
       desc: "Menginginkan metrik burnout & work-life balance dipertimbangkan."
     }
   ];
@@ -63,7 +63,7 @@ export function StatsBackgroundSection() {
     <section
       id="background-stats"
       style={{
-        background: "#F5F0E8", // Creamy background to distinguish from About
+        background: "#F5F0E8",
         padding: "100px 24px",
         borderTop: "3px solid #000",
         position: "relative",

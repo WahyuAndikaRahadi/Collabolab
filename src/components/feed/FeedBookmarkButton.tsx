@@ -15,7 +15,6 @@ export function FeedBookmarkButton({ postId, initialBookmarked }: BookmarkProps)
     if (loading) return;
     setLoading(true);
     
-    // Optimistic update
     const prev = isBookmarked;
     setIsBookmarked(!prev);
 
@@ -25,7 +24,7 @@ export function FeedBookmarkButton({ postId, initialBookmarked }: BookmarkProps)
       const data = await res.json();
       setIsBookmarked(data.bookmarked);
     } catch {
-      setIsBookmarked(prev); // Rollback
+      setIsBookmarked(prev);
     } finally {
       setLoading(false);
     }

@@ -50,7 +50,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pro
       include: { sender: { select: { id: true, name: true, image: true } } } as any,
     });
 
-    // Handle anonymous display name
     const displayName = member.isAnonymous && !member.revealedAt
       ? `Anon#${member.anonymousTag || "0000"}`
       : (message as any).sender.name;
@@ -80,7 +79,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ p
     const message = await prisma.chatMessage.findUnique({ where: { id: messageId } });
     if (!message) return NextResponse.json({ error: "Pesan tidak ditemukan." }, { status: 404 });
 
-    // Check if user is sender or project owner/admin
     const member = await prisma.projectMember.findFirst({ where: { projectId, userId: session.user.id } });
     if (!member) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 

@@ -7,7 +7,6 @@ export function CustomCursor() {
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
   
-  // Extra smooth spring settings for the trail
   const mainSpring = { damping: 40, stiffness: 400 };
   const trailSpring1 = { damping: 35, stiffness: 200 };
   const trailSpring2 = { damping: 30, stiffness: 150 };

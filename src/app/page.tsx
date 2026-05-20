@@ -26,7 +26,6 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const session = await auth();
   
-  // Fetch the 4 latest projects for the explore preview
   const projects = await prisma.project.findMany({
     where: {
       status: "OPEN",

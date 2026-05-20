@@ -5,7 +5,6 @@ import { pusherServer, CHANNELS, EVENTS } from "@/lib/pusher";
 
 type Params = { params: Promise<{ projectId: string; roomId: string }> };
 
-// GET /api/hub/[projectId]/rooms/[roomId]/messages
 export async function GET(req: NextRequest, { params }: Params) {
   const { projectId, roomId } = await params;
   const session = await auth();
@@ -33,7 +32,6 @@ export async function GET(req: NextRequest, { params }: Params) {
   return NextResponse.json(messages);
 }
 
-// POST /api/hub/[projectId]/rooms/[roomId]/messages
 export async function POST(req: NextRequest, { params }: Params) {
   const { projectId, roomId } = await params;
   const session = await auth();
@@ -47,7 +45,6 @@ export async function POST(req: NextRequest, { params }: Params) {
   const room = await prisma.hubRoom.findUnique({ where: { id: roomId } });
   if (!room || room.projectId !== projectId) return NextResponse.json({ error: "Room tidak ditemukan." }, { status: 404 });
 
-  // Announcement room: only owner can send
   if (room.type === "ANNOUNCEMENT" && member.role !== "OWNER") {
     return NextResponse.json({ error: "Hanya owner yang bisa mengirim pesan di #announcement." }, { status: 403 });
   }
@@ -58,13 +55,11 @@ export async function POST(req: NextRequest, { params }: Params) {
   if (!content?.trim()) return NextResponse.json({ error: "Pesan tidak boleh kosong." }, { status: 400 });
   if (content.length > 2000) return NextResponse.json({ error: "Pesan terlalu panjang (maks 2000 karakter)." }, { status: 400 });
 
-  // Robust mention detection: if user typed manually or client missed it
   let mentions = [...clientMentions];
   if (content.includes("@all") && !mentions.includes("all")) {
     mentions.push("all");
   }
 
-  // Find project members to resolve manual @names
   const projectMembers = await prisma.projectMember.findMany({
     where: { projectId },
     include: { user: { select: { id: true, name: true, username: true } } }
@@ -76,7 +71,6 @@ export async function POST(req: NextRequest, { params }: Params) {
       const username = match.slice(1).toLowerCase();
       if (username === "all") continue;
       
-      // Search for any member whose username matches exactly
       const found = projectMembers.find(m => m.user.username?.toLowerCase() === username);
       
       if (found && !mentions.includes(found.userId)) {
@@ -86,7 +80,6 @@ export async function POST(req: NextRequest, { params }: Params) {
     }
   }
 
-  // Get sender display info (anonymous handling)
   const isAnon = member.isAnonymous && !member.revealedAt;
 
   const message = await prisma.hubMessage.create({
@@ -111,11 +104,9 @@ export async function POST(req: NextRequest, { params }: Params) {
       : { id: message.sender.id, name: message.sender.name, image: message.sender.image, isAnonymous: false },
   };
 
-  // Broadcast to room channel
   try {
     await pusherServer.trigger(CHANNELS.hubRoom(roomId), EVENTS.HUB_MESSAGE, payload);
     
-    // Also broadcast to project channel for sidebar notifications
     await pusherServer.trigger(CHANNELS.hub(projectId), "room-message", {
       roomId,
       messageId: message.id,
@@ -123,7 +114,6 @@ export async function POST(req: NextRequest, { params }: Params) {
     });
   } catch {}
 
-  // Send mention notifications
   if (mentions.length > 0) {
     let targetUserIds = mentions;
 
@@ -135,14 +125,12 @@ export async function POST(req: NextRequest, { params }: Params) {
       targetUserIds = allMembers.map(m => m.userId);
     }
 
-    // Filter out sender
     targetUserIds = Array.from(new Set(targetUserIds)).filter(id => id !== session.user.id);
 
     if (targetUserIds.length > 0) {
       try {
         console.log(`[Notification] targetUserIds:`, targetUserIds);
 
-        // 1. Create DB Notifications
         const notifData = targetUserIds.map(userId => ({
           userId,
           title: `💬 Mention di #${room.name}`,
@@ -158,7 +146,6 @@ export async function POST(req: NextRequest, { params }: Params) {
 
         console.log(`[Notification] Successfully created ${notifData.length} records in DB`);
 
-        // 2. Trigger Pusher Event
         const notificationPayload = {
           messageId: message.id,
           roomId,

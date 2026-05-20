@@ -31,7 +31,6 @@ export default function CreateProjectPage() {
     deadline: "",
   });
 
-  // Invitation State
   const [invitedUsers, setInvitedUsers] = useState<SearchUser[]>([]);
   const [userSearch, setUserSearch] = useState("");
   const [userResults, setUserResults] = useState<SearchUser[]>([]);
@@ -39,7 +38,6 @@ export default function CreateProjectPage() {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  // Load AI draft if present
   useEffect(() => {
     const draftJson = searchParams.get("ai_draft");
     if (draftJson) {
@@ -62,7 +60,6 @@ export default function CreateProjectPage() {
     }
   }, [searchParams]);
 
-  // Debounced User Search
   useEffect(() => {
     if (userSearch.length < 2) {
       setUserResults([]);
@@ -76,7 +73,6 @@ export default function CreateProjectPage() {
         const res = await fetch(`/api/users/search?q=${encodeURIComponent(userSearch)}`);
         const data = await res.json();
         if (res.ok) {
-          // Filter out already invited users
           const filtered = (data as SearchUser[]).filter(
             u => !invitedUsers.some(invited => invited.id === u.id)
           );
@@ -93,7 +89,6 @@ export default function CreateProjectPage() {
     return () => clearTimeout(timer);
   }, [userSearch, invitedUsers]);
 
-  // Close dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {

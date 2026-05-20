@@ -6,7 +6,6 @@ import { useToast } from "@/lib/toast";
 import { useAlert } from "@/lib/alert";
 import { User } from "lucide-react";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 type Task = {
   id: string;
@@ -52,7 +51,6 @@ type Project = {
   polls: Poll[];
 };
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 
 export function CollabRoomClient({
   project: initialProject,
@@ -74,7 +72,6 @@ export function CollabRoomClient({
   const alert = useAlert();
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Load message history
   useEffect(() => {
     fetch(`/api/chat/${initialProject.id}`)
       .then((r) => r.json())
@@ -82,7 +79,6 @@ export function CollabRoomClient({
       .catch(() => {});
   }, [initialProject.id]);
 
-  // Pusher subscriptions
   useEffect(() => {
     let pusher: ReturnType<typeof getPusherClient>;
     try {
@@ -118,7 +114,6 @@ export function CollabRoomClient({
         toast.success("✨ Identity Revealed", `Anon#${anonymousTag} ternyata adalah ${userName}!`);
       });
     } catch {
-      // Pusher not configured
     }
 
     return () => {
@@ -126,7 +121,6 @@ export function CollabRoomClient({
     };
   }, [initialProject.id]);
 
-  // Auto scroll chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -286,7 +280,6 @@ export function CollabRoomClient({
   );
 }
 
-// ─── Kanban Tab ───────────────────────────────────────────────────────────────
 
 function KanbanTab({ tasks, setTasks, projectId, members, currentUserId }: {
   tasks: Task[];
@@ -423,7 +416,6 @@ function KanbanTab({ tasks, setTasks, projectId, members, currentUserId }: {
   );
 }
 
-// ─── Chat Tab ─────────────────────────────────────────────────────────────────
 
 function ChatTab({ messages, projectId, currentUserId, chatEndRef, currentMember }: {
   messages: Message[];
@@ -558,7 +550,6 @@ function ChatTab({ messages, projectId, currentUserId, chatEndRef, currentMember
   );
 }
 
-// ─── Poll Tab ─────────────────────────────────────────────────────────────────
 
 function PollTab({ polls, setPolls, projectId, currentUserId, isOwner }: {
   polls: Poll[];

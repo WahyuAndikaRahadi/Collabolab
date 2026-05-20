@@ -12,7 +12,6 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json();
     const { name, username, bio, image } = body;
 
-    // Validate username if provided
     if (username) {
       if (username.length < 3) {
         return NextResponse.json({ error: "Username minimal 3 karakter" }, { status: 400 });
@@ -28,7 +27,6 @@ export async function PATCH(req: NextRequest) {
       }
     }
 
-    // Update user
     const updatedUser = await prisma.user.update({
       where: { id: session.user.id },
       data: {

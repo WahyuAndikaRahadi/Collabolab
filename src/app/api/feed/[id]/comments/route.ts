@@ -65,7 +65,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       },
     });
 
-    // Notify post author
     if (comment.post.authorId !== session.user.id) {
       try {
         await prisma.notification.create({
@@ -88,7 +87,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       }
     }
 
-    // Notify mentions
     for (const userId of mentions) {
       if (userId === session.user.id) continue;
       try {

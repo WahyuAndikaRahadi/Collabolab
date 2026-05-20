@@ -42,7 +42,6 @@ export function PresencePanel({ projectId, members, currentUserId, onStatusChang
 
       channel.bind("pusher:subscription_succeeded", () => {
         const online: PresenceData = {};
-        // @ts-ignore — presence channel members API
         channel.members.each((member: { id: string; info: { name: string; image: string | null } }) => {
           online[member.id] = member.info;
         });
@@ -156,14 +155,14 @@ export function PresencePanel({ projectId, members, currentUserId, onStatusChang
 
   return (
     <div style={{
-      width: "240px", // Increased for better mobile feel
+      width: "240px",
       background: "#F5F0E8",
       borderLeft: "3px solid #000000",
       display: "flex",
       flexDirection: "column",
       flexShrink: 0,
       overflow: "hidden",
-      height: "100%", // Full height for mobile drawer
+      height: "100%",
     }}>
       <div style={{ padding: "14px 12px 10px", borderBottom: "3px solid #000000", background: "#FFE500" }}>
         <div style={{

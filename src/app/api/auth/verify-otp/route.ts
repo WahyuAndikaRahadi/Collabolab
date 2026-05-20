@@ -40,7 +40,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Kode OTP tidak valid." }, { status: 400 });
     }
 
-    // Verify email
     await prisma.user.update({
       where: { email },
       data: {

@@ -32,7 +32,6 @@ export async function POST(req: NextRequest) {
       user?.skills.map(s => s.skillName)
     );
 
-    // Record usage
     await prisma.aIToolUsage.create({
       data: {
         userId: session.user.id,

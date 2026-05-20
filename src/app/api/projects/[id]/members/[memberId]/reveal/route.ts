@@ -32,7 +32,7 @@ export async function POST(
       where: { id: memberId },
       data: {
         revealedAt: new Date(),
-        isAnonymous: false, // Optional: but good for explicit state
+        isAnonymous: false,
       },
       include: { user: { select: { name: true } } },
     });

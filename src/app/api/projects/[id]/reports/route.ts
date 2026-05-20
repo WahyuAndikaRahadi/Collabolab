@@ -16,7 +16,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Data laporan tidak lengkap" }, { status: 400 });
   }
 
-  // Verify reporter is in project
   const reporterMember = await prisma.projectMember.findUnique({
     where: { projectId_userId: { projectId, userId: session.user.id } },
   });
@@ -25,7 +24,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Kamu bukan anggota project ini" }, { status: 403 });
   }
 
-  // Create report
   try {
     const report = await prisma.projectReport.create({
       data: {
@@ -89,7 +87,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { reportId, status } = await req.json(); // status: "DISMISSED", "KICKED", "BANNED"
+  const { reportId, status } = await req.json();
 
   try {
     const report = await prisma.projectReport.update({

@@ -33,7 +33,6 @@ export async function POST(req: NextRequest) {
 
     const { skills, bio, availStatus, linkedinUrl, portfolioUrl } = parsed.data;
 
-    // Helper to normalize URLs
     const normalizeUrl = (url: string | null | undefined) => {
       if (!url) return null;
       const trimmed = url.trim();
@@ -45,7 +44,6 @@ export async function POST(req: NextRequest) {
     const cleanLinkedin = normalizeUrl(linkedinUrl);
     const cleanPortfolio = normalizeUrl(portfolioUrl);
 
-    // Process external links with verification
     const linkUrls = [
       { url: cleanLinkedin, platform: "LINKEDIN" as ExternalPlatform },
       { url: cleanPortfolio, platform: "PORTFOLIO" as ExternalPlatform },
@@ -72,13 +70,11 @@ export async function POST(req: NextRequest) {
       }));
     }
 
-    // Delete old skills and re-create
     await prisma.userSkill.deleteMany({ where: { userId: session.user.id } });
     await prisma.userSkill.createMany({
       data: skills.map((skillName) => ({ userId: session.user.id, skillName })),
     });
 
-    // Refresh final trust score including links
     const updatedUser = await prisma.user.findUnique({
       where: { id: session.user.id },
       include: { externalLinks: true }
@@ -93,7 +89,6 @@ export async function POST(req: NextRequest) {
       finalLevel = result.level;
     }
 
-    // Update user
     await prisma.user.update({
       where: { id: session.user.id },
       data: {

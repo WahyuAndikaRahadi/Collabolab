@@ -1,7 +1,6 @@
 import PusherServer from "pusher";
 import PusherClient from "pusher-js";
 
-// ─── Server-side Pusher ───────────────────────────────────────────────────────
 export const pusherServer = new PusherServer({
   appId: process.env.PUSHER_APP_ID!,
   key: process.env.PUSHER_KEY!,
@@ -10,7 +9,6 @@ export const pusherServer = new PusherServer({
   useTLS: true,
 });
 
-// ─── Client-side Pusher singleton ────────────────────────────────────────────
 let pusherClientInstance: PusherClient | null = null;
 
 export function getPusherClient(): PusherClient {
@@ -28,7 +26,6 @@ export function getPusherClient(): PusherClient {
   return pusherClientInstance;
 }
 
-// ─── Channel name helpers ─────────────────────────────────────────────────────
 export const CHANNELS = {
   project: (projectId: string) => `private-project-${projectId}`,
   presence: (projectId: string) => `presence-project-${projectId}`,
@@ -39,7 +36,6 @@ export const CHANNELS = {
 } as const;
 
 export const EVENTS = {
-  // Legacy events (old room)
   NEW_MESSAGE: "new-message",
   TASK_UPDATED: "task-updated",
   TASK_CREATED: "task-created",
@@ -49,7 +45,6 @@ export const EVENTS = {
   APPLICATION_DECISION: "application-decision",
   NEW_POLL: "new-poll",
   POLL_UPDATED: "poll-updated",
-  // Collab Hub events
   HUB_MESSAGE: "hub-message",
   HUB_TASK_UPDATED: "hub-task-updated",
   HUB_TASK_CREATED: "hub-task-created",

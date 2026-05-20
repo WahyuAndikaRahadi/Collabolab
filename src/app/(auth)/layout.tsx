@@ -45,7 +45,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           flex: 1, 
           background: "#FFE500", 
           flexDirection: "column", 
-          justifyContent: "center", // Centered content vertically
+          justifyContent: "center",
           padding: "60px",
           borderRight: "4px solid #000",
           position: "relative",

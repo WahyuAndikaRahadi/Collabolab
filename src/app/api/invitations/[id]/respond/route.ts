@@ -8,7 +8,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const { action } = await req.json(); // "ACCEPT" | "DECLINE"
+    const { action } = await req.json();
     if (!["ACCEPT", "DECLINE"].includes(action)) {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }
@@ -23,7 +23,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (invitation.status !== "PENDING") return NextResponse.json({ error: "Invitation already processed" }, { status: 400 });
 
     if (action === "ACCEPT") {
-      // Add user to project members
       await prisma.$transaction([
         prisma.projectMember.create({
           data: {
@@ -36,7 +35,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
           where: { id: invitationId },
           data: { status: "ACCEPTED" },
         }),
-        // Optionally notify the inviter
         prisma.notification.create({
           data: {
             userId: invitation.inviterId,
@@ -48,14 +46,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         }),
       ]);
     } else {
-      // DECLINE
       await prisma.invitation.update({
         where: { id: invitationId },
         data: { status: "DECLINED" },
       });
     }
 
-    // Mark corresponding notification as read if it exists
     await prisma.notification.updateMany({
       where: { invitationId: invitationId, userId: session.user.id },
       data: { isRead: true },

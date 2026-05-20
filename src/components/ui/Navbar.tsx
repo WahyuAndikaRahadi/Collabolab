@@ -49,30 +49,26 @@ export function Navbar() {
   const filteredLinks = navLinks;
 
   useEffect(() => {
-    // Scroll spy logic
     const sections = navLinks
       .filter(link => link.href.startsWith("#"))
       .map(link => link.href.substring(1));
 
     const observerOptions = {
       root: null,
-      rootMargin: "-20% 0px -60% 0px", // More focused on the upper half of the screen
+      rootMargin: "-20% 0px -60% 0px",
       threshold: [0, 0.1, 0.5]
     };
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      // We want to find the section that is currently most relevant (closest to the top)
       const intersectingEntries = entries.filter(entry => entry.isIntersecting);
       
       if (intersectingEntries.length > 0) {
-        // Sort by how close the top of the element is to the top of the viewport
         const closest = intersectingEntries.sort((a, b) => {
           return Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top);
         })[0];
         
         setActiveHash(`#${closest.target.id}`);
       } else {
-        // Clear hash if no sections are in view (e.g. at the hero section)
         setActiveHash("");
       }
     };
@@ -84,10 +80,8 @@ export function Navbar() {
       if (element) observer.observe(element);
     });
 
-    // Hash change listener
     const handleHashChange = () => setActiveHash(window.location.hash);
 
-    // Clear active state when at the top (Hero) or bottom (Footer)
     const handleScroll = () => {
       const isAtTop = window.scrollY < 100;
       const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100;
@@ -107,7 +101,6 @@ export function Navbar() {
     };
   }, [navLinks]);
 
-  // Hide navbar on auth pages, admin area, and CollabHub
   if (pathname === "/login" || pathname === "/register" || pathname.startsWith("/admin") || isCollabHub) return null;
 
   return (
@@ -115,7 +108,7 @@ export function Navbar() {
       style={{
         background: "#fff",
         borderBottom: "3px solid #000",
-        boxShadow: "0 4px 0px rgba(0,0,0,0.05)", // Subtle shadow for depth
+        boxShadow: "0 4px 0px rgba(0,0,0,0.05)",
         position: "sticky",
         top: "0",
         zIndex: 2000,
@@ -128,7 +121,7 @@ export function Navbar() {
           maxWidth: session?.user ? "none" : "1200px",
           margin: "0 auto",
           padding: session?.user ? "0 24px" : "0 24px",
-          height: "80px", // Increased height slightly for breathing room
+          height: "80px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -188,7 +181,6 @@ export function Navbar() {
         <nav 
           className={`hidden ${pathname === "/" ? "xl:flex" : (session?.user ? "xl:hidden" : "xl:flex")} items-center gap-2`}
           style={{
-            // Removed pill background and border for a cleaner look
           }}
         >
           {filteredLinks.map((link) => {
@@ -263,7 +255,6 @@ export function Navbar() {
                 }}
               >
                 {session.user.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img src={session.user.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 ) : (
                   <User size={20} strokeWidth={3} />

@@ -17,9 +17,6 @@ export function MagnetWrapper({ children, strength = 20 }: MagnetWrapperProps) {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      // Since background elements are absolute, we use window cursor pos 
-      // but relative to some "imaginary" center or just direct window pos
-      // Actually a better magnet for background is to respond to global cursor
       const { innerWidth, innerHeight } = window;
       const centerX = innerWidth / 2;
       const centerY = innerHeight / 2;

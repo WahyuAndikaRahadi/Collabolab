@@ -17,13 +17,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }
 
   try {
-    // Check if feed post exists
     const feedPost = await prisma.feedPost.findUnique({ where: { id: postId } });
     if (!feedPost) {
       return NextResponse.json({ error: "Post tidak ditemukan" }, { status: 404 });
     }
 
-    // Check if already reported
     const existingReport = await prisma.report.findFirst({
       where: {
         reporterId: session.user.id,

@@ -11,7 +11,6 @@ import { PasswordModal } from "./PasswordModal";
 import { ProjectSettingsModal } from "./ProjectSettingsModal";
 import { ManageMembersModal } from "./ManageMembersModal";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 type HubRoom = {
   id: string;
@@ -41,7 +40,6 @@ type Project = {
   hubRooms: HubRoom[];
 };
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 
 export function CollabHubClient({
   project: initialProject,
@@ -68,11 +66,9 @@ export function CollabHubClient({
   const [onlineStatus, setOnlineStatus] = useState<{ [userId: string]: "online" | "away" | "offline" }>({});
   const [unreadStatus, setUnreadStatus] = useState<Record<string, "message" | "mention" | null>>({});
 
-  // Mobile responsiveness states
   const [mobileSidebar, setMobileSidebar] = useState<"left" | "right" | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Check for mobile on mount and resize
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
@@ -83,20 +79,17 @@ export function CollabHubClient({
   const isAdmin = currentMember.role === "ADMIN";
   const canManageProject = isOwner || isAdmin;
 
-  // Select initial room
   useEffect(() => {
     if (rooms.length === 0) return;
     if (initialRoomId) {
       const found = rooms.find((r) => r.id === initialRoomId);
       if (found) { handleSelectRoom(found); return; }
     }
-    // Default: #general
     const general = rooms.find((r) => r.type === "GENERAL");
     if (general) handleSelectRoom(general);
     else setActiveRoom(rooms[0]);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Listen for new rooms via Pusher
   useEffect(() => {
     let pusher: ReturnType<typeof getPusherClient>;
     try {
@@ -114,14 +107,12 @@ export function CollabHubClient({
     };
   }, [initialProject.id]);
 
-  // Listen for room messages for notifications
   useEffect(() => {
     let pusher: ReturnType<typeof getPusherClient>;
     try {
       pusher = getPusherClient();
       const channel = pusher.subscribe(CHANNELS.hub(initialProject.id));
       channel.bind("room-message", (data: { roomId: string; mentions: string[] }) => {
-        // If not in this room, mark as unread
         if (activeRoom?.id !== data.roomId) {
           const isMention = data.mentions.includes(currentUserId) || data.mentions.includes("all");
           setUnreadStatus((prev) => ({
@@ -143,9 +134,7 @@ export function CollabHubClient({
     }
     setActiveRoom(room);
     setCustomTab("chat");
-    // Clear unread status when entering a room
     setUnreadStatus((prev) => ({ ...prev, [room.id]: null }));
-    // Close sidebar on mobile after selecting
     if (isMobile) setMobileSidebar(null);
   }
 

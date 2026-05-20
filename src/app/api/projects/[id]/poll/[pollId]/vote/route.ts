@@ -15,7 +15,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const member = await prisma.projectMember.findFirst({ where: { projectId: id, userId: session.user.id } });
     if (!member) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    // Check if vote exists
     const existingVote = await prisma.pollVote.findFirst({
       where: {
         option: { pollId },

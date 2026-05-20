@@ -37,7 +37,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       where: { id, userId: session.user.id },
     });
 
-    // Update Trust Score
     const updatedUser = await prisma.user.findUnique({
       where: { id: session.user.id },
       include: { externalLinks: true }
@@ -62,7 +61,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   }
 }
 
-// POST for manual re-verification
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await auth();

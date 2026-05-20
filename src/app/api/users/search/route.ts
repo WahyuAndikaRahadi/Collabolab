@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
           { name: { contains: q, mode: "insensitive" } },
           { username: { contains: q, mode: "insensitive" } },
         ],
-        id: { not: session.user.id }, // exclude self
+        id: { not: session.user.id },
       },
       select: { id: true, name: true, username: true, image: true, trustLevel: true },
       take: 8,

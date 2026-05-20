@@ -13,7 +13,7 @@ interface Props {
   cooldownHours: number;
   isLocked: boolean;
   onSelect: () => void;
-  cooldownRemaining?: string; // ISO string
+  cooldownRemaining?: string;
   accentColor: string;
   lightColor: string;
 }
@@ -32,7 +32,7 @@ export function AIToolCard({
       style={{
         background: isLocked ? "#EAEAEA" : lightColor,
         border: "4px solid #000",
-        borderRadius: "0px", // Sharp corners for more "brutalism"
+        borderRadius: "0px",
         boxShadow: "6px 6px 0px #000",
         padding: "clamp(24px, 4vw, 32px)",
         cursor: isLocked || isCooldown ? "not-allowed" : "pointer",

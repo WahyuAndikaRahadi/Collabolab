@@ -28,7 +28,6 @@ const updateTaskSchema = z.object({
   position: z.number().optional(),
 });
 
-// GET /api/hub/[projectId]/tasks?roomId=xxx (or global if no roomId)
 export async function GET(req: NextRequest, { params }: Params) {
   const { projectId } = await params;
   const session = await auth();
@@ -53,7 +52,6 @@ export async function GET(req: NextRequest, { params }: Params) {
   return NextResponse.json(tasks);
 }
 
-// POST /api/hub/[projectId]/tasks
 export async function POST(req: NextRequest, { params }: Params) {
   const { projectId } = await params;
   const session = await auth();
@@ -74,7 +72,6 @@ export async function POST(req: NextRequest, { params }: Params) {
       return NextResponse.json({ error: "Hanya Admin atau anggota dengan Role yang bisa menugaskan task." }, { status: 403 });
   }
 
-  // Anti-overcommit check (max 3 tasks in IN_PROGRESS)
   if (assigneeId && rest.status === "IN_PROGRESS") {
     const inProgressCount = await prisma.hubTask.count({
       where: { assigneeId, status: "IN_PROGRESS" }
@@ -84,7 +81,6 @@ export async function POST(req: NextRequest, { params }: Params) {
     }
   }
 
-  // Validate room belongs to project
   let resolvedRoomId = roomId;
   if (!roomId) {
     const kanbanRoom = await prisma.hubRoom.findFirst({ where: { projectId, type: "KANBAN" } });
@@ -109,12 +105,10 @@ export async function POST(req: NextRequest, { params }: Params) {
     },
   });
 
-  // Broadcast
   try {
     await pusherServer.trigger(CHANNELS.hub(projectId), EVENTS.HUB_TASK_CREATED, task);
   } catch {}
 
-  // Notify assignee
   if (task.assigneeId && task.assigneeId !== session.user.id) {
     const project = await prisma.project.findUnique({ where: { id: projectId }, select: { title: true } });
     await prisma.notification.create({
@@ -132,7 +126,6 @@ export async function POST(req: NextRequest, { params }: Params) {
   return NextResponse.json(task, { status: 201 });
 }
 
-// PATCH /api/hub/[projectId]/tasks
 export async function PATCH(req: NextRequest, { params }: Params) {
   const { projectId } = await params;
   const session = await auth();
@@ -153,7 +146,6 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   if (!existingTask) return NextResponse.json({ error: "Task not found" }, { status: 404 });
   if (existingTask.isApproved) return NextResponse.json({ error: "Task ini sudah di-approve dan tidak bisa diubah lagi." }, { status: 403 });
 
-  // Status change validation
   if (updates.status !== undefined && updates.status !== existingTask.status) {
       if (existingTask.assigneeId && existingTask.assigneeId !== session.user.id) {
           const isPrivileged = member.role === "OWNER" || member.role === "ADMIN" || !!member.roleTitle;
@@ -163,20 +155,14 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       }
   }
 
-  // Assignment logic
   if (updates.assigneeId !== undefined) {
       const isPrivileged = member.role === "OWNER" || member.role === "ADMIN" || !!member.roleTitle;
       
       if (updates.assigneeId === null) {
-          // Unclaiming/Unassigning
-          // Anyone can unassign themselves, Privileged can unassign anyone
           if (!isPrivileged && existingTask.assigneeId !== session.user.id) {
               return NextResponse.json({ error: "Hanya Admin atau penanggung jawab task yang bisa melepas penugasan." }, { status: 403 });
           }
       } else {
-          // Assigning
-          // Privileged can assign anyone
-          // Non-privileged can only claim if it was unassigned
           if (!isPrivileged) {
               if (existingTask.assigneeId !== null) {
                   return NextResponse.json({ error: "Task sudah memiliki penanggung jawab." }, { status: 403 });
@@ -186,7 +172,6 @@ export async function PATCH(req: NextRequest, { params }: Params) {
               }
           }
 
-          // Anti-overcommit check
           if (updates.status === "IN_PROGRESS" || (existingTask.status === "IN_PROGRESS" && updates.assigneeId)) {
             const targetAssigneeId = updates.assigneeId || existingTask.assigneeId;
             if (targetAssigneeId) {
@@ -219,7 +204,6 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     await pusherServer.trigger(CHANNELS.hub(projectId), EVENTS.HUB_TASK_UPDATED, task);
   } catch {}
 
-  // Notify if assigned to someone new
   if (updates.assigneeId && updates.assigneeId !== existingTask?.assigneeId && updates.assigneeId !== session.user.id) {
     const project = await prisma.project.findUnique({ where: { id: projectId }, select: { title: true } });
     await prisma.notification.create({

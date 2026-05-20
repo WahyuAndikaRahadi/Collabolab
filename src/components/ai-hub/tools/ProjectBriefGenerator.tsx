@@ -143,7 +143,6 @@ export function ProjectBriefGenerator({ onBack }: Props) {
 
             <button
               onClick={() => {
-                // Implement redirect to create project with these values
                 window.location.href = `/project/create?ai_draft=${encodeURIComponent(JSON.stringify(result))}`;
               }}
               style={{

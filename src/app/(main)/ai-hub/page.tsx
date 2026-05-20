@@ -15,7 +15,6 @@ export default async function Page() {
 
   if (!user) redirect("/login");
 
-  // Get current usage status for all tools
   const usages = await prisma.aIToolUsage.findMany({
     where: { userId: session.user.id },
     orderBy: { usedAt: "desc" },

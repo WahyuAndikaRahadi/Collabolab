@@ -63,10 +63,8 @@ export default async function MyProjectsPage() {
 
   const userId = session.user.id;
 
-  // Fetch projects
   const projects = await getUserProjects(userId);
 
-  // Fetch user skills for match indicator
   const userWithSkills = await prisma.user.findUnique({
     where: { id: userId },
     select: { skills: { select: { skillName: true } } },

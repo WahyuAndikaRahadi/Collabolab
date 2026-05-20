@@ -16,7 +16,6 @@ export async function POST(req: NextRequest, { params }: Params) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // 1. Verify user is admin/owner
   const member = await prisma.projectMember.findUnique({
     where: { projectId_userId: { projectId, userId: session.user.id } },
   });
@@ -30,7 +29,6 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   const { action, note } = parsed.data;
 
-  // 2. Find task
   const task = await prisma.hubTask.findUnique({ where: { id: taskId } });
   if (!task) return NextResponse.json({ error: "Task tidak ditemukan." }, { status: 404 });
   if (task.status !== "DONE") return NextResponse.json({ error: "Task harus berstatus DONE untuk di-review." }, { status: 400 });
@@ -40,7 +38,6 @@ export async function POST(req: NextRequest, { params }: Params) {
     let updatedTask;
 
     if (action === "APPROVE") {
-      // --- APPROVE LOGIC ---
       updatedTask = await prisma.hubTask.update({
         where: { id: taskId },
         data: {
@@ -49,17 +46,15 @@ export async function POST(req: NextRequest, { params }: Params) {
         }
       });
 
-      // Tambahkan poin ke Assignee jika ada
       if (task.assigneeId) {
         await prisma.user.update({
           where: { id: task.assigneeId },
           data: {
-            trustScore: { increment: 2 }, // Poin kecil untuk penyelesaian task
+            trustScore: { increment: 2 },
             eventScore: { increment: 2 }
           }
         });
 
-        // Notifikasi ke user bahwa tasknya di-approve
         const project = await prisma.project.findUnique({ where: { id: projectId }, select: { title: true } });
         await prisma.notification.create({
           data: {
@@ -74,20 +69,18 @@ export async function POST(req: NextRequest, { params }: Params) {
       }
 
     } else {
-      // --- REVISE LOGIC ---
       if (!note) return NextResponse.json({ error: "Catatan revisi wajib diisi." }, { status: 400 });
 
       updatedTask = await prisma.hubTask.update({
         where: { id: taskId },
         data: {
-          status: "IN_PROGRESS", // Kembalikan ke in progress
+          status: "IN_PROGRESS",
           completedAt: null,
           revisionNote: note,
           isApproved: false,
         }
       });
 
-      // Notifikasi revisi
       if (task.assigneeId) {
         const project = await prisma.project.findUnique({ where: { id: projectId }, select: { title: true } });
         await prisma.notification.create({
@@ -103,7 +96,6 @@ export async function POST(req: NextRequest, { params }: Params) {
       }
     }
 
-    // Broadcast ke Hub
     await pusherServer.trigger(CHANNELS.hub(projectId), EVENTS.HUB_TASK_UPDATED, updatedTask);
 
     return NextResponse.json(updatedTask);

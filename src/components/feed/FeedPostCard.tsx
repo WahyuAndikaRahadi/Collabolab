@@ -18,7 +18,7 @@ interface PostCardProps {
 
 export function FeedPostCard({ post, currentUserId }: PostCardProps) {
   const [likes, setLikes] = useState(post._count.likes);
-  const [isLiked, setIsLiked] = useState(false); // Should ideally come from API or initial data
+  const [isLiked, setIsLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [isReporting, setIsReporting] = useState(false);
 
@@ -38,14 +38,13 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
 
   const getDeadlineColor = (deadline: string) => {
     const days = Math.ceil((new Date(deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-    if (days < 3) return "#FF4D4D"; // Red
-    if (days < 7) return "#FFE500"; // Yellow
-    return "#00D37F"; // Green
+    if (days < 3) return "#FF4D4D";
+    if (days < 7) return "#FFE500";
+    return "#00D37F";
   };
 
   const renderContent = (text: string) => {
     if (!text) return null;
-    // Split on @username and #tag patterns
     const parts = text.split(/(@\w+|#\w+)/g);
     return parts.map((part, i) => {
       if (part.startsWith("@")) {
@@ -118,7 +117,7 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
         gap: "14px", 
         borderBottom: "2px solid #f0f0f0",
         background: "linear-gradient(135deg, #fff 0%, #fafafa 100%)",
-        minWidth: 0 // Prevent overflow
+        minWidth: 0
       }}>
         <div style={{ 
           width: "48px", 
@@ -305,7 +304,7 @@ export function FeedPostCard({ post, currentUserId }: PostCardProps) {
         borderTop: "3px solid #000", 
         display: "flex", 
         alignItems: "center", 
-        gap: "12px", // Slightly reduced gap for mobile
+        gap: "12px",
         background: "#FFFFFF",
         flexWrap: "wrap"
       }}>

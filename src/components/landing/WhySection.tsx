@@ -199,7 +199,7 @@ export function WhySection() {
               index={index}
               style={{
                 perspective: "1000px",
-                zIndex: 1, // Default z-index
+                zIndex: 1,
               }}
             >
               <div

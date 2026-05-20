@@ -58,7 +58,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.trustLevel = (user as any).trustLevel;
       }
 
-      // Handle session update from client
       if (trigger === "update" && session) {
         if (session.onboardingDone !== undefined) token.onboardingDone = session.onboardingDone;
         if (session.role !== undefined) token.role = session.role;
@@ -71,7 +70,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       if (token.id && session.user) {
         try {
-          // Keep DB sync here for client-side fresh data (Node.js runtime)
           const results = await prisma.$queryRawUnsafe<any[]>(
             `SELECT id, name, username, image, role, "trustScore", "trustLevel", "availStatus", "onboardingDone", "isBlocked" FROM "User" WHERE id = $1`,
             token.id
@@ -91,7 +89,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }
         } catch (error) {
           console.error("Session sync error:", error);
-          // Fallback to token
           session.user.id = token.id as string;
           session.user.role = token.role as any;
           session.user.onboardingDone = token.onboardingDone as boolean;

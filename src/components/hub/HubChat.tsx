@@ -49,7 +49,6 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
   const isAnnouncement = roomType === "ANNOUNCEMENT";
   const canSend = !isAnnouncement || isOwner;
 
-  // Load messages
   useEffect(() => {
     setLoading(true);
     setMessages([]);
@@ -60,7 +59,6 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
       .finally(() => setLoading(false));
   }, [projectId, roomId]);
 
-  // Pusher subscription
   useEffect(() => {
     let pusher: ReturnType<typeof getPusherClient>;
     try {
@@ -78,13 +76,11 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
     };
   }, [roomId]);
 
-  // Auto scroll
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   async function handleSend(content: string, mentions: string[]) {
-    // 1. Optimistic Update
     const pendingId = `pending-${Date.now()}`;
     const pendingMsg: HubMessage = {
       id: pendingId,
@@ -102,7 +98,6 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
 
     setMessages((prev) => [...prev, pendingMsg]);
 
-    // 2. Fetch API
     try {
       const res = await fetch(`/api/hub/${projectId}/rooms/${roomId}/messages`, {
         method: "POST",
@@ -115,19 +110,15 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
         savedMsg.status = "sent";
         
         setMessages((prev) => {
-          // If Pusher already broadcasted it before fetch completed, avoid duplicate
           if (prev.find(m => m.id === savedMsg.id)) {
             return prev.filter(m => m.id !== pendingId).map(m => m.id === savedMsg.id ? { ...m, status: "sent" } : m);
           }
-          // Otherwise, replace the pending message with the real one
           return prev.map((m) => (m.id === pendingId ? savedMsg : m));
         });
       } else {
-        // Rollback optimistic update on error
         setMessages((prev) => prev.filter((m) => m.id !== pendingId));
       }
     } catch {
-      // Rollback on network error
       setMessages((prev) => prev.filter((m) => m.id !== pendingId));
     }
   }
@@ -144,7 +135,6 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
     return d.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: d.getFullYear() !== today.getFullYear() ? "numeric" : undefined });
   };
 
-  // Group messages by day
   const grouped: { date: string; messages: HubMessage[] }[] = [];
   for (const msg of messages) {
     const d = formatDate(msg.createdAt);
@@ -154,25 +144,20 @@ export function HubChat({ projectId, roomId, roomName, roomType, roomDescription
   }
 
   function renderContent(content: string, myMessage: boolean) {
-    // Get all possible display names for project members
     const possibleNames = members.map((m) => {
       if (m.isAnonymous && !m.revealedAt) return `Anon#${m.anonymousTag || "0000"}`;
       return m.user.name;
     });
     possibleNames.push("all");
 
-    // Sort by length descending so we match "Kamen Raiding" before "Kamen"
     const sortedNames = [...possibleNames].sort((a, b) => b.length - a.length);
     
-    // Escape special characters in names for use in regex
     const escapedNames = sortedNames.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
     
-    // Create regex that matches @ followed by any of the member names
     const mentionRegex = new RegExp(`(@(?:${escapedNames.join("|")}))`, "g");
 
     const parts = content.split(mentionRegex);
     return parts.map((part, i) => {
-      // Check if this part is a valid mention from our list
       const isMention = part.startsWith("@") && possibleNames.some(n => `@${n}` === part);
       
       if (isMention) {

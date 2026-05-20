@@ -18,9 +18,8 @@ export function FeedPage({ user }: Props) {
   const [showSidebar, setShowSidebar] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
-  const [drawerTop, setDrawerTop] = useState(128); // Default fallback
+  const [drawerTop, setDrawerTop] = useState(128);
 
-  // Check for mobile
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024);
     check();
@@ -28,7 +27,6 @@ export function FeedPage({ user }: Props) {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Lock body scroll when sidebar is open on mobile
   useEffect(() => {
     if (isMobile && showSidebar) {
       document.body.style.overflow = "hidden";
@@ -116,7 +114,7 @@ export function FeedPage({ user }: Props) {
           padding: "0 16px",
           position: "sticky",
           top: 0,
-          zIndex: 99, // Below drawer
+          zIndex: 99,
           gap: "12px"
         }}>
           <button 

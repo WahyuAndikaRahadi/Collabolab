@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { pusherServer } from "@/lib/pusher";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -14,6 +15,38 @@ export async function POST(req: NextRequest) {
 
     if (!socketId || !channel) {
       return NextResponse.json({ error: "Missing params" }, { status: 400 });
+    }
+
+    const projectMatch = channel.match(/^(private|presence)-project-([a-zA-Z0-9_-]+)$/);
+    if (projectMatch) {
+      const projectId = projectMatch[2];
+      const member = await prisma.projectMember.findFirst({
+        where: { projectId, userId: session.user.id },
+        select: { id: true }
+      });
+      if (!member) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    }
+
+    const hubMatch = channel.match(/^(private|presence)-hub-([a-zA-Z0-9_-]+)$/);
+    if (hubMatch) {
+      const projectId = hubMatch[2];
+      const member = await prisma.projectMember.findFirst({
+        where: { projectId, userId: session.user.id },
+        select: { id: true }
+      });
+      if (!member) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    }
+
+    const userMatch = channel.match(/^private-user-([a-zA-Z0-9_-]+)$/);
+    if (userMatch) {
+      const targetUserId = userMatch[1];
+      if (session.user.id !== targetUserId) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
     }
 
     if (channel.startsWith("presence-")) {

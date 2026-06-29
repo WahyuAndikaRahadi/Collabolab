@@ -1,13 +1,91 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { MagnetWrapper } from "./MagnetWrapper";
 
+gsap.registerPlugin(ScrollTrigger);
+
 export function HeroSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const smallShapeARef = useRef<HTMLDivElement>(null);
+  const smallShapeBRef = useRef<HTMLDivElement>(null);
+  const smallShapeCRef = useRef<HTMLDivElement>(null);
+  const mediumShapeRef = useRef<HTMLDivElement>(null);
+  const largeCircleRef = useRef<HTMLDivElement>(null);
+  const heroTextRef = useRef<HTMLDivElement>(null);
+  const mintBarRef = useRef<HTMLDivElement>(null);
+  const crossSymbolRef = useRef<HTMLDivElement>(null);
+  const plusSymbolRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const trigger = {
+        trigger: sectionRef.current,
+        start: "top top",
+        end: "bottom top",
+        scrub: 1.5,
+      };
+
+      gsap.to(smallShapeARef.current, {
+        y: -150,
+        scrollTrigger: trigger,
+      });
+
+      gsap.to(smallShapeBRef.current, {
+        y: -150,
+        rotate: 60,
+        scrollTrigger: trigger,
+      });
+
+      gsap.to(smallShapeCRef.current, {
+        y: -120,
+        scrollTrigger: trigger,
+      });
+
+      gsap.to(mintBarRef.current, {
+        y: -120,
+        scrollTrigger: trigger,
+      });
+
+      gsap.to(mediumShapeRef.current, {
+        y: -80,
+        rotate: -20,
+        scrollTrigger: trigger,
+      });
+
+      gsap.to(largeCircleRef.current, {
+        y: 60,
+        rotate: 45,
+        scrollTrigger: trigger,
+      });
+
+      gsap.to(heroTextRef.current, {
+        y: -30,
+        scrollTrigger: trigger,
+      });
+
+      gsap.to(crossSymbolRef.current, {
+        y: -100,
+        scrollTrigger: trigger,
+      });
+
+      gsap.to(plusSymbolRef.current, {
+        y: -80,
+        scrollTrigger: trigger,
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       style={{
         background: "#F5F0E8",
         borderBottom: "3px solid #000",
@@ -19,25 +97,24 @@ export function HeroSection() {
         alignItems: "center",
       }}
     >
-      {/* Background patterns */}
-      <div 
-        style={{ 
-          position: "absolute", 
-          inset: 0, 
-          backgroundImage: "radial-gradient(#000 1.5px, transparent 1.5px)", 
-          backgroundSize: "40px 40px", 
+      {/* Background dot pattern */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: "radial-gradient(#000 1.5px, transparent 1.5px)",
+          backgroundSize: "40px 40px",
           opacity: 0.05,
-          zIndex: 0 
-        }} 
+          zIndex: 0,
+        }}
       />
 
       {/* Geometric decorations */}
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
-        {/* Big yellow block top-right */}
+        {/* Big yellow block top-right — large, moves down + rotates */}
         <MagnetWrapper strength={40}>
-          <motion.div
-            animate={{ y: [0, -15, 0], rotate: [15, 12, 15] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          <div
+            ref={largeCircleRef}
             style={{
               position: "absolute",
               top: "-40px",
@@ -48,15 +125,15 @@ export function HeroSection() {
               border: "3px solid #000",
               boxShadow: "12px 12px 0px #000",
               opacity: 0.8,
+              transform: "rotate(15deg)",
             }}
           />
         </MagnetWrapper>
 
-        {/* Blue block bottom-left */}
+        {/* Blue block bottom-left — medium, moves up slowly */}
         <MagnetWrapper strength={-30}>
-          <motion.div
-            animate={{ y: [0, 20, 0], rotate: [-8, -12, -8] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+          <div
+            ref={mediumShapeRef}
             style={{
               position: "absolute",
               bottom: "60px",
@@ -67,14 +144,15 @@ export function HeroSection() {
               border: "3px solid #000",
               boxShadow: "8px 8px 0px #000",
               opacity: 0.8,
+              transform: "rotate(-8deg)",
             }}
           />
         </MagnetWrapper>
-        {/* Green circle bottom-right */}
+
+        {/* Green circle bottom-right — small, moves fast upward */}
         <MagnetWrapper strength={20}>
-          <motion.div
-            animate={{ scale: [1, 1.1, 1], x: [0, 10, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          <div
+            ref={smallShapeARef}
             style={{
               position: "absolute",
               bottom: "-30px",
@@ -89,12 +167,12 @@ export function HeroSection() {
             }}
           />
         </MagnetWrapper>
-        {/* Small coral square */}
+
+        {/* Small coral square — small, fastest upward */}
         <MagnetWrapper strength={50}>
-          <motion.div
+          <div
+            ref={smallShapeBRef}
             className="hidden sm:block"
-            animate={{ rotate: [20, 380] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
             style={{
               position: "absolute",
               top: "25%",
@@ -105,14 +183,15 @@ export function HeroSection() {
               border: "3px solid #000",
               boxShadow: "4px 4px 0px #000",
               opacity: 0.7,
+              transform: "rotate(20deg)",
             }}
           />
         </MagnetWrapper>
-        {/* Dashed outline square top-left */}
+
+        {/* Dashed outline square top-left — small */}
         <MagnetWrapper strength={-15}>
-          <motion.div
-            animate={{ x: [0, -20, 0], y: [0, 10, 0] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          <div
+            ref={smallShapeCRef}
             style={{
               position: "absolute",
               top: "60px",
@@ -126,13 +205,11 @@ export function HeroSection() {
           />
         </MagnetWrapper>
 
-        {/* Floating Mint bar center-left */}
-        {/* Floating Mint bar center-left - Hidden on small mobile */}
+        {/* Floating mint bar center-left */}
         <MagnetWrapper strength={30}>
-          <motion.div
+          <div
+            ref={mintBarRef}
             className="hidden sm:block"
-            animate={{ x: [-10, 10, -10], rotate: [45, 50, 45] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             style={{
               position: "absolute",
               top: "40%",
@@ -143,11 +220,12 @@ export function HeroSection() {
               border: "2px solid #000",
               boxShadow: "3px 3px 0px #000",
               opacity: 0.3,
+              transform: "rotate(45deg)",
             }}
           />
         </MagnetWrapper>
 
-        {/* Scattered Dot patterns - MOAR */}
+        {/* Scattered dot patterns */}
         <div style={{ position: "absolute", top: "20%", left: "10%", display: "grid", gridTemplateColumns: "repeat(4, 10px)", gap: "8px", opacity: 0.25 }}>
           {Array.from({ length: 12 }).map((_, i) => (
             <div key={i} style={{ width: "6px", height: "6px", background: "#000", borderRadius: "50%" }} />
@@ -166,25 +244,26 @@ export function HeroSection() {
           ))}
         </div>
 
-        {/* Floating "X" and "+" symbols */}
-        <motion.div
+        {/* Floating × symbol */}
+        <div
+          ref={crossSymbolRef}
           className="hidden sm:block"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
           style={{ position: "absolute", top: "45%", right: "8%", fontSize: "32px", fontWeight: 900, opacity: 0.15, color: "#000" }}
         >
           ×
-        </motion.div>
-        <motion.div
+        </div>
+
+        {/* Floating + symbol */}
+        <div
+          ref={plusSymbolRef}
           className="hidden sm:block"
-          animate={{ y: [0, -20, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           style={{ position: "absolute", bottom: "35%", left: "8%", fontSize: "40px", fontWeight: 900, opacity: 0.1, color: "#0047FF" }}
         >
           +
-        </motion.div>
+        </div>
       </div>
 
+      {/* Hero content — scroll-parallax lag layer */}
       <div
         style={{
           maxWidth: "1200px",
@@ -195,6 +274,7 @@ export function HeroSection() {
         }}
       >
         <div
+          ref={heroTextRef}
           style={{
             maxWidth: "800px",
             margin: "0 auto",
@@ -262,7 +342,6 @@ export function HeroSection() {
             Platform kolaborasi untuk{" "}
             <span style={{ position: "relative", display: "inline-block" }}>
               Gen-Z
-              {/* Hand-drawn Underline Accent */}
               <svg
                 viewBox="0 0 100 20"
                 style={{
@@ -295,9 +374,9 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            style={{ 
-              display: "flex", 
-              gap: "16px", 
+            style={{
+              display: "flex",
+              gap: "16px",
               flexDirection: "row",
               flexWrap: "wrap",
               width: "100%",
@@ -314,7 +393,7 @@ export function HeroSection() {
             </Link>
           </motion.div>
 
-          {/* Social proof & SDG */}
+          {/* Social proof */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -328,7 +407,6 @@ export function HeroSection() {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
-              {/* Avatar stack */}
               <div style={{ display: "flex", alignItems: "center" }}>
                 {["Felix", "Aneka", "Adrian", "Bernard"].map((seed, i) => (
                   <div

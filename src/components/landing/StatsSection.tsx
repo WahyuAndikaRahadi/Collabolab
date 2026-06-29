@@ -1,10 +1,19 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TiltWrapper } from "./TiltWrapper";
 import CountUp from "./CountUp";
 
+gsap.registerPlugin(ScrollTrigger);
+
 export function StatsSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const statsGridRef = useRef<HTMLDivElement>(null);
+  const impactsGridRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+
   const stats = [
     {
       value: 68,
@@ -74,22 +83,62 @@ export function StatsSection() {
     },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
-  } as const;
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const statCards = statsGridRef.current?.querySelectorAll<HTMLElement>(".stat-card");
+      if (statCards && statCards.length > 0) {
+        gsap.set(statCards, { opacity: 0, scale: 0.8 });
+        gsap.to(statCards, {
+          opacity: 1,
+          scale: 1,
+          stagger: 0.2,
+          ease: "back.out(1.7)",
+          duration: 0.6,
+          scrollTrigger: {
+            trigger: statsGridRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
-  } as const;
+      const impactCards = impactsGridRef.current?.querySelectorAll<HTMLElement>(".impact-card");
+      if (impactCards && impactCards.length > 0) {
+        gsap.set(impactCards, { opacity: 0, scale: 0.8 });
+        gsap.to(impactCards, {
+          opacity: 1,
+          scale: 1,
+          stagger: 0.15,
+          ease: "back.out(1.7)",
+          duration: 0.6,
+          scrollTrigger: {
+            trigger: impactsGridRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        });
+      }
+
+      gsap.from(headerRef.current, {
+        opacity: 0,
+        y: 30,
+        duration: 0.7,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: headerRef.current,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
       id="stats"
+      ref={sectionRef}
       style={{
         background: "#FFFFFF",
         padding: "clamp(60px, 10vh, 100px) 24px",
@@ -98,9 +147,8 @@ export function StatsSection() {
         overflow: "hidden",
       }}
     >
-      {/* Dynamic Background Elements - Fun & Alive */}
+      {/* Geometric background decorations */}
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
-        {/* Giant Background Text */}
         <div style={{
           position: "absolute",
           top: "50%",
@@ -119,11 +167,8 @@ export function StatsSection() {
           THE DATA
         </div>
 
-        {/* Floating Sticker: RESEARCH-BACKED */}
-        <motion.div
+        <div
           className="hidden sm:block"
-          animate={{ x: [0, -10, 0], rotate: [2, -2, 2] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           style={{
             position: "absolute",
             top: "10%",
@@ -141,12 +186,9 @@ export function StatsSection() {
           }}
         >
           📊 RESEARCH-BACKED
-        </motion.div>
+        </div>
 
-        {/* Yellow Circle top-right */}
-        <motion.div
-          animate={{ scale: [1, 1.1, 1], y: [0, 15, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        <div
           style={{
             position: "absolute",
             top: "5%",
@@ -161,10 +203,7 @@ export function StatsSection() {
           }}
         />
 
-        {/* Blue Square bottom-left */}
-        <motion.div
-          animate={{ rotate: [-5, 5, -5], x: [0, 20, 0] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        <div
           style={{
             position: "absolute",
             bottom: "8%",
@@ -175,13 +214,11 @@ export function StatsSection() {
             border: "3px solid #000",
             boxShadow: "6px 6px 0px #000",
             opacity: 0.3,
+            transform: "rotate(-5deg)",
           }}
         />
 
-        {/* Green Triangle middle-right */}
-        <motion.div
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+        <div
           style={{
             position: "absolute",
             top: "40%",
@@ -192,21 +229,12 @@ export function StatsSection() {
           }}
         >
           <svg viewBox="0 0 100 100" style={{ width: "100%", height: "100%", overflow: "visible" }}>
-            <path
-              d="M50 5 L95 85 L5 85 Z"
-              fill="#00D37F"
-              stroke="#000"
-              strokeWidth="6"
-              style={{ filter: "drop-shadow(4px 4px 0px #000)" }}
-            />
+            <path d="M50 5 L95 85 L5 85 Z" fill="#00D37F" stroke="#000" strokeWidth="6" style={{ filter: "drop-shadow(4px 4px 0px #000)" }} />
           </svg>
-        </motion.div>
+        </div>
 
-        {/* Coral Square floating */}
-        <motion.div
+        <div
           className="hidden sm:block"
-          animate={{ y: [0, -30, 0], rotate: [45, 60, 45] }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
           style={{
             position: "absolute",
             top: "15%",
@@ -217,22 +245,13 @@ export function StatsSection() {
             border: "2px solid #000",
             boxShadow: "4px 4px 0px #000",
             opacity: 0.2,
+            transform: "rotate(52deg)",
           }}
         />
 
-        {/* Floating Symbols */}
-        <motion.div
-          className="hidden sm:block"
-          animate={{ rotate: [0, 360], scale: [1, 1.2, 1] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          style={{ position: "absolute", top: "50%", left: "8%", fontSize: "32px", fontWeight: 900, opacity: 0.1, color: "#00D37F" }}>★</motion.div>
-        <motion.div
-          className="hidden sm:block"
-          animate={{ rotate: [360, 0], y: [0, -20, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: "absolute", top: "18%", left: "45%", fontSize: "28px", fontWeight: 900, opacity: 0.1 }}>×</motion.div>
-        
-        {/* Scattered Dot Grids */}
+        <div className="hidden sm:block" style={{ position: "absolute", top: "50%", left: "8%", fontSize: "32px", fontWeight: 900, opacity: 0.1, color: "#00D37F" }}>★</div>
+        <div className="hidden sm:block" style={{ position: "absolute", top: "18%", left: "45%", fontSize: "28px", fontWeight: 900, opacity: 0.1 }}>×</div>
+
         <div style={{ position: "absolute", top: "15%", right: "20%", display: "grid", gridTemplateColumns: "repeat(6, 10px)", gap: "8px", opacity: 0.15 }}>
           {Array.from({ length: 36 }).map((_, i) => (
             <div key={i} style={{ width: "4px", height: "4px", background: "#000", borderRadius: "50%" }} />
@@ -242,21 +261,14 @@ export function StatsSection() {
 
       <div style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 1 }}>
         {/* Section Header */}
-        <div style={{ textAlign: "center", marginBottom: "60px" }}>
-          <motion.span
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+        <div ref={headerRef} style={{ textAlign: "center", marginBottom: "60px" }}>
+          <span
             className="section-label"
             style={{ background: "#FFE500", boxShadow: "4px 4px 0px #000", color: "#000" }}
           >
             URGENSI & RISET 2024
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
+          </span>
+          <h2
             style={{
               fontFamily: "Space Grotesk, sans-serif",
               fontWeight: 900,
@@ -267,24 +279,15 @@ export function StatsSection() {
           >
             Mengapa CollaboLab <br />
             <span style={{ color: "#FFE500", textShadow: "1.5px 1.5px 0px #000" }}>Dirancang Seperti Ini?</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            style={{ maxWidth: "800px", margin: "24px auto 0", fontSize: "18px", color: "#3D3D3D", lineHeight: 1.5, fontWeight: 500 }}
-          >
+          </h2>
+          <p style={{ maxWidth: "800px", margin: "24px auto 0", fontSize: "18px", color: "#3D3D3D", lineHeight: 1.5, fontWeight: 500 }}>
             Kami mengintegrasikan riset Gallup & HBR untuk menciptakan ekosistem yang relevan bagi masa depan Gen-Z.
-          </motion.p>
+          </p>
         </div>
 
-        {/* Stats Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+        {/* Stats Grid — staggered pop-up via GSAP */}
+        <div
+          ref={statsGridRef}
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
@@ -294,8 +297,8 @@ export function StatsSection() {
         >
           {stats.map((stat, i) => (
             <TiltWrapper key={i} index={i}>
-              <motion.div
-                variants={itemVariants}
+              <div
+                className="stat-card"
                 style={{
                   background: stat.color,
                   color: stat.textColor || "#000",
@@ -311,21 +314,11 @@ export function StatsSection() {
                   minHeight: "220px",
                 }}
               >
-                {/* Card Icon Floating */}
                 <div style={{ position: "absolute", top: "15px", right: "15px", fontSize: "28px", opacity: 0.25 }}>
                   {stat.icon}
                 </div>
-
                 <div style={{ fontSize: "52px", fontWeight: 900, fontFamily: "Space Grotesk, sans-serif", lineHeight: 1, letterSpacing: "-0.04em" }}>
-                  <CountUp
-                    from={0}
-                    to={stat.value}
-                    separator=","
-                    direction="up"
-                    duration={2}
-                    className="count-up-text"
-                    delay={0}
-                  />%
+                  <CountUp from={0} to={stat.value} separator="," direction="up" duration={2} className="count-up-text" delay={0} />%
                 </div>
                 <div style={{ fontWeight: 800, fontSize: "18px", textTransform: "uppercase", letterSpacing: "1px" }}>
                   {stat.label}
@@ -333,20 +326,15 @@ export function StatsSection() {
                 <p style={{ fontSize: "14px", lineHeight: 1.5, fontWeight: 500 }}>
                   {stat.desc}
                 </p>
-
-                <div style={{ position: "absolute", bottom: "-10px", right: "-10px", width: "30px", height: "30px", background: "rgba(0,0,0,0.05)", borderRadius: "50%" }}></div>
-              </motion.div>
+                <div style={{ position: "absolute", bottom: "-10px", right: "-10px", width: "30px", height: "30px", background: "rgba(0,0,0,0.05)", borderRadius: "50%" }} />
+              </div>
             </TiltWrapper>
           ))}
-        </motion.div>
+        </div>
 
         {/* Quote Section */}
         <TiltWrapper>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+          <div
             style={{
               background: "#fff",
               border: "3px solid #000",
@@ -360,9 +348,7 @@ export function StatsSection() {
               marginBottom: "60px",
             }}
           >
-            <motion.div
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            <div
               style={{
                 background: "#FFE500",
                 border: "2px solid #000",
@@ -371,14 +357,14 @@ export function StatsSection() {
                 fontSize: "14px",
                 boxShadow: "4px 4px 0px #000",
                 marginBottom: "32px",
-                textTransform: "uppercase"
+                textTransform: "uppercase",
               }}
             >
               Harvard Business Review, 2024
-            </motion.div>
+            </div>
 
             <div style={{ position: "relative" }}>
-              <span style={{ fontSize: "80px", position: "absolute", top: "-40px", left: "-15px", fontFamily: "serif", opacity: 0.1 }}>“</span>
+              <span style={{ fontSize: "80px", position: "absolute", top: "-40px", left: "-15px", fontFamily: "serif", opacity: 0.1 }}>"</span>
               <p
                 style={{
                   fontFamily: "Space Grotesk, sans-serif",
@@ -388,21 +374,19 @@ export function StatsSection() {
                   color: "#000",
                   position: "relative",
                   zIndex: 1,
-                  maxWidth: "800px"
+                  maxWidth: "800px",
                 }}
               >
-                Gen Z tidak hanya ingin mendapatkan gaji di tempat kerja. Pengembangan instan, komunikasi transparan, dan pekerjaan yang didorong oleh tujuan adalah ekspektasi inti mereka. <span style={{ color: "#0047FF" }}>Manajemen kinerja harus beradaptasi.</span>
+                Gen Z tidak hanya ingin mendapatkan gaji di tempat kerja. Pengembangan instan, komunikasi transparan, dan pekerjaan yang didorong oleh tujuan adalah ekspektasi inti mereka.{" "}
+                <span style={{ color: "#0047FF" }}>Manajemen kinerja harus beradaptasi.</span>
               </p>
-              <span style={{ fontSize: "80px", position: "absolute", bottom: "-60px", right: "-15px", fontFamily: "serif", opacity: 0.1 }}>”</span>
+              <span style={{ fontSize: "80px", position: "absolute", bottom: "-60px", right: "-15px", fontFamily: "serif", opacity: 0.1 }}>"</span>
             </div>
-          </motion.div>
+          </div>
         </TiltWrapper>
 
         {/* Impact Section */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
+        <div
           style={{
             background: "#F5F0E8",
             padding: "clamp(30px, 5vh, 60px) 24px",
@@ -412,20 +396,12 @@ export function StatsSection() {
             overflow: "hidden",
           }}
         >
-          {/* Subtle Noise Texture Overlay */}
-          <div style={{ position: "absolute", inset: 0, opacity: 0.04, pointerEvents: "none", backgroundImage: "url('https://www.transparenttextures.com/patterns/p6-mini.png')" }}></div>
+          <div style={{ position: "absolute", inset: 0, opacity: 0.04, pointerEvents: "none", backgroundImage: "url('https://www.transparenttextures.com/patterns/p6-mini.png')" }} />
 
           <div style={{ marginBottom: "40px", position: "relative", zIndex: 1 }}>
-            <h3
-              style={{
-                fontFamily: "Space Grotesk, sans-serif",
-                fontSize: "clamp(28px, 4vw, 36px)",
-                fontWeight: 900,
-                color: "#000",
-                lineHeight: 1,
-              }}
-            >
-              Proyeksi Dampak <span style={{ background: "#FFE500", padding: "0 8px", boxShadow: "4px 4px 0px #000", border: "2px solid #000" }}>CollaboLab</span>
+            <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "clamp(28px, 4vw, 36px)", fontWeight: 900, color: "#000", lineHeight: 1 }}>
+              Proyeksi Dampak{" "}
+              <span style={{ background: "#FFE500", padding: "0 8px", boxShadow: "4px 4px 0px #000", border: "2px solid #000" }}>CollaboLab</span>
             </h3>
             <p style={{ color: "#3D3D3D", marginTop: "16px", fontSize: "17px", maxWidth: "600px", fontWeight: 500 }}>
               Menerapkan Trust Score dan OKR Transparan untuk kolaborasi yang lebih terukur.
@@ -433,18 +409,20 @@ export function StatsSection() {
           </div>
 
           <div
+            ref={impactsGridRef}
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
               gap: "20px",
               position: "relative",
-              zIndex: 1
+              zIndex: 1,
             }}
             className="sm:grid-cols-2 lg:grid-cols-4"
           >
             {impacts.map((impact, i) => (
               <TiltWrapper key={i} index={i}>
-                <motion.div
+                <div
+                  className="impact-card"
                   style={{
                     background: impact.bg,
                     color: impact.textColor || "#000",
@@ -459,25 +437,17 @@ export function StatsSection() {
                 >
                   <div style={{ fontSize: "36px" }}>{impact.icon}</div>
                   <div style={{ fontSize: "48px", fontWeight: 900, fontFamily: "Space Grotesk, sans-serif", lineHeight: 1 }}>
-                    <CountUp
-                    from={0}
-                    to={impact.value}
-                    separator=","
-                    direction="up"
-                    duration={2}
-                    className="count-up-text"
-                    delay={0}
-                  />%
+                    <CountUp from={0} to={impact.value} separator="," direction="up" duration={2} className="count-up-text" delay={0} />%
                   </div>
                   <div style={{ fontWeight: 800, fontSize: "16px", textTransform: "uppercase" }}>{impact.title}</div>
                   <p style={{ fontSize: "14px", opacity: 0.8, lineHeight: 1.4, fontWeight: 500 }}>
                     {impact.desc}
                   </p>
-                </motion.div>
+                </div>
               </TiltWrapper>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

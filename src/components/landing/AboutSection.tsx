@@ -1,11 +1,51 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function AboutSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const textColRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const accentCircleRef = useRef<HTMLDivElement>(null);
+  const accentCircleRef2 = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const trigger = {
+        trigger: sectionRef.current,
+        start: "top 80%",
+        end: "bottom top",
+        scrub: 2,
+      };
+
+      gsap.to(imageRef.current, {
+        y: -60,
+        scrollTrigger: trigger,
+      });
+
+      gsap.to(accentCircleRef.current, {
+        y: 40,
+        scrollTrigger: trigger,
+      });
+
+      gsap.to(accentCircleRef2.current, {
+        y: 30,
+        rotate: 15,
+        scrollTrigger: trigger,
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
       id="about"
+      ref={sectionRef}
       style={{
         background: "#FFFFFF",
         padding: "clamp(60px, 10vh, 100px) 24px",
@@ -35,10 +75,9 @@ export function AboutSection() {
           WHO WE ARE
         </div>
 
-        {/* Yellow Circle top-right */}
-        <motion.div
-          animate={{ scale: [1, 1.1, 1], y: [0, 15, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        {/* Yellow Circle top-right — scroll parallax accent (bg plate, moves down) */}
+        <div
+          ref={accentCircleRef}
           style={{
             position: "absolute",
             top: "8%",
@@ -53,10 +92,9 @@ export function AboutSection() {
           }}
         />
 
-        {/* Blue Square bottom-left */}
-        <motion.div
-          animate={{ rotate: [-5, 5, -5], x: [0, 20, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        {/* Blue Square bottom-left — scroll parallax secondary accent */}
+        <div
+          ref={accentCircleRef2}
           style={{
             position: "absolute",
             bottom: "12%",
@@ -67,13 +105,12 @@ export function AboutSection() {
             border: "3px solid #000",
             boxShadow: "6px 6px 0px #000",
             opacity: 0.7,
+            transform: "rotate(-5deg)",
           }}
         />
 
-        {/* Green Triangle middle-left */}
-        <motion.div
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+        {/* Green Triangle middle-left — static decorative */}
+        <div
           style={{
             position: "absolute",
             top: "45%",
@@ -84,21 +121,19 @@ export function AboutSection() {
           }}
         >
           <svg viewBox="0 0 100 100" style={{ width: "100%", height: "100%", overflow: "visible" }}>
-            <path 
-              d="M50 5 L95 85 L5 85 Z" 
-              fill="#00D37F" 
-              stroke="#000" 
-              strokeWidth="6" 
+            <path
+              d="M50 5 L95 85 L5 85 Z"
+              fill="#00D37F"
+              stroke="#000"
+              strokeWidth="6"
               style={{ filter: "drop-shadow(4px 4px 0px #000)" }}
             />
           </svg>
-        </motion.div>
+        </div>
 
-        {/* Coral Square floating */}
-        <motion.div
+        {/* Coral Square floating — static */}
+        <div
           className="hidden sm:block"
-          animate={{ y: [0, -20, 0], rotate: [45, 60, 45] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           style={{
             position: "absolute",
             top: "20%",
@@ -109,12 +144,11 @@ export function AboutSection() {
             border: "2px solid #000",
             boxShadow: "4px 4px 0px #000",
             opacity: 0.5,
+            transform: "rotate(52deg)",
           }}
         />
 
-        <motion.div
-          animate={{ rotate: [12, -8, 12], y: [0, 10, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        <div
           style={{
             position: "absolute",
             top: "35%",
@@ -124,12 +158,11 @@ export function AboutSection() {
             border: "3px dashed #000",
             opacity: 0.3,
             borderRadius: "8px",
+            transform: "rotate(12deg)",
           }}
         />
 
-        <motion.div
-          animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
-          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+        <div
           style={{
             position: "absolute",
             bottom: "30%",
@@ -143,10 +176,8 @@ export function AboutSection() {
           }}
         />
 
-        <motion.div
+        <div
           className="hidden sm:block"
-          animate={{ x: [0, 20, 0], rotate: [-15, 15, -15] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           style={{
             position: "absolute",
             top: "60%",
@@ -155,12 +186,11 @@ export function AboutSection() {
             height: "50px",
             border: "2px solid #0047FF",
             opacity: 0.2,
+            transform: "rotate(-15deg)",
           }}
         />
 
-        <motion.div
-          animate={{ scale: [1, 1.3, 1], y: [0, -40, 0] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        <div
           style={{
             position: "absolute",
             bottom: "20%",
@@ -178,13 +208,13 @@ export function AboutSection() {
         <div className="hidden sm:block" style={{ position: "absolute", bottom: "35%", right: "5%", fontSize: "24px", fontWeight: 900, opacity: 0.05, transform: "rotate(-10deg)" }}>×</div>
         <div className="hidden sm:block" style={{ position: "absolute", top: "15%", left: "5%", fontSize: "28px", fontWeight: 900, opacity: 0.08, color: "#FF4D4D" }}>●</div>
 
-        {/* Dot patterns scattered - MOAR */}
+        {/* Dot patterns */}
         <div style={{ position: "absolute", bottom: "5%", right: "2%", display: "grid", gridTemplateColumns: "repeat(4, 10px)", gap: "8px", opacity: 0.15 }}>
           {Array.from({ length: 16 }).map((_, i) => (
             <div key={i} style={{ width: "6px", height: "6px", background: "#000", borderRadius: "50%" }} />
           ))}
         </div>
-        
+
         <div style={{ position: "absolute", top: "15%", left: "5%", display: "grid", gridTemplateColumns: "repeat(3, 8px)", gap: "6px", opacity: 0.1 }}>
           {Array.from({ length: 9 }).map((_, i) => (
             <div key={i} style={{ width: "4px", height: "4px", background: "#000", borderRadius: "50%" }} />
@@ -193,20 +223,15 @@ export function AboutSection() {
       </div>
 
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <div
-          className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8 items-center"
-        >
-          {/* 1. Label - Always at the top */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8 items-center">
+          {/* 1. Label */}
           <div className="order-1">
             <span className="section-label">TENTANG KAMI</span>
           </div>
 
-          {/* 2. Image - Order 2 on mobile, Order 2 on Desktop (right column) */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+          {/* 2. Image — moves upward faster (depth: foreground subject) */}
+          <div
+            ref={imageRef}
             className="order-2 lg:col-start-2 lg:row-start-1 lg:row-span-2"
             style={{
               background: "transparent",
@@ -217,39 +242,35 @@ export function AboutSection() {
               width: "100%",
             }}
           >
-            <img 
-              src="/images/foto1.png" 
-              alt="CollaboLab" 
-              style={{ 
-                maxWidth: "100%", 
-                height: "auto", 
+            <img
+              src="/images/foto1.png"
+              alt="CollaboLab"
+              style={{
+                maxWidth: "100%",
+                height: "auto",
                 maxHeight: "450px",
                 objectFit: "contain",
                 filter: "drop-shadow(10px 10px 0px rgba(0,0,0,0.05))",
                 zIndex: 2,
-              }} 
+              }}
             />
-          </motion.div>
+          </div>
 
-          {/* 3. Text Content - Order 3 on mobile, Order 2 on Desktop (below label) */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+          {/* 3. Text Content — natural scroll speed (ground truth layer) */}
+          <div
+            ref={textColRef}
             className="order-3 lg:order-2 lg:col-start-1"
           >
             <div style={{ position: "relative" }}>
-              {/* Heading Dot Pattern */}
-              <div style={{ 
-                position: "absolute", 
-                top: "-30px", 
-                left: "-20px", 
-                display: "grid", 
-                gridTemplateColumns: "repeat(8, 8px)", 
-                gap: "6px", 
+              <div style={{
+                position: "absolute",
+                top: "-30px",
+                left: "-20px",
+                display: "grid",
+                gridTemplateColumns: "repeat(8, 8px)",
+                gap: "6px",
                 opacity: 0.2,
-                zIndex: -1 
+                zIndex: -1,
               }}>
                 {Array.from({ length: 32 }).map((_, i) => (
                   <div key={i} style={{ width: "4px", height: "4px", background: "#000", borderRadius: "50%" }} />
@@ -272,7 +293,7 @@ export function AboutSection() {
                 dengan <span style={{ color: "#FFE500", textShadow: "1px 1px 0px #000" }}>CollaboLab.</span>
               </h2>
             </div>
-            
+
             <p
               style={{
                 fontSize: "clamp(16px, 2.5vw, 18px)",
@@ -281,17 +302,17 @@ export function AboutSection() {
                 marginBottom: "24px",
               }}
             >
-              CollaboLab adalah platform kolaborasi inovatif yang dirancang khusus untuk memfasilitasi kreativitas Gen-Z. 
-              Dengan mengintegrasikan sistem reputasi yang transparan dan ruang kerja real-time, kami menciptakan 
+              CollaboLab adalah platform kolaborasi inovatif yang dirancang khusus untuk memfasilitasi kreativitas Gen-Z.
+              Dengan mengintegrasikan sistem reputasi yang transparan dan ruang kerja real-time, kami menciptakan
               ekosistem di mana setiap ide memiliki kesempatan untuk tumbuh menjadi project nyata yang berdampak luas.
             </p>
 
             <p style={{ fontStyle: "italic", color: "#666", fontSize: "15px", borderLeft: "4px solid #FFE500", paddingLeft: "16px", marginTop: "32px" }}>
-              "Kami percaya bahwa inovasi terbaik lahir dari kolaborasi, bukan kompetisi yang menjatuhkan." 
+              "Kami percaya bahwa inovasi terbaik lahir dari kolaborasi, bukan kompetisi yang menjatuhkan."
               <br />
               <span style={{ fontWeight: 700, color: "#000", marginTop: "8px", display: "inline-block" }}>— CollaboLab Team</span>
             </p>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

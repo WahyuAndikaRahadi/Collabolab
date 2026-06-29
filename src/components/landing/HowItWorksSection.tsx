@@ -1,7 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CountUp from "./CountUp";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const steps = [
   {
@@ -34,226 +38,80 @@ const steps = [
 ];
 
 export function HowItWorksSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardOneRef = useRef<HTMLDivElement>(null);
+  const cardTwoRef = useRef<HTMLDivElement>(null);
+  const cardThreeRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 1024px)", () => {
+      const ctx = gsap.context(() => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top top",
+            end: "+=300%",
+            scrub: true,
+            pin: true,
+            anticipatePin: 1,
+          },
+        });
+
+        tl.fromTo(
+          cardOneRef.current,
+          { opacity: 1, scale: 1 },
+          { opacity: 0, scale: 0.9, duration: 1 }
+        )
+          .fromTo(
+            cardTwoRef.current,
+            { opacity: 0, scale: 0.95 },
+            { opacity: 1, scale: 1, duration: 1 },
+            "-=0.2"
+          )
+          .to(cardTwoRef.current, { opacity: 0, scale: 0.9, duration: 1 })
+          .fromTo(
+            cardThreeRef.current,
+            { opacity: 0, scale: 0.95 },
+            { opacity: 1, scale: 1, duration: 1 },
+            "-=0.2"
+          );
+      }, containerRef);
+
+      return () => ctx.revert();
+    });
+
+    mm.add("(max-width: 1023px)", () => {
+      gsap.set([cardOneRef.current, cardTwoRef.current, cardThreeRef.current], {
+        opacity: 1,
+        scale: 1,
+      });
+    });
+
+    return () => mm.revert();
+  }, []);
+
   return (
     <section
       id="how-it-works"
+      ref={sectionRef}
       style={{
         background: "#F5F0E8",
         borderBottom: "3px solid #000",
-        padding: "80px 24px",
         position: "relative",
-        overflow: "hidden",
-        minHeight: "calc(100vh - 72px)",
-        display: "flex",
-        alignItems: "center",
       }}
     >
-      {/* Geometric decorations */}
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
-        {/* Large Blue circle outline top-left */}
-        <motion.div
-          animate={{ scale: [1, 1.05, 1], rotate: [0, 5, 0] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            position: "absolute",
-            top: "-80px",
-            left: "-80px",
-            width: "300px",
-            height: "300px",
-            border: "4px solid #0047FF",
-            borderRadius: "50%",
-            opacity: 0.1,
-          }}
-        />
-
-        {/* Coral Square bottom-left */}
-        <motion.div
-          animate={{ rotate: [-10, 10, -10] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            position: "absolute",
-            bottom: "10%",
-            left: "5%",
-            width: "80px",
-            height: "80px",
-            background: "#FF4D4D",
-            border: "3px solid #000",
-            boxShadow: "6px 6px 0px #000",
-            opacity: 0.4,
-          }}
-        />
-
-        {/* Green Triangle top-right */}
-        <motion.div
-          animate={{ y: [0, 20, 0], rotate: [15, 45, 15] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            position: "absolute",
-            top: "10%",
-            right: "5%",
-            width: "70px",
-            height: "70px",
-            opacity: 0.4,
-          }}
-        >
-          <svg viewBox="0 0 100 100" style={{ width: "100%", height: "100%" }}>
-            <path d="M50 5 L95 85 L5 85 Z" fill="#00D37F" stroke="#000" strokeWidth="6" />
-          </svg>
-        </motion.div>
-
-        {/* Yellow dashed circle middle-right */}
-        <motion.div
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          style={{
-            position: "absolute",
-            top: "40%",
-            right: "3%",
-            width: "120px",
-            height: "120px",
-            border: "3px dashed #FFE500",
-            borderRadius: "50%",
-            opacity: 0.3,
-          }}
-        />
-
-        <motion.div
-          animate={{ x: [0, 20, 0], y: [0, -20, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            position: "absolute",
-            top: "20%",
-            left: "10%",
-            width: "12px",
-            height: "12px",
-            background: "#FFE500",
-            borderRadius: "50%",
-            border: "1.5px solid #000",
-            opacity: 0.5,
-          }}
-        />
-
-        <motion.div
-          animate={{ rotate: [-15, 15, -15], scale: [1, 1.1, 1] }}
-          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            position: "absolute",
-            top: "60%",
-            right: "8%",
-            width: "60px",
-            height: "60px",
-            border: "2px solid #0047FF",
-            opacity: 0.15,
-          }}
-        />
-
-        <div style={{ position: "absolute", top: "45%", left: "3%", fontSize: "32px", fontWeight: 900, opacity: 0.05, transform: "rotate(-20deg)" }}>×</div>
-        <div style={{ position: "absolute", bottom: "35%", right: "12%", fontSize: "28px", fontWeight: 900, opacity: 0.07, transform: "rotate(10deg)" }}>O</div>
-        <div style={{ position: "absolute", top: "15%", left: "45%", fontSize: "24px", fontWeight: 900, opacity: 0.1 }}>+</div>
-
-        <motion.div
-          animate={{ scale: [1, 1.1, 1], y: [0, -30, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            position: "absolute",
-            bottom: "-100px",
-            right: "-50px",
-            width: "350px",
-            height: "350px",
-            border: "5px solid #FFE500",
-            borderRadius: "50%",
-            opacity: 0.1,
-          }}
-        />
-
-        <motion.div
-          animate={{ x: [0, -30, 0], rotate: [0, 5, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            position: "absolute",
-            top: "30%",
-            right: "12%",
-            width: "140px",
-            height: "15px",
-            background: "#00D37F",
-            border: "2px solid #000",
-            boxShadow: "4px 4px 0px #000",
-            opacity: 0.2,
-          }}
-        />
-
-        <motion.div
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "40%",
-            width: "40px",
-            height: "40px",
-            background: "#0047FF",
-            border: "2px solid #000",
-            boxShadow: "3px 3px 0px #000",
-            opacity: 0.15,
-          }}
-        />
-
-        {/* Scattered dots - MOAR MOAR */}
-        <div style={{ position: "absolute", top: "25%", right: "15%", display: "grid", gridTemplateColumns: "repeat(4, 8px)", gap: "6px", opacity: 0.1 }}>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} style={{ width: "4px", height: "4px", background: "#000", borderRadius: "50%" }} />
-          ))}
-        </div>
-
-        <div style={{ position: "absolute", bottom: "15%", left: "20%", display: "grid", gridTemplateColumns: "repeat(6, 6px)", gap: "5px", opacity: 0.08 }}>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} style={{ width: "3px", height: "3px", background: "#000", borderRadius: "50%" }} />
-          ))}
-        </div>
-
-        <div style={{ position: "absolute", top: "5%", left: "35%", display: "grid", gridTemplateColumns: "repeat(5, 10px)", gap: "10px", opacity: 0.05 }}>
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div key={i} style={{ width: "5px", height: "5px", background: "#000", borderRadius: "50%" }} />
-          ))}
-        </div>
-
-        <div style={{ position: "absolute", bottom: "5%", right: "15%", opacity: 0.2 }}>
-          <motion.div
-            animate={{ rotate: [0, 10, 0] }}
-            transition={{ duration: 5, repeat: Infinity }}
-            style={{ width: "80px", height: "80px", background: "#FF4D4D", border: "3px solid #000" }}
-          />
-          <motion.div
-            animate={{ rotate: [10, 0, 10] }}
-            transition={{ duration: 5, repeat: Infinity }}
-            style={{ width: "80px", height: "80px", border: "3px solid #000", position: "absolute", top: "10px", left: "10px" }}
-          />
-        </div>
-
-
-        <motion.div
-          animate={{ y: [-20, 20, -20], rotate: [0, 5, 0] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            position: "absolute",
-            top: "-20px",
-            left: "50%",
-            width: "200px",
-            height: "200px",
-            border: "3px solid #0047FF",
-            transform: "translateX(-50%)",
-            opacity: 0.05,
-          }}
-        />
-
-        <div style={{ position: "absolute", bottom: "40%", left: "5%", display: "grid", gridTemplateColumns: "repeat(8, 6px)", gap: "4px", opacity: 0.06 }}>
-          {Array.from({ length: 32 }).map((_, i) => (
-            <div key={i} style={{ width: "3px", height: "3px", background: "#000", borderRadius: "50%" }} />
-          ))}
-        </div>
-      </div>
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: "60px" }}>
+      {/* Section heading — sits above the pin so it scrolls in naturally */}
+      <div
+        style={{
+          padding: "80px 24px 0",
+          position: "relative",
+          zIndex: 2,
+        }}
+      >
+        <div style={{ maxWidth: "1200px", margin: "0 auto", textAlign: "center", paddingBottom: "40px" }}>
           <span className="section-label">⚡ CARA KERJA</span>
           <h2
             style={{
@@ -266,49 +124,275 @@ export function HowItWorksSection() {
             Tiga langkah. Itu saja.
           </h2>
         </div>
+      </div>
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "100px",
-            position: "relative",
-          }}
-        >
-          {/* Vertical Dashed Line center (Starting from first card) */}
+      {/* Pinned card container — desktop: h-screen with stacked absolute cards */}
+      <div
+        ref={containerRef}
+        className="relative w-full lg:h-screen flex items-center justify-center overflow-hidden"
+        style={{ background: "#F5F0E8" }}
+      >
+        {/* Geometric decorations — static, inside pin container */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
           <div
             style={{
               position: "absolute",
-              top: "0",
-              left: "50%",
-              width: "2px",
-              height: "100%",
-              borderLeft: "4px dashed #000",
-              opacity: 0.08,
-              transform: "translateX(-50%)",
-              zIndex: 0
+              top: "-80px",
+              left: "-80px",
+              width: "300px",
+              height: "300px",
+              border: "4px solid #0047FF",
+              borderRadius: "50%",
+              opacity: 0.1,
             }}
           />
-          {steps.map((step, index) => (
-            <motion.div
-              key={step.id}
-              id={step.id}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+          <div
+            style={{
+              position: "absolute",
+              bottom: "10%",
+              left: "5%",
+              width: "80px",
+              height: "80px",
+              background: "#FF4D4D",
+              border: "3px solid #000",
+              boxShadow: "6px 6px 0px #000",
+              opacity: 0.4,
+              transform: "rotate(-10deg)",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: "10%",
+              right: "5%",
+              width: "70px",
+              height: "70px",
+              opacity: 0.4,
+            }}
+          >
+            <svg viewBox="0 0 100 100" style={{ width: "100%", height: "100%" }}>
+              <path d="M50 5 L95 85 L5 85 Z" fill="#00D37F" stroke="#000" strokeWidth="6" />
+            </svg>
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              top: "40%",
+              right: "3%",
+              width: "120px",
+              height: "120px",
+              border: "3px dashed #FFE500",
+              borderRadius: "50%",
+              opacity: 0.3,
+              transform: "rotate(0deg)",
+            }}
+          />
+          <div style={{ position: "absolute", top: "45%", left: "3%", fontSize: "32px", fontWeight: 900, opacity: 0.05, transform: "rotate(-20deg)" }}>×</div>
+          <div style={{ position: "absolute", bottom: "35%", right: "12%", fontSize: "28px", fontWeight: 900, opacity: 0.07, transform: "rotate(10deg)" }}>O</div>
+          <div style={{ position: "absolute", top: "15%", left: "45%", fontSize: "24px", fontWeight: 900, opacity: 0.1 }}>+</div>
+          <div style={{ position: "absolute", top: "25%", right: "15%", display: "grid", gridTemplateColumns: "repeat(4, 8px)", gap: "6px", opacity: 0.1 }}>
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i} style={{ width: "4px", height: "4px", background: "#000", borderRadius: "50%" }} />
+            ))}
+          </div>
+          <div style={{ position: "absolute", bottom: "15%", left: "20%", display: "grid", gridTemplateColumns: "repeat(6, 6px)", gap: "5px", opacity: 0.08 }}>
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i} style={{ width: "3px", height: "3px", background: "#000", borderRadius: "50%" }} />
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop: Stacked absolute cards */}
+        <div
+          className="hidden lg:block relative w-full"
+          style={{ maxWidth: "720px", height: "440px", margin: "0 auto" }}
+        >
+          {/* Card 01 */}
+          <div
+            ref={cardOneRef}
+            id={steps[0].id}
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "#fff",
+              border: "4px solid #000",
+              boxShadow: "8px 8px 0px #000",
+              padding: "48px",
+              borderRadius: "12px",
+              zIndex: 1,
+            }}
+          >
+            <div
               style={{
-                display: "flex",
-                flexDirection: index % 2 === 0 ? "row" : "row-reverse",
-                alignItems: "center",
-                gap: "40px",
-                position: "relative",
+                position: "absolute",
+                top: "-40px",
+                right: "-30px",
+                fontFamily: "Space Grotesk, sans-serif",
+                fontWeight: 900,
+                fontSize: "120px",
+                lineHeight: 1,
+                color: steps[0].color,
+                WebkitTextStroke: "3px #000",
+                opacity: 0.8,
+                zIndex: -1,
               }}
             >
-              {/* Card */}
+              01
+            </div>
+            <div
+              style={{
+                width: "64px",
+                height: "64px",
+                background: steps[0].color,
+                border: "3px solid #000",
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "32px",
+                marginBottom: "24px",
+                boxShadow: "4px 4px 0px #000",
+              }}
+            >
+              {steps[0].icon}
+            </div>
+            <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", marginBottom: "16px" }}>
+              {steps[0].title}
+            </h3>
+            <p style={{ color: "#3D3D3D", fontSize: "17px", lineHeight: 1.6, margin: 0 }}>
+              {steps[0].description}
+            </p>
+          </div>
+
+          {/* Card 02 */}
+          <div
+            ref={cardTwoRef}
+            id={steps[1].id}
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "#fff",
+              border: "4px solid #000",
+              boxShadow: "8px 8px 0px #000",
+              padding: "48px",
+              borderRadius: "12px",
+              opacity: 0,
+              zIndex: 2,
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: "-40px",
+                right: "-30px",
+                fontFamily: "Space Grotesk, sans-serif",
+                fontWeight: 900,
+                fontSize: "120px",
+                lineHeight: 1,
+                color: steps[1].color,
+                WebkitTextStroke: "3px #000",
+                opacity: 0.8,
+                zIndex: -1,
+              }}
+            >
+              02
+            </div>
+            <div
+              style={{
+                width: "64px",
+                height: "64px",
+                background: steps[1].color,
+                border: "3px solid #000",
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "32px",
+                marginBottom: "24px",
+                boxShadow: "4px 4px 0px #000",
+              }}
+            >
+              {steps[1].icon}
+            </div>
+            <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", marginBottom: "16px", color: "#00D37F" }}>
+              {steps[1].title}
+            </h3>
+            <p style={{ color: "#3D3D3D", fontSize: "17px", lineHeight: 1.6, margin: 0 }}>
+              {steps[1].description}
+            </p>
+          </div>
+
+          {/* Card 03 */}
+          <div
+            ref={cardThreeRef}
+            id={steps[2].id}
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "#fff",
+              border: "4px solid #000",
+              boxShadow: "8px 8px 0px #000",
+              padding: "48px",
+              borderRadius: "12px",
+              opacity: 0,
+              zIndex: 3,
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: "-40px",
+                right: "-30px",
+                fontFamily: "Space Grotesk, sans-serif",
+                fontWeight: 900,
+                fontSize: "120px",
+                lineHeight: 1,
+                color: steps[2].color,
+                WebkitTextStroke: "3px #000",
+                opacity: 0.8,
+                zIndex: -1,
+              }}
+            >
+              03
+            </div>
+            <div
+              style={{
+                width: "64px",
+                height: "64px",
+                background: steps[2].color,
+                border: "3px solid #000",
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "32px",
+                marginBottom: "24px",
+                boxShadow: "4px 4px 0px #000",
+              }}
+            >
+              {steps[2].icon}
+            </div>
+            <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", marginBottom: "16px", color: "#0047FF" }}>
+              {steps[2].title}
+            </h3>
+            <p style={{ color: "#3D3D3D", fontSize: "17px", lineHeight: 1.6, margin: 0 }}>
+              {steps[2].description}
+            </p>
+          </div>
+        </div>
+
+        {/* Mobile: Normal stacked vertical layout (no pinning) */}
+        <div
+          className="lg:hidden w-full"
+          style={{ padding: "24px", maxWidth: "1200px", margin: "0 auto" }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: "60px", position: "relative" }}>
+            <div style={{ position: "absolute", top: 0, left: "50%", width: "2px", height: "100%", borderLeft: "4px dashed #000", opacity: 0.08, transform: "translateX(-50%)", zIndex: 0 }} />
+            {steps.map((step, index) => (
               <div
+                key={step.id}
+                id={`${step.id}-mobile`}
                 style={{
-                  flex: 1,
                   background: "#fff",
                   border: "3px solid #000",
                   boxShadow: "8px 8px 0px #000",
@@ -318,7 +402,6 @@ export function HowItWorksSection() {
                   zIndex: 2,
                 }}
               >
-                {/* Big overlapping number */}
                 <div
                   style={{
                     position: "absolute",
@@ -334,18 +417,8 @@ export function HowItWorksSection() {
                     zIndex: -1,
                   }}
                 >
-                  0<CountUp
-                    from={0}
-                    to={step.number}
-                    separator=","
-                    direction="up"
-                    duration={1}
-                    className="count-up-text"
-                    delay={0}
-                  />
-
+                  0<CountUp from={0} to={step.number} separator="," direction="up" duration={1} className="count-up-text" delay={0} />
                 </div>
-
                 <div
                   style={{
                     width: "64px",
@@ -363,34 +436,15 @@ export function HowItWorksSection() {
                 >
                   {step.icon}
                 </div>
-
-                <h3
-                  style={{
-                    fontFamily: "Space Grotesk, sans-serif",
-                    fontWeight: 900,
-                    fontSize: "28px",
-                    marginBottom: "16px",
-                  }}
-                >
+                <h3 style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 900, fontSize: "28px", marginBottom: "16px" }}>
                   {step.title}
                 </h3>
-
-                <p
-                  style={{
-                    color: "#3D3D3D",
-                    fontSize: "17px",
-                    lineHeight: 1.6,
-                    margin: 0,
-                  }}
-                >
+                <p style={{ color: "#3D3D3D", fontSize: "17px", lineHeight: 1.6, margin: 0 }}>
                   {step.description}
                 </p>
               </div>
-
-              {/* Spacer */}
-              <div className="hidden md:block" style={{ flex: 1 }} />
-            </motion.div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 

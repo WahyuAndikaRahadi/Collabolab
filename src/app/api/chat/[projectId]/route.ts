@@ -101,7 +101,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pro
           }
         }
       }
-    });
+    }) as unknown as {
+      id: string;
+      projectId: string;
+      senderId: string;
+      content: string;
+      mentions: string[];
+      createdAt: Date;
+      sender: {
+        id: string;
+        name: string | null;
+        image: string | null;
+      };
+    };
 
     const isAnon = member.isAnonymous && !member.revealedAt;
     const displayName = isAnon

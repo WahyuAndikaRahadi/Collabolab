@@ -1,16 +1,16 @@
 <div align="center">
-  <img src="./public/images/logo.png" alt="CollaboLab Logo" width="180" />
-  <br />
-  <br />
-  <img src="https://img.shields.io/badge/SEFEST-2026-FFE500?style=for-the-badge&logo=code&logoColor=black" alt="SEFEST 2026" />
-  <img src="https://img.shields.io/badge/Team-Galatea-0047FF?style=for-the-badge" alt="Team Galatea" />
-  <img src="https://img.shields.io/badge/Status-Development-00D37F?style=for-the-badge" alt="Status" />
-  <br />
-  <br />
-  <h1>🤝 CollaboLab</h1>
-  <p><b>Find Your People. Build Together.</b></p>
-  <p><i>Platform kolaborasi real-time bergaya Neobrutalism untuk Gen-Z. Dibangun dengan sistem reputasi untuk ekosistem kolaborasi yang bebas ghosting dan spam.</i></p>
-  <br />
+  <img src="./public/images/logo.png" alt="CollaboLab Logo" width="180" />
+  <br />
+  <br />
+  <img src="https://img.shields.io/badge/SEFEST-2026-FFE500?style=for-the-badge&logo=code&logoColor=black" alt="SEFEST 2026" />
+  <img src="https://img.shields.io/badge/Team-Galatea-0047FF?style=for-the-badge" alt="Team Galatea" />
+  <img src="https://img.shields.io/badge/Status-Development-00D37F?style=for-the-badge" alt="Status" />
+  <br />
+  <br />
+  <h1>🤝 CollaboLab</h1>
+  <p><b>Find Your People. Build Together.</b></p>
+  <p><i>Platform kolaborasi real-time bergaya Neobrutalism untuk Gen-Z. Dibangun dengan sistem reputasi untuk ekosistem kolaborasi yang bebas ghosting dan spam.</i></p>
+  <br />
 </div>
 
 ---
@@ -86,35 +86,36 @@ CollaboLab menolak desain modern-minimalis yang membosankan. Kami mengadopsi gay
 ## 🚀 Panduan Instalasi Lokal
 
 1. **Clone repository ini:**
-   ```bash
-   git clone https://github.com/WahyuAndikaRahadi/Collabolab.git
-   cd collabolab
-   ```
+   ```bash
+   git clone https://github.com/WahyuAndikaRahadi/Collabolab.git
+   cd collabolab
+   ```
 
 2. **Install dependensi:**
-   ```bash
-   npm install
-   ```
+   ```bash
+   npm install
+   ```
 
 3. **Siapkan Environment Variables:**
-   Duplikat file `.env.example` menjadi `.env` lalu isi *credentials* database Neon, Auth, dan Pusher.
-   ```bash
-   cp .env.example .env
-   ```
+   Duplikat file `.env.example` menjadi `.env` lalu isi *credentials* database Neon, Auth, dan Pusher.
+   ```bash
+   cp .env.example .env
+   ```
 
 4. **Sinkronisasi Database:**
-   ```bash
-   npx prisma db push
-   ```
+   ```bash
+   npx prisma db push
+   ```
 
 5. **Jalankan Development Server:**
-   ```bash
-   npm run dev
-   ```
-   Akses `http://localhost:3000` di browser.
+   ```bash
+   npm run dev
+   ```
+   Akses `http://localhost:3000` di browser.
 
 ---
 
 <div align="center">
-  <p>Dibuat dengan 💻 dan ☕ oleh <b>Team Galatea</b> untuk SEFEST 2026.</p>
+  <p>Dibuat dengan 💻 dan ☕ oleh <b>Team Galatea</b> untuk SEFEST 2026.</p>
 </div>
+coba kamu baca guidebook lomba baru saya dengan proposal baru dari lomba baru saya itu kan readme github ssaya kan  dengab lomba yang lama tapi saya di lomba baru ini pakai web yang sama coba kamu samakan dengan proposal dan lomba baru ssaya yang pasti dan informatif dan menarik

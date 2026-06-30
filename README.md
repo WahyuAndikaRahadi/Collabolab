@@ -1,65 +1,78 @@
 <div align="center">
-  <img src="./public/images/logo.png" alt="CollaboLab Logo" width="180" />
-  <br />
-  <br />
-  <img src="https://img.shields.io/badge/SEFEST-2026-FFE500?style=for-the-badge&logo=code&logoColor=black" alt="SEFEST 2026" />
-  <img src="https://img.shields.io/badge/Team-Galatea-0047FF?style=for-the-badge" alt="Team Galatea" />
-  <img src="https://img.shields.io/badge/Status-Development-00D37F?style=for-the-badge" alt="Status" />
-  <br />
-  <br />
-  <h1>🤝 CollaboLab</h1>
-  <p><b>Find Your People. Build Together.</b></p>
-  <p><i>Platform kolaborasi real-time bergaya Neobrutalism untuk Gen-Z. Dibangun dengan sistem reputasi untuk ekosistem kolaborasi yang bebas ghosting dan spam.</i></p>
-  <br />
+  <img src="./public/images/logo.png" alt="CollaboLab Logo" width="180" />
+  <br />
+  <br />
+  <img src="https://img.shields.io/badge/DIGIFEST-2026-FFE500?style=for-the-badge&logo=code&logoColor=black" alt="DIGIFEST 2026" />
+  <img src="https://img.shields.io/badge/GENETIC-SIIC-0047FF?style=for-the-badge" alt="GENETIC SIIC" />
+  <img src="https://img.shields.io/badge/Team-Galatea-00D37F?style=for-the-badge" alt="Team Galatea" />
+  <img src="https://img.shields.io/badge/Status-Development-FFE500?style=for-the-badge" alt="Status" />
+  <br />
+  <br />
+  <h1>🤝 CollaboLab</h1>
+  <p><b>Temukan Partner. Build Future.</b></p>
+  <p><i>Platform kolaborasi digital bergaya Neobrutalism yang mempertemukan pelajar berdasarkan kecocokan skill, minat, dan kebutuhan proyek — bebas ghosting, bebas spam.</i></p>
+  <br />
 </div>
 
 ---
 
-## 🎯 Latar Belakang & SEFEST 2026
-Proyek ini dikembangkan oleh **Team Galatea** untuk mengikuti **SEFEST 2026 (Software Engineering Festival)** kategori *Web Design* yang diselenggarakan oleh HIMSE Telkom University Surabaya.
+## 🎯 Tentang Proyek Ini
 
-Membawa tema *"Gen-Z TechPreneur: Digital Solutions for a Sustainable Future"*, CollaboLab hadir sebagai perwujudan digital dari:
-- **SDG 8 (Decent Work and Economic Growth):** Memfasilitasi ekosistem kerja kolaboratif yang inklusif untuk pelajar/mahasiswa dalam membangun portofolio.
-- **SDG 9 (Industry, Innovation and Infrastructure):** Menyediakan infrastruktur digital inovatif yang aman, real-time, dan terpercaya.
+CollaboLab dikembangkan oleh **Team Galatea (SMKN 69 Jakarta)** untuk mengikuti **System Innovation Idea Challenge (SIIC)** — salah satu cabang lomba **GENETIC (Generasi Teknologi Informasi Competition)** dalam rangkaian **DIGIFEST 2026 (Digital Innovation Grand Festival)** yang diselenggarakan oleh HIMMATISI dan Developer Community (DECOMUS) Universitas Semarang.
+
+Mengusung tema **"SYNERGY: System, Youth, and Next-Generation Technology"** dengan subtema **"Smart Society & Digital Solutions"**, peserta ditantang merancang ide kreatif berbasis teknologi yang memberi solusi nyata terhadap isu sosial di masyarakat — mendorong terciptanya sistem yang lebih cerdas, efisien, dan terintegrasi.
+
+CollaboLab hadir menjawab tantangan tersebut: bukan lagi soal kekurangan ide, melainkan kesulitan generasi muda menemukan orang yang tepat untuk mewujudkan ide tersebut.
 
 ---
 
 ## 💡 Problem & Solusi
-Gen-Z memiliki segudang ide brilian, namun sering kali terhambat oleh:
-1. **Susah cari tim:** Tidak ada wadah terpusat berbasis *skill-match*.
-2. **Krisis Kepercayaan:** Maraknya *ghosting*, *spam*, dan anggota tim parasit (freeloader).
-3. **Anxiety & Introvert:** Ragu untuk memulai perkenalan online dengan orang asing.
+
+Pelajar dan generasi muda memiliki banyak ide brilian, namun sering terhambat oleh:
+1. **Susah cari rekan kolaborasi** yang sesuai skill, minat, dan kebutuhan proyek — pembentukan tim masih bergantung pada lingkaran pertemanan.
+2. **Krisis kepercayaan**: ghosting, anggota tim pasif, dan minimnya akuntabilitas dalam kolaborasi daring.
+3. **Anxiety & introvert**: ragu memulai perkenalan dengan orang baru secara online.
+4. **Tools yang tercerai-berai**: harus berpindah-pindah aplikasi (chat, manajemen tugas, pencarian partner) sehingga informasi mudah hilang.
 
 **Solusi CollaboLab:**
-Bukan sekadar aplikasi "cari teman", melainkan sebuah **Sistem Manajemen Mutu Berbasis Reputasi**. Kami membangun *Trust Score Engine* yang menilai secara otomatis keandalan seseorang berdasarkan penyelesaian tugas, umur akun, dan ulasan rekan satu tim.
+Platform kolaborasi digital terintegrasi yang menggabungkan pencarian partner berbasis kecocokan skill, ruang kerja real-time, sistem reputasi, dan dukungan AI dalam satu ekosistem — mewujudkan sinergi antara sistem, generasi muda, dan teknologi masa depan.
 
 ---
 
 ## ✨ Fitur Unggulan
 
-### 🛡️ 1. Trust Score & Anti-Farming Engine
-Sistem poin canggih yang menghukum *ghosting* dan memberi *reward* pada kolaborasi nyata.
-- **Dynamic Event Score:** Poin aman bertambah saat project sukses.
-- **Anti-Farming:** Sistem menolak pemberian poin jika project belum berumur > 1 hari dan belum ada minimal 2 task yang *Done*.
-- **Admin Review Task:** Poin bonus (+2) otomatis diberikan *hanya* setelah Project Owner menekan tombol `Approve` pada Kanban board.
+### 🤝 1. Smart Skill Match
+Sistem pencocokan anggota tim yang menganalisis kesesuaian keterampilan, minat, pengalaman, dan kebutuhan proyek untuk merekomendasikan kolaborator paling relevan.
 
-### 🏠 2. Real-Time Collab Room
-Ruang kerja virtual yang tersinkronisasi dalam hitungan milidetik (*powered by Pusher*).
-- **Live Chat:** Diskusi real-time lengkap dengan sistem `@mention`.
-- **Kanban Board:** Sistem geser *Drag-and-Drop*. Jika task sudah di-*Approve*, task otomatis terkunci untuk mencegah manipulasi.
-- **Quick Poll:** Polling instan untuk mengambil keputusan tim.
+### 🏠 2. Collab Hub
+Ruang kerja digital real-time yang menggabungkan **Live Chat**, **Kanban Board**, dan **Quick Polling** dalam satu platform untuk komunikasi, pembagian tugas, dan pemantauan progres proyek (*powered by Pusher*).
 
-### 🕵️ 3. Anonymous Ice-Breaker Mode
-Malu ngobrol duluan? Gunakan identitas anonim (`Anon#1042`) saat bergabung ke sebuah project. Identitas asli dapat diungkap (*reveal*) kapan saja setelah user merasa nyaman dengan tim barunya.
+### 🛡️ 3. Trust Score System
+Sistem reputasi yang menilai kredibilitas dan komitmen pengguna dalam berkolaborasi. Skor meningkat dari kontribusi positif dan menurun jika pengguna pasif atau meninggalkan proyek tanpa penyelesaian jelas.
 
-### 🎯 4. Smart Skill Matchmaking
-Pencarian project yang mengkalkulasi persentase kecocokan antara *Skill Tags* yang kamu miliki dengan kebutuhan *Owner* project.
+### 🤖 4. AI Hub
+Pusat layanan berbasis kecerdasan buatan (Gemini AI) yang membantu menyusun *project brief*, menganalisis kebutuhan skill tim, memberi rekomendasi proyek, dan merangkum evaluasi proyek secara otomatis.
+
+### 🕵️ 5. Anonymous Introduction Mode
+Fitur perkenalan dengan identitas sementara bagi pengguna yang masih ragu memulai interaksi, sebelum membuka identitas asli setelah merasa nyaman dengan tim.
+
+### 📡 6. Social Discovery Feed
+Feed untuk membagikan progres proyek, info kompetisi, dan peluang kolaborasi guna memperluas jaringan dan membangun komunitas yang aktif.
+
+---
+
+## 👥 Target Pengguna
+
+- **Pelajar** — aktif kompetisi, riset, atau punya ide tapi sulit menemukan tim yang pas.
+- **Mahasiswa** — butuh anggota tim untuk kegiatan akademik/non-akademik (riset, lomba, organisasi, produk digital).
+- **Inovator Muda** — punya gagasan yang ingin dikembangkan bersama tim dengan kompetensi beragam.
 
 ---
 
 ## 🎨 Design System: Neobrutalism
-CollaboLab menolak desain modern-minimalis yang membosankan. Kami mengadopsi gaya **Neobrutalism** yang mencerminkan energi Gen-Z: *Bold, Berani, dan Anti-Mainstream*.
-- **Ciri Khas:** Border hitam tebal (3px), bayangan offset solid (`4px 4px 0px #000`), dan warna-warna neon kontras (Kuning `#FFE500`, Mint `#00D37F`).
+
+CollaboLab mengadopsi gaya **Neobrutalism** yang mencerminkan energi Gen-Z: *Bold, Berani, dan Anti-Mainstream*.
+- **Ciri Khas:** Border hitam tebal (3px), bayangan offset solid (`4px 4px 0px #000`), dan warna neon kontras (Kuning `#FFE500`, Mint `#00D37F`).
 - **Typography:** Space Grotesk (Heading) & Inter (Body).
 
 ---
@@ -67,9 +80,9 @@ CollaboLab menolak desain modern-minimalis yang membosankan. Kami mengadopsi gay
 ## 🛠️ Tech Stack
 
 **Frontend:**
-- [Next.js 16+ (App Router)](https://nextjs.org/)
+- [Next.js 16](https://nextjs.org/)
 - [React 19](https://react.dev/)
-- [Tailwind CSS 3+](https://tailwindcss.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
 - [dnd-kit](https://dndkit.com/) (Drag & Drop Kanban)
 
 **Backend & Database:**
@@ -77,45 +90,63 @@ CollaboLab menolak desain modern-minimalis yang membosankan. Kami mengadopsi gay
 - [Prisma ORM](https://www.prisma.io/)
 - [NeonDB](https://neon.tech/) (PostgreSQL Serverless)
 
-**Real-time & Auth:**
+**Real-time, Auth & AI:**
 - [Pusher Channels](https://pusher.com/) (WebSockets)
-- [NextAuth.js v5](https://next-auth.js.org/)
+- [NextAuth.js](https://next-auth.js.org/) (Google OAuth & Credentials)
+- [Gemini AI](https://ai.google.dev/) (AI Recommendation Engine)
 
 ---
 
 ## 🚀 Panduan Instalasi Lokal
 
 1. **Clone repository ini:**
-   ```bash
-   git clone https://github.com/WahyuAndikaRahadi/Collabolab.git
-   cd collabolab
-   ```
+```bash
+   git clone https://github.com/WahyuAndikaRahadi/Collabolab.git
+   cd collabolab
+```
 
 2. **Install dependensi:**
-   ```bash
-   npm install
-   ```
+```bash
+   npm install
+```
 
 3. **Siapkan Environment Variables:**
-   Duplikat file `.env.example` menjadi `.env` lalu isi *credentials* database Neon, Auth, dan Pusher.
-   ```bash
-   cp .env.example .env
-   ```
+   Duplikat file `.env.example` menjadi `.env` lalu isi *credentials* database Neon, Auth, Pusher, dan Gemini AI.
+```bash
+   cp .env.example .env
+```
 
 4. **Sinkronisasi Database:**
-   ```bash
-   npx prisma db push
-   ```
+```bash
+   npx prisma db push
+```
 
 5. **Jalankan Development Server:**
-   ```bash
-   npm run dev
-   ```
-   Akses `http://localhost:3000` di browser.
+```bash
+   npm run dev
+```
+   Akses `http://localhost:3000` di browser.
+
+---
+
+## 🔗 Tautan Penting
+
+- 🌐 **Live Demo:** [collabolab.vercel.app](https://collabolab.vercel.app/)
+
+---
+
+## 🏆 Kompetisi
+
+Proyek ini diikutsertakan dalam:
+
+**System Innovation Idea Challenge (SIIC)**
+GENETIC 2026 — DIGIFEST 2026, Universitas Semarang
+Subtema: *Smart Society & Digital Solutions*
+Tema Besar: *"SYNERGY: System, Youth, and Next-Generation Technology"*
 
 ---
 
 <div align="center">
-  <p>Dibuat dengan 💻 dan ☕ oleh <b>Team Galatea</b> untuk SEFEST 2026.</p>
+  <p>Dibuat dengan 💻 dan ☕ oleh <b>Team Galatea</b> (SMKN 69 Jakarta) untuk DIGIFEST 2026</p>
+  <p><sub>Bagus Hasam Ali · Wahyu Andika Rahadi · Irham Thoriqsah Secaatmaja</sub></p>
 </div>
-coba kamu baca guidebook lomba baru saya dengan proposal baru dari lomba baru saya itu kan readme github ssaya kan  dengab lomba yang lama tapi saya di lomba baru ini pakai web yang sama coba kamu samakan dengan proposal dan lomba baru ssaya yang pasti dan informatif dan menarik
